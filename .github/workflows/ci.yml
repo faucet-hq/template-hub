@@ -1,0 +1,117 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Lint, compose every pairing, verify index.json
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The published installer ships a prebuilt `faucet`. `faucet hub` needs a
+      # build that includes the Template Hub; until the next release carries
+      # it, fall back to building the CLI from the engine's main branch.
+      - name: Install faucet
+        run: |
+          set -euo pipefail
+          curl --proto '=https' --tlsv1.2 -LsSf \
+            https://github.com/faucet-hq/faucet-stream/releases/latest/download/faucet-cli-installer.sh | sh
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          if ! "$HOME/.cargo/bin/faucet" hub --help >/dev/null 2>&1; then
+            echo "released faucet lacks 'hub' — building from source"
+            echo "BUILD_FROM_SOURCE=1" >> "$GITHUB_ENV"
+          fi
+      - name: Toolchain (source build fallback)
+        if: env.BUILD_FROM_SOURCE == '1'
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cache (source build fallback)
+        if: env.BUILD_FROM_SOURCE == '1'
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: faucet-cli-hub
+      - name: Build faucet from source (fallback)
+        if: env.BUILD_FROM_SOURCE == '1'
+        run: |
+          cargo install --git https://github.com/faucet-hq/faucet-stream faucet-cli --locked \
+            --no-default-features \
+            --features "source-rest,source-csv,source-xml,source-graphql,sink-jsonl,sink-bigquery,sink-postgres,sink-sqlite,transforms"
+          faucet hub --help >/dev/null
+
+      - name: Lint every template
+        run: faucet hub lint --hub .
+
+      - name: Compose every source × sink pairing
+        run: |
+          set -euo pipefail
+          fail=0
+          for s in source-templates/*.y*ml; do
+            src=$(basename "${s%.*}")
+            ok=0
+            for k in sink-templates/*.y*ml; do
+              sink=$(basename "${k%.*}")
+              if faucet hub check --hub . --source "$src" --sink "$sink" >/dev/null 2>&1; then
+                ok=$((ok+1))
+              else
+                echo "::notice::$src × $sink is not compatible"
+              fi
+            done
+            if [ "$ok" -lt 2 ]; then
+              echo "::error::$src composes with $ok sink(s); every source must work with at least two"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: Verify index.json is current
+        run: |
+          faucet hub matrix --hub . --format json > /tmp/index.json
+          if ! diff -u index.json /tmp/index.json; then
+            echo "::error::index.json is stale — run: faucet hub matrix --hub . --format json > index.json"
+            exit 1
+          fi
+
+  publish-index:
+    name: Regenerate index.json on main
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install faucet
+        run: |
+          set -euo pipefail
+          curl --proto '=https' --tlsv1.2 -LsSf \
+            https://github.com/faucet-hq/faucet-stream/releases/latest/download/faucet-cli-installer.sh | sh
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          "$HOME/.cargo/bin/faucet" hub --help >/dev/null 2>&1 || echo "BUILD_FROM_SOURCE=1" >> "$GITHUB_ENV"
+      - uses: dtolnay/rust-toolchain@stable
+        if: env.BUILD_FROM_SOURCE == '1'
+      - uses: Swatinem/rust-cache@v2
+        if: env.BUILD_FROM_SOURCE == '1'
+        with:
+          key: faucet-cli-hub
+      - if: env.BUILD_FROM_SOURCE == '1'
+        run: |
+          cargo install --git https://github.com/faucet-hq/faucet-stream faucet-cli --locked \
+            --no-default-features \
+            --features "source-rest,source-csv,source-xml,source-graphql,sink-jsonl,sink-bigquery,sink-postgres,sink-sqlite,transforms"
+      - name: Regenerate and commit
+        run: |
+          faucet hub matrix --hub . --format json > index.json
+          if git diff --quiet -- index.json; then echo "index.json unchanged"; exit 0; fi
+          git config user.name "faucet-hub-bot"
+          git config user.email "faucet-hub-bot@users.noreply.github.com"
+          git add index.json
+          git commit -m "chore: regenerate index.json"
+          git push

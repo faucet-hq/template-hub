@@ -1,0 +1,33 @@
+name: Request a template
+description: Ask for a source or sink template that is not in the hub yet
+title: "[request] <system>"
+labels: [request]
+body:
+  - type: input
+    id: system
+    attributes:
+      label: System
+      description: The API or destination, with a link to its public documentation.
+      placeholder: Acme Billing — https://developer.acme-billing.example/api
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options: [source-template, sink-template]
+    validations:
+      required: true
+  - type: textarea
+    id: streams
+    attributes:
+      label: Streams you need
+      description: One per line — the table, whether it is a full refresh or incremental, and its key.
+      placeholder: |
+        invoices — full refresh — id
+        payments — incremental on updated_at — id
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Auth flow, pagination style, rate limits, anything unusual about the API.
