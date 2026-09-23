@@ -1,4 +1,6 @@
 {
+  "commit": "a082498455709e88b1ebc383c16bd215062f9024",
+  "generated_by": "scripts/index.py",
   "matrix": [
     {
       "command": "faucet run --source example-csv --sink bigquery \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
@@ -158,7 +160,11 @@
       "description": "Google BigQuery — one table per stream, atomic overwrite or keyed MERGE upsert",
       "docs": "https://faucet-hq.github.io/faucet-stream/reference/connectors.html",
       "file": "sink-templates/bigquery.yaml",
+      "id": "bigquery",
       "name": "bigquery",
+      "newest": 1,
+      "official": true,
+      "owner": null,
       "params": [
         {
           "default": "raw",
@@ -186,9 +192,18 @@
         }
       ],
       "sink_type": "bigquery",
+      "stable": 1,
       "tags": [
         "warehouse",
         "gcp"
+      ],
+      "versions": [
+        {
+          "commit": "f814e8705c313b126ebfecde60b09cbe97e792a4",
+          "date": "2026-09-23T16:31:23+05:30",
+          "pr": null,
+          "version": 1
+        }
       ],
       "write_modes": [
         "append",
@@ -201,7 +216,11 @@
       "description": "Local JSON Lines files, one per stream — the local validation destination",
       "docs": null,
       "file": "sink-templates/jsonl.yaml",
+      "id": "jsonl",
       "name": "jsonl",
+      "newest": 1,
+      "official": true,
+      "owner": null,
       "params": [
         {
           "default": "./out",
@@ -213,9 +232,18 @@
         }
       ],
       "sink_type": "jsonl",
+      "stable": 1,
       "tags": [
         "file",
         "local"
+      ],
+      "versions": [
+        {
+          "commit": "f814e8705c313b126ebfecde60b09cbe97e792a4",
+          "date": "2026-09-23T16:31:23+05:30",
+          "pr": null,
+          "version": 1
+        }
       ],
       "write_modes": [
         "append"
@@ -225,7 +253,11 @@
       "description": "PostgreSQL — one auto-mapped table per stream, transactional overwrite or ON CONFLICT upsert",
       "docs": null,
       "file": "sink-templates/postgres.yaml",
+      "id": "postgres",
       "name": "postgres",
+      "newest": 1,
+      "official": true,
+      "owner": null,
       "params": [
         {
           "default": "public",
@@ -245,8 +277,17 @@
         }
       ],
       "sink_type": "postgres",
+      "stable": 1,
       "tags": [
         "database"
+      ],
+      "versions": [
+        {
+          "commit": "f814e8705c313b126ebfecde60b09cbe97e792a4",
+          "date": "2026-09-23T16:31:23+05:30",
+          "pr": null,
+          "version": 1
+        }
       ],
       "write_modes": [
         "append",
@@ -259,7 +300,11 @@
       "description": "Local SQLite database — one auto-mapped table per stream, real overwrite/upsert semantics without infrastructure",
       "docs": null,
       "file": "sink-templates/sqlite.yaml",
+      "id": "sqlite",
       "name": "sqlite",
+      "newest": 1,
+      "official": true,
+      "owner": null,
       "params": [
         {
           "default": "./out/faucet.db",
@@ -271,9 +316,18 @@
         }
       ],
       "sink_type": "sqlite",
+      "stable": 1,
       "tags": [
         "database",
         "local"
+      ],
+      "versions": [
+        {
+          "commit": "f814e8705c313b126ebfecde60b09cbe97e792a4",
+          "date": "2026-09-23T16:31:23+05:30",
+          "pr": null,
+          "version": 1
+        }
       ],
       "write_modes": [
         "append",
@@ -288,7 +342,11 @@
       "description": "Example — two CSV exports as two streams (runs offline, no credentials)",
       "docs": null,
       "file": "source-templates/example-csv.yaml",
+      "id": "example-csv",
       "name": "example-csv",
+      "newest": 1,
+      "official": true,
+      "owner": null,
       "params": [
         {
           "default": "./hub/examples/data",
@@ -300,6 +358,7 @@
         }
       ],
       "source_type": "csv",
+      "stable": 1,
       "streams": [
         {
           "description": null,
@@ -327,13 +386,25 @@
       "tags": [
         "example",
         "file"
+      ],
+      "versions": [
+        {
+          "commit": "f814e8705c313b126ebfecde60b09cbe97e792a4",
+          "date": "2026-09-23T16:31:23+05:30",
+          "pr": null,
+          "version": 1
+        }
       ]
     },
     {
       "description": "Example — a bearer-authenticated REST API with cursor pagination and one stream per endpoint",
       "docs": null,
       "file": "source-templates/example-rest-api.yaml",
+      "id": "example-rest-api",
       "name": "example-rest-api",
+      "newest": 1,
+      "official": true,
+      "owner": null,
       "params": [
         {
           "default": null,
@@ -353,6 +424,7 @@
         }
       ],
       "source_type": "rest",
+      "stable": 1,
       "streams": [
         {
           "description": null,
@@ -380,6 +452,14 @@
       "tags": [
         "example",
         "rest"
+      ],
+      "versions": [
+        {
+          "commit": "f814e8705c313b126ebfecde60b09cbe97e792a4",
+          "date": "2026-09-23T16:31:23+05:30",
+          "pr": null,
+          "version": 1
+        }
       ]
     }
   ],
