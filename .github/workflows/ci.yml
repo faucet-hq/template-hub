@@ -72,7 +72,10 @@ jobs:
           done
           exit $fail
 
+      # Contributors regenerate index.json in their PR; on main the
+      # publish-index job below rewrites it authoritatively after every merge.
       - name: Verify index.json is current
+        if: github.event_name == 'pull_request'
         run: |
           pip3 install --quiet pyyaml
           git fetch --no-tags --depth=200 origin main
