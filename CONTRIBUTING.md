@@ -3,11 +3,44 @@
 A template here is used by people you will never meet, against credentials you
 will never see. The rules below exist so that is safe.
 
+## Namespaces and ownership
+
+Your templates live under **your** namespace: `source-templates/<your-github-login>/`
+(a user or an org login, lowercase). Inside each file, `owner:` names the same
+login, so the template stays owned once it leaves the catalog. The first PR
+that creates a namespace adds an `OWNERS` file:
+
+```yaml
+# source-templates/acme/OWNERS
+owners:
+  - { login: acme-bot, id: 12345678 }     # your numeric GitHub id — CI tells you if it is wrong
+```
+
+Only accounts listed there can change the namespace afterwards; an existing
+owner adds another with a PR. Top-level files are the hub's official templates
+and are maintained by faucet-hq. A PR that touches someone else's namespace
+fails the **Ownership** check.
+
+## Versions
+
+You never write a version number. Each merged change to a template's meaning
+becomes its next version (v1, v2, v3 …); comment and whitespace edits fold
+into the previous one. `stable` is the version consumers get by default. A
+sidecar beside the template controls it:
+
+```yaml
+# source-templates/acme/netsuite.faucet.yaml
+launch: false      # publish this change as a preview — stable stays where it is
+# stable: 3        # or pin stable explicitly (a rollback is a PR that lowers it)
+description: Acme's NetSuite — saved searches + ledger
+```
+
 ## What a source template must have
 
 ```yaml
 kind: source-template
-name: acme-billing                 # == file stem; hub id; the composed pipeline's name
+name: acme-billing                 # == file stem; with owner, the hub id is acme/acme-billing
+owner: acme                        # == the directory this file lives in
 description: Acme Billing — invoices, payments, customers
 tags: [finance, billing]
 docs: https://developer.acme-billing.example/api      # optional

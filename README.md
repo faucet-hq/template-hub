@@ -54,12 +54,16 @@ faucet template run example-rest-api --sink bigquery --param api_token="$TOKEN" 
 
 ## Publish a template
 
-**Registering a template in the hub is a pull request.** The website's
-[Publish](https://faucet-hq.github.io/hub#publish) button opens a pre-filled
-new-file form in this repository; or copy the closest existing file:
+**Registering a template in the hub is a pull request into your own
+namespace.** The website's [Publish](https://faucet-hq.github.io/hub#publish)
+button opens a pre-filled new-file form in this repository; or copy the closest
+existing file:
 
-1. `source-templates/<name>.yaml` or `sink-templates/<name>.yaml`, with `name`
-   equal to the file stem (`^[a-z0-9][a-z0-9_-]*$`) and a one-line `description`.
+1. `source-templates/<your-github-login>/<name>.yaml` (or `sink-templates/…`),
+   with `owner: <your-github-login>`, `name` equal to the file stem
+   (`^[a-z0-9][a-z0-9_-]*$`) and a one-line `description`. The template's hub id
+   is `<owner>/<name>` — `acme/netsuite` and `octo/netsuite` coexist. Top-level
+   files (no owner) are the hub's **official** set, maintained by faucet-hq.
 2. Credentials are **always** `${param.NAME}` with `secret: true` — never a
    literal, never a private hostname or placeholder value. The lint refuses both.
 3. Declare every stream with its `write` preference (`[overwrite, upsert]`,
@@ -79,13 +83,36 @@ CI lints every template, composes every source × sink pairing, and keeps
 Schemas: `faucet schema source-template` / `faucet schema sink-template`.
 Reference: [Template Hub cookbook](https://faucet-hq.github.io/faucet-stream/cookbook/template-hub.html).
 
+## Namespaces, ownership, versions
+
+- **Owner = GitHub user or org.** `source-templates/<owner>/` belongs to the
+  GitHub account whose login it is. The first pull request into a new namespace
+  also adds `<owner>/OWNERS` recording the author's numeric GitHub id (logins
+  can be renamed; ids cannot); every later change to that namespace must come
+  from an id listed there. An org namespace lists several ids; an existing owner
+  adds a colleague with a PR. CI (`.github/workflows/ownership.yml`) enforces
+  this from the PR *author*, and it is a required check.
+- **Official templates** live at the top level, carry no `owner`, and are
+  maintainers-only (CODEOWNERS). `--source netsuite` means the official one;
+  `--source acme/netsuite` a community one. If there is no official template of
+  a name, the unqualified form lists the variants instead of guessing.
+- **Versions are numeric and automatic.** Every merged change to a template's
+  meaning is the next version — v1, v2, v3 — computed from git history by
+  `scripts/index.py` (comment-only edits do not count). A sidecar
+  `<name>.faucet.yaml` beside the template with `launch: false` publishes a new
+  version as a preview without moving `stable`; `stable: 3` pins it. Consumers
+  select with `--source acme/netsuite@stable` (default), `@newest`, or `@3`.
+
 ## Layout
 
 ```
-source-templates/   one file per system   (kind: source-template)
-sink-templates/     one file per destination (kind: sink-template)
-examples/data/      fixtures the example-csv template reads (runs offline)
-index.json          generated: sources, sinks, the compatibility matrix, commands
+source-templates/<name>.yaml          official source templates (no owner)
+source-templates/<owner>/<name>.yaml  community source templates (owner: <owner>)
+source-templates/<owner>/OWNERS       who may change that namespace (GitHub ids)
+sink-templates/…                      the same for destinations
+examples/data/                        fixtures the example-csv template reads (runs offline)
+index.json                            generated: sources, sinks, matrix, commands, versions, stable
+scripts/index.py                      regenerates index.json (CI runs it on merge)
 ```
 
 ## License
