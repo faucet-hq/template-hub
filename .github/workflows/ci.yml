@@ -43,7 +43,7 @@ jobs:
       - name: Build faucet from source (fallback)
         if: env.BUILD_FROM_SOURCE == '1'
         run: |
-          cargo install --git https://github.com/faucet-hq/faucet-stream faucet-cli --locked \
+          cargo install --force --git https://github.com/faucet-hq/faucet-stream faucet-cli --locked \
             --no-default-features \
             --features "source-rest,source-csv,source-xml,source-graphql,sink-jsonl,sink-bigquery,sink-postgres,sink-sqlite,transforms"
           faucet hub --help >/dev/null
@@ -103,7 +103,7 @@ jobs:
           key: faucet-cli-hub
       - if: env.BUILD_FROM_SOURCE == '1'
         run: |
-          cargo install --git https://github.com/faucet-hq/faucet-stream faucet-cli --locked \
+          cargo install --force --git https://github.com/faucet-hq/faucet-stream faucet-cli --locked \
             --no-default-features \
             --features "source-rest,source-csv,source-xml,source-graphql,sink-jsonl,sink-bigquery,sink-postgres,sink-sqlite,transforms"
       - name: Regenerate and commit
