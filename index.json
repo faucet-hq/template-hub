@@ -1,5 +1,5 @@
 {
-  "commit": "573ccd81d09cf2ca0689707ab96c6c48fd3d3582",
+  "commit": "3e0d65384945d28a7fc71faa2a441e4d8f993799",
   "generated_by": "scripts/index.py",
   "matrix": [
     {
@@ -197,6 +197,13 @@
         "warehouse",
         "gcp"
       ],
+      "trust": {
+        "publisher": {
+          "templates": 6
+        },
+        "stable_since": "2026-09-24",
+        "updated": "2026-09-24"
+      },
       "versions": [
         {
           "commit": "573ccd81d09cf2ca0689707ab96c6c48fd3d3582",
@@ -237,6 +244,13 @@
         "file",
         "local"
       ],
+      "trust": {
+        "publisher": {
+          "templates": 6
+        },
+        "stable_since": "2026-09-24",
+        "updated": "2026-09-24"
+      },
       "versions": [
         {
           "commit": "573ccd81d09cf2ca0689707ab96c6c48fd3d3582",
@@ -281,6 +295,13 @@
       "tags": [
         "database"
       ],
+      "trust": {
+        "publisher": {
+          "templates": 6
+        },
+        "stable_since": "2026-09-24",
+        "updated": "2026-09-24"
+      },
       "versions": [
         {
           "commit": "573ccd81d09cf2ca0689707ab96c6c48fd3d3582",
@@ -321,6 +342,13 @@
         "database",
         "local"
       ],
+      "trust": {
+        "publisher": {
+          "templates": 6
+        },
+        "stable_since": "2026-09-24",
+        "updated": "2026-09-24"
+      },
       "versions": [
         {
           "commit": "573ccd81d09cf2ca0689707ab96c6c48fd3d3582",
@@ -387,6 +415,14 @@
         "example",
         "file"
       ],
+      "trust": {
+        "compatible_sinks": 4,
+        "publisher": {
+          "templates": 6
+        },
+        "stable_since": "2026-09-24",
+        "updated": "2026-09-24"
+      },
       "versions": [
         {
           "commit": "573ccd81d09cf2ca0689707ab96c6c48fd3d3582",
@@ -453,6 +489,14 @@
         "example",
         "rest"
       ],
+      "trust": {
+        "compatible_sinks": 4,
+        "publisher": {
+          "templates": 6
+        },
+        "stable_since": "2026-09-24",
+        "updated": "2026-09-24"
+      },
       "versions": [
         {
           "commit": "573ccd81d09cf2ca0689707ab96c6c48fd3d3582",
