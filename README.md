@@ -62,8 +62,9 @@ existing file:
 1. `source-templates/<your-github-login>/<name>.yaml` (or `sink-templates/…`),
    with `owner: <your-github-login>`, `name` equal to the file stem
    (`^[a-z0-9][a-z0-9_-]*$`) and a one-line `description`. The template's hub id
-   is `<owner>/<name>` — `acme/netsuite` and `octo/netsuite` coexist. Top-level
-   files (no owner) are the hub's **official** set, maintained by faucet-hq.
+   is `<owner>/<name>` — `acme/netsuite` and `octo/netsuite` coexist. The hub's
+   **official** set is the `faucet-hq/` namespace, owned by the org like any
+   other; a bare `--source netsuite` resolves to `faucet-hq/netsuite`.
 2. Credentials are **always** `${param.NAME}` with `secret: true` — never a
    literal, never a private hostname or placeholder value. The lint refuses both.
 3. Declare every stream with its `write` preference (`[overwrite, upsert]`,
@@ -92,10 +93,11 @@ Reference: [Template Hub cookbook](https://faucet-hq.github.io/faucet-stream/coo
   from an id listed there. An org namespace lists several ids; an existing owner
   adds a colleague with a PR. CI (`.github/workflows/ownership.yml`) enforces
   this from the PR *author*, and it is a required check.
-- **Official templates** live at the top level, carry no `owner`, and are
-  maintainers-only (CODEOWNERS). `--source netsuite` means the official one;
-  `--source acme/netsuite` a community one. If there is no official template of
-  a name, the unqualified form lists the variants instead of guessing.
+- **Official templates** live in the `faucet-hq/` namespace (`owner: faucet-hq`),
+  owned by the org through its own `OWNERS` file and reviewed via CODEOWNERS.
+  `--source netsuite` means `faucet-hq/netsuite`; `--source acme/netsuite` a
+  community one. If there is no official template of a name, the unqualified
+  form lists the variants instead of guessing. Nothing lives at the top level.
 - **Versions are numeric and automatic.** Every merged change to a template's
   meaning is the next version — v1, v2, v3 — computed from git history by
   `scripts/index.py` (comment-only edits do not count). A sidecar
@@ -106,8 +108,8 @@ Reference: [Template Hub cookbook](https://faucet-hq.github.io/faucet-stream/coo
 ## Layout
 
 ```
-source-templates/<name>.yaml          official source templates (no owner)
-source-templates/<owner>/<name>.yaml  community source templates (owner: <owner>)
+source-templates/faucet-hq/<name>.yaml  the hub's official source templates (owner: faucet-hq)
+source-templates/<owner>/<name>.yaml    community source templates (owner: <owner>)
 source-templates/<owner>/OWNERS       who may change that namespace (GitHub ids)
 sink-templates/…                      the same for destinations
 examples/data/                        fixtures the example-csv template reads (runs offline)

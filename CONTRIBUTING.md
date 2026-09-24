@@ -17,9 +17,9 @@ owners:
 ```
 
 Only accounts listed there can change the namespace afterwards; an existing
-owner adds another with a PR. Top-level files are the hub's official templates
-and are maintained by faucet-hq. A PR that touches someone else's namespace
-fails the **Ownership** check.
+owner adds another with a PR. The hub's own templates live in the `faucet-hq/`
+namespace, owned by the org the same way. Nothing lives at the top level. A PR
+that touches someone else's namespace fails the **Ownership** check.
 
 ## Versions
 

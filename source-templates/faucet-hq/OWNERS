@@ -1,0 +1,4 @@
+# Who may change the faucet-hq namespace — the hub's maintained templates.
+# Ownership is by numeric GitHub id (logins can be renamed; ids cannot).
+owners:
+  - { login: pecsorabs, id: 35492860 }

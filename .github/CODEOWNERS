@@ -1,14 +1,11 @@
-# The hub's official (owner-less, top-level) templates and the tooling are
-# maintained by faucet-hq. Community templates live under
+# The hub's maintained templates live in the faucet-hq namespace and are
+# reviewed by its maintainers (the namespace's OWNERS file gates the author;
+# CODEOWNERS gates the review). Community templates live under
 # source-templates/<owner>/ and sink-templates/<owner>/, each namespace owned
 # by the GitHub user or org named in its OWNERS file (see .github/workflows/ownership.yml).
-/source-templates/*.yaml   @pecsorabs
-/source-templates/*.yml    @pecsorabs
-/source-templates/*.json   @pecsorabs
-/sink-templates/*.yaml     @pecsorabs
-/sink-templates/*.yml      @pecsorabs
-/sink-templates/*.json     @pecsorabs
-/examples/                 @pecsorabs
-/scripts/                  @pecsorabs
-/.github/                  @pecsorabs
-/index.json                @pecsorabs
+/source-templates/faucet-hq/   @pecsorabs
+/sink-templates/faucet-hq/     @pecsorabs
+/examples/                     @pecsorabs
+/scripts/                      @pecsorabs
+/.github/                      @pecsorabs
+/index.json                    @pecsorabs

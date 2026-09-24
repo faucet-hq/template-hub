@@ -47,9 +47,10 @@ jobs:
 
             const problems = [];
 
-            // Official (top-level) templates are maintainers-only.
-            if (topLevel.length && !isMaintainer && !override) {
-              problems.push(`top-level (official) templates are maintained by faucet-hq — publish yours under source-templates/${author.login}/ instead:\n  - ${topLevel.join('\n  - ')}`);
+            // Every template lives in a namespace — the hub's own set is
+            // `faucet-hq/`, owned by the org like any other. Nothing at the top level.
+            if (topLevel.length && !override) {
+              problems.push(`templates live in a namespace — move these under source-templates/${author.login}/ (or sink-templates/…); the maintained set is faucet-hq/:\n  - ${topLevel.join('\n  - ')}`);
             }
 
             async function readYaml(path, ref) {
@@ -132,5 +133,5 @@ jobs:
             if (problems.length) {
               core.setFailed(`Ownership check failed for @${author.login}:\n\n- ${problems.join('\n- ')}\n\nSee CONTRIBUTING.md → "Namespaces and ownership".`);
             } else {
-              core.info(`ownership ok for @${author.login} (${namespaces.size} namespace(s), ${topLevel.length} official file(s))`);
+              core.info(`ownership ok for @${author.login} (${namespaces.size} namespace(s), ${topLevel.length} top-level file(s))`);
             }
