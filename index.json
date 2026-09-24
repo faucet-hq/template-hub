@@ -1,5 +1,5 @@
 {
-  "commit": "be217ff4ac9e18f1ec0d3e24ce2305f4ebc4ce8e",
+  "commit": "969be75fe8408940bd6e4a5649b717abcfcb90da",
   "generated_by": "scripts/index.py",
   "matrix": [
     {
@@ -161,6 +161,9 @@
       "docs": "https://faucet-hq.github.io/faucet-stream/reference/connectors.html",
       "file": "sink-templates/faucet-hq/bigquery.yaml",
       "id": "faucet-hq/bigquery",
+      "live_versions": [
+        1
+      ],
       "name": "bigquery",
       "newest": 1,
       "official": true,
@@ -228,6 +231,9 @@
       "docs": null,
       "file": "sink-templates/faucet-hq/jsonl.yaml",
       "id": "faucet-hq/jsonl",
+      "live_versions": [
+        1
+      ],
       "name": "jsonl",
       "newest": 1,
       "official": true,
@@ -276,6 +282,9 @@
       "docs": null,
       "file": "sink-templates/faucet-hq/postgres.yaml",
       "id": "faucet-hq/postgres",
+      "live_versions": [
+        1
+      ],
       "name": "postgres",
       "newest": 1,
       "official": true,
@@ -334,6 +343,9 @@
       "docs": null,
       "file": "sink-templates/faucet-hq/sqlite.yaml",
       "id": "faucet-hq/sqlite",
+      "live_versions": [
+        1
+      ],
       "name": "sqlite",
       "newest": 1,
       "official": true,
@@ -387,6 +399,9 @@
       "docs": null,
       "file": "source-templates/faucet-hq/example-csv.yaml",
       "id": "faucet-hq/example-csv",
+      "live_versions": [
+        1
+      ],
       "name": "example-csv",
       "newest": 1,
       "official": true,
@@ -457,6 +472,9 @@
       "docs": null,
       "file": "source-templates/faucet-hq/example-rest-api.yaml",
       "id": "faucet-hq/example-rest-api",
+      "live_versions": [
+        1
+      ],
       "name": "example-rest-api",
       "newest": 1,
       "official": true,
