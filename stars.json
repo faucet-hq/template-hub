@@ -1,0 +1,28 @@
+{
+  "templates": {
+    "faucet-hq/bigquery": {
+      "open_issues": 0,
+      "publisher_account_age_days": 51
+    },
+    "faucet-hq/example-csv": {
+      "open_issues": 0,
+      "publisher_account_age_days": 51
+    },
+    "faucet-hq/example-rest-api": {
+      "open_issues": 0,
+      "publisher_account_age_days": 51
+    },
+    "faucet-hq/jsonl": {
+      "open_issues": 0,
+      "publisher_account_age_days": 51
+    },
+    "faucet-hq/postgres": {
+      "open_issues": 0,
+      "publisher_account_age_days": 51
+    },
+    "faucet-hq/sqlite": {
+      "open_issues": 0,
+      "publisher_account_age_days": 51
+    }
+  }
+}
