@@ -238,8 +238,13 @@ def live_snapshot(index, dry_run):
                     if dry_run:
                         print(f"would refresh {cur['url']}")
                     else:
-                        update_discussion(cur["id"], title, body)
-                        print(f"refreshed {cur['url']}")
+                        try:
+                            update_discussion(cur["id"], title, body)
+                            print(f"refreshed {cur['url']}")
+                        except RuntimeError as err:
+                            # The workflow token may create but not edit discussions;
+                            # counting must never depend on a cosmetic rewrite.
+                            print(f"::warning::could not refresh {cur['url']}: {err}")
                 continue
             if tid and tid not in discussions:
                 if category_id is None:
