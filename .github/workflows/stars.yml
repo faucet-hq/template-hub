@@ -1,0 +1,54 @@
+name: Stars
+
+# Trust signals for index.json (#685): opens a discussion for every template
+# that lacks one, counts qualifying 👍s, open `template:<id>` issues and
+# publisher account ages into stars.json, and refreshes each entry's `trust`
+# block. Runs hourly, after every merge to main, and on demand.
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: write
+  discussions: write
+  issues: write
+
+concurrency:
+  group: index-writer
+  cancel-in-progress: false
+
+jobs:
+  stars:
+    name: Collect stars and trust signals
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Collect
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STAR_CATEGORY: ${{ vars.STAR_CATEGORY || 'Templates' }}
+        run: python3 scripts/stars.py
+      - name: Refresh trust in index.json
+        run: |
+          pip3 install --quiet pyyaml
+          python3 scripts/index.py index.json --trust-only
+      - name: Commit
+        run: |
+          if git diff --quiet -- stars.json index.json && git ls-files --error-unmatch stars.json >/dev/null 2>&1; then
+            echo "no signal changed"; exit 0
+          fi
+          git config user.name "faucet-hub-bot"
+          git config user.email "faucet-hub-bot@users.noreply.github.com"
+          git add stars.json index.json
+          git commit -m "chore: refresh template stars and trust signals"
+          git pull --rebase origin main
+          git push

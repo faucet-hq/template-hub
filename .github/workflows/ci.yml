@@ -48,6 +48,11 @@ jobs:
             --features "source-rest,source-csv,source-xml,source-graphql,sink-jsonl,sink-bigquery,sink-postgres,sink-sqlite,transforms"
           faucet hub --help >/dev/null
 
+      - name: Script tests
+        run: |
+          pip3 install --quiet pyyaml
+          python3 -m unittest discover -s scripts -v
+
       - name: Lint every template
         run: faucet hub lint --hub .
 
@@ -89,7 +94,7 @@ jobs:
           a, b = json.load(open("index.json")), json.load(open("/tmp/index.json"))
           for coll in ("sources", "sinks"):
               for e in a.get(coll, []) + b.get(coll, []):
-                  for k in ("versions", "newest", "stable"):
+                  for k in ("versions", "newest", "stable", "trust"):
                       e.pop(k, None)
           if strip(a) != strip(b):
               print("::error::index.json is stale — run: python3 scripts/index.py"); sys.exit(1)
@@ -101,6 +106,10 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: check
     runs-on: ubuntu-latest
+    # Shared with the Stars workflow: one writer of index.json at a time.
+    concurrency:
+      group: index-writer
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
         with:
@@ -132,4 +141,5 @@ jobs:
           git config user.email "faucet-hub-bot@users.noreply.github.com"
           git add index.json
           git commit -m "chore: regenerate index.json"
+          git pull --rebase origin main
           git push

@@ -93,16 +93,85 @@ def enrich(entries):
         e["stable"] = stable_for(vs, sidecar_for(path))
 
 
+def _day(iso):
+    return iso[:10] if isinstance(iso, str) and len(iso) >= 10 else None
+
+
+def apply_trust(index, stars):
+    """Attach each entry's `trust` block (#685) from its own history, the
+    matrix, and stars.json (scripts/stars.py). Pure: index in, index out."""
+    recorded = (stars or {}).get("templates", {})
+    entries = index.get("sources", []) + index.get("sinks", [])
+    per_owner = {}
+    for e in entries:
+        if e.get("owner"):
+            per_owner[e["owner"]] = per_owner.get(e["owner"], 0) + 1
+    compatible = {}
+    for c in index.get("matrix", []):
+        if c.get("compatible"):
+            compatible[c.get("source")] = compatible.get(c.get("source"), 0) + 1
+    for kind in ("sources", "sinks"):
+        for e in index.get(kind, []):
+            tid = e.get("id") or e.get("name")
+            rec = recorded.get(tid, {})
+            t = {}
+            for k in ("stars", "star_url", "open_issues"):
+                if rec.get(k) is not None:
+                    t[k] = rec[k]
+            vs = e.get("versions") or []
+            if vs:
+                t["updated"] = _day(vs[-1].get("date"))
+                st = e.get("stable")
+                if isinstance(st, int) and 1 <= st <= len(vs):
+                    t["stable_since"] = _day(vs[st - 1].get("date"))
+            if kind == "sources":
+                t["compatible_sinks"] = compatible.get(tid, 0)
+            pub = {}
+            if e.get("owner"):
+                pub["templates"] = per_owner.get(e["owner"], 0)
+            if rec.get("publisher_account_age_days") is not None:
+                pub["account_age_days"] = rec["publisher_account_age_days"]
+            if pub:
+                t["publisher"] = pub
+            t = {k: v for k, v in t.items() if v is not None}
+            if t:
+                e["trust"] = t
+            else:
+                e.pop("trust", None)
+    return index
+
+
+def load_stars(path="stars.json"):
+    if not os.path.isfile(path):
+        return {}
+    with open(path) as f:
+        return json.load(f)
+
+
+def write(index, target):
+    out = json.dumps(index, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    with open(target, "w") as f:
+        f.write(out)
+
+
 def main():
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    target = args[0] if args else "index.json"
+    if "--trust-only" in sys.argv:
+        # Refresh only the trust blocks of an existing index (the stars job):
+        # no faucet binary, no history walk.
+        with open(target) as f:
+            base = json.load(f)
+        write(apply_trust(base, load_stars()), target)
+        print(f"refreshed trust in {target}")
+        return
     base = json.loads(run("faucet", "hub", "matrix", "--hub", ".", "--format", "json"))
     enrich(base.get("sources", []))
     enrich(base.get("sinks", []))
+    apply_trust(base, load_stars())
     base["commit"] = run("git", "rev-parse", "HEAD").strip()
     base["generated_by"] = "scripts/index.py"
-    out = json.dumps(base, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
-    target = sys.argv[1] if len(sys.argv) > 1 else "index.json"
-    with open(target, "w") as f:
-        f.write(out)
+    write(base, target)
     print(f"wrote {target}: {len(base.get('sources', []))} sources, {len(base.get('sinks', []))} sinks @ {base['commit'][:7]}")
 
 

@@ -107,6 +107,25 @@ per_stream:
 - `write_mode_aliases` declares a mode the destination satisfies by
   construction (a file rewritten every run *is* `overwrite`), never a keyed one.
 
+## Stars and trust signals
+
+When several namespaces publish a template for the same system, `index.json`
+gives each entry a `trust` block so people can choose between them:
+
+| Field | Where it comes from |
+|---|---|
+| `stars` / `star_url` | 👍 reactions on the template's discussion (opened automatically in the **Templates** category). An account counts once, must be at least 30 days old, and must not be an owner of the template's own namespace. |
+| `updated` / `stable_since` | dates of the newest and the stable version, from git history |
+| `compatible_sinks` | sink templates the source composes with in full |
+| `open_issues` | open issues labelled `template:<id>` (the label is created for you) |
+| `publisher` | how many templates the namespace publishes, and its GitHub account age |
+
+`scripts/stars.py` collects these into `stars.json` every hour and after each
+merge (`.github/workflows/stars.yml`), and `scripts/index.py` merges them into
+`index.json`. You never edit either file by hand. To report a problem with a
+template, open an issue with its `template:<id>` label; to recommend one,
+👍 its discussion.
+
 ## Before you open the PR
 
 ```bash

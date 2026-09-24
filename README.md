@@ -105,6 +105,15 @@ Reference: [Template Hub cookbook](https://faucet-hq.github.io/faucet-stream/coo
   version as a preview without moving `stable`; `stable: 3` pins it. Consumers
   select with `--source acme/netsuite@stable` (default), `@newest`, or `@3`.
 
+## Stars and trust
+
+Each template has a discussion under **Discussions → Templates**. A 👍 there
+**stars** it. Stars, the last update, how long `stable` has held, open issues
+and the publisher's track record appear in `index.json` under `trust`, on the
+[hub page](https://faucet-hq.github.io/hub), and in
+`faucet hub list --sort stars|updated`. See
+[CONTRIBUTING → Stars and trust signals](CONTRIBUTING.md#stars-and-trust-signals).
+
 ## Layout
 
 ```
@@ -113,8 +122,10 @@ source-templates/<owner>/<name>.yaml    community source templates (owner: <owne
 source-templates/<owner>/OWNERS       who may change that namespace (GitHub ids)
 sink-templates/…                      the same for destinations
 examples/data/                        fixtures the example-csv template reads (runs offline)
-index.json                            generated: sources, sinks, matrix, commands, versions, stable
+index.json                            generated: sources, sinks, matrix, commands, versions, stable, trust
+stars.json                            generated: stars, open issues, publisher ages (scripts/stars.py, hourly)
 scripts/index.py                      regenerates index.json (CI runs it on merge)
+scripts/stars.py                      opens each template's star discussion and collects trust signals
 ```
 
 ## License
