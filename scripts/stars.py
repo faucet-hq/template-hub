@@ -61,6 +61,11 @@ def label_for(template_id):
     return label if len(label) <= LABEL_MAX else None
 
 
+def discussion_title(entry):
+    """The template id, as-is; the Templates category already carries the icon."""
+    return entry["id"]
+
+
 def discussion_body(entry, kind):
     tid = entry["id"]
     return (
@@ -163,7 +168,7 @@ def all_discussions():
         d = gql(
             """query($o:String!,$n:String!,$a:String){repository(owner:$o,name:$n){
                  discussions(first:50,after:$a){pageInfo{hasNextPage endCursor}
-                   nodes{id url body upvoteCount}}}}""",
+                   nodes{id url title body upvoteCount}}}}""",
             o=REPO_OWNER, n=REPO_NAME, a=after,
         )["repository"]["discussions"]
         for node in d["nodes"]:
@@ -172,6 +177,7 @@ def all_discussions():
                 found[tid] = {
                     "id": node["id"],
                     "url": node["url"],
+                    "title": node["title"],
                     "body": node["body"],
                     "upvotes": node["upvoteCount"],
                 }
@@ -184,15 +190,16 @@ def create_discussion(repo_id, category_id, entry, kind):
     d = gql(
         """mutation($r:ID!,$c:ID!,$t:String!,$b:String!){createDiscussion(input:{
              repositoryId:$r,categoryId:$c,title:$t,body:$b}){discussion{url}}}""",
-        r=repo_id, c=category_id, t=f"⭐ {entry['id']}", b=discussion_body(entry, kind),
+        r=repo_id, c=category_id, t=discussion_title(entry), b=discussion_body(entry, kind),
     )
     return {"url": d["createDiscussion"]["discussion"]["url"], "upvotes": 0}
 
 
-def update_body(discussion_id, body):
+def update_discussion(discussion_id, title, body):
     gql(
-        """mutation($d:ID!,$b:String!){updateDiscussion(input:{discussionId:$d,body:$b}){discussion{id}}}""",
-        d=discussion_id, b=body,
+        """mutation($d:ID!,$t:String!,$b:String!){updateDiscussion(input:{
+             discussionId:$d,title:$t,body:$b}){discussion{id}}}""",
+        d=discussion_id, t=title, b=body,
     )
 
 
@@ -225,13 +232,14 @@ def live_snapshot(index, dry_run):
         for e in index.get(kind, []):
             tid = e.get("id")
             if tid and tid in discussions:
-                want = discussion_body(e, label)
-                if discussions[tid].get("body") != want and discussions[tid].get("id"):
+                cur = discussions[tid]
+                title, body = discussion_title(e), discussion_body(e, label)
+                if cur.get("id") and (cur.get("title") != title or cur.get("body") != body):
                     if dry_run:
-                        print(f"would refresh the body of {discussions[tid]['url']}")
+                        print(f"would refresh {cur['url']}")
                     else:
-                        update_body(discussions[tid]["id"], want)
-                        print(f"refreshed {discussions[tid]['url']}")
+                        update_discussion(cur["id"], title, body)
+                        print(f"refreshed {cur['url']}")
                 continue
             if tid and tid not in discussions:
                 if category_id is None:

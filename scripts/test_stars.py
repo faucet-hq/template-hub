@@ -62,6 +62,9 @@ class Pure(unittest.TestCase):
         self.assertIsNone(stars.namespace("bare"))
         self.assertEqual(stars.namespace("acme/hr"), "acme")
 
+    def test_discussion_title_is_the_bare_template_id(self):
+        self.assertEqual(stars.discussion_title({"id": "faucet-hq/example-csv"}), "faucet-hq/example-csv")
+
     def test_discussion_body_carries_the_marker(self):
         body = stars.discussion_body(INDEX["sources"][0], "source")
         self.assertEqual(stars.marker_id(body), "faucet-hq/example-csv")
