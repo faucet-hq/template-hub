@@ -17,7 +17,6 @@ import stars  # noqa: E402
 
 NOW = dt.datetime(2026, 9, 24, tzinfo=dt.timezone.utc)
 OLD = "2020-01-01T00:00:00Z"
-NEW = "2026-09-20T00:00:00Z"  # 4 days old — too young to count
 
 INDEX = {
     "sources": [
@@ -36,15 +35,8 @@ INDEX = {
 
 SNAPSHOT = {
     "discussions": {
-        "faucet-hq/example-csv": {"url": "https://github.com/x/discussions/1", "reactors": [
-            {"databaseId": 1, "createdAt": OLD},
-            {"databaseId": 1, "createdAt": OLD},        # same account twice
-            {"databaseId": 2, "createdAt": NEW},        # too young
-            {"databaseId": 35492860, "createdAt": OLD},  # namespace owner
-            {"databaseId": 3, "createdAt": OLD},
-            {"databaseId": None, "createdAt": OLD},     # ghost user
-        ]},
-        "octo/netsuite": {"url": "https://github.com/x/discussions/2", "reactors": []},
+        "faucet-hq/example-csv": {"url": "https://github.com/x/discussions/1", "upvotes": 3},
+        "octo/netsuite": {"url": "https://github.com/x/discussions/2", "upvotes": 0},
     },
     "open_issues": {"faucet-hq/example-csv": 2},
     "accounts": {"faucet-hq": "2024-09-24T00:00:00Z", "octo": OLD},
@@ -58,16 +50,11 @@ class Pure(unittest.TestCase):
         self.assertIsNone(stars.marker_id("no marker"))
         self.assertIsNone(stars.marker_id(None))
 
-    def test_owners_file_parsing(self):
-        text = "owners:\n  - { login: pecsorabs, id: 35492860 }\n  - id: 7\n# id: 9 comment\n"
-        self.assertEqual(stars.parse_owners(text), {35492860, 7})
-        self.assertEqual(stars.parse_owners(""), set())
-
-    def test_count_filters_duplicates_young_accounts_and_owners(self):
-        r = SNAPSHOT["discussions"]["faucet-hq/example-csv"]["reactors"]
-        self.assertEqual(stars.count_stars(r, {35492860}, NOW), 2)
-        self.assertEqual(stars.count_stars(r, set(), NOW), 3)
-        self.assertEqual(stars.count_stars(r, set(), NOW, min_age_days=0), 4)
+    def test_stars_are_the_discussions_upvotes(self):
+        self.assertEqual(stars.stars_from({"upvotes": 4}), 4)
+        self.assertEqual(stars.stars_from({"upvotes": 0}), 0)
+        self.assertEqual(stars.stars_from({"upvotes": None}), 0)
+        self.assertEqual(stars.stars_from({}), 0)
 
     def test_labels_respect_githubs_length_limit(self):
         self.assertEqual(stars.label_for("acme/hr"), "template:acme/hr")
@@ -78,15 +65,17 @@ class Pure(unittest.TestCase):
     def test_discussion_body_carries_the_marker(self):
         body = stars.discussion_body(INDEX["sources"][0], "source")
         self.assertEqual(stars.marker_id(body), "faucet-hq/example-csv")
+        self.assertIn("Upvote", body)
+        self.assertNotIn("👍", body)
         self.assertIn("template:faucet-hq/example-csv", body)
         self.assertIn("a sink template", stars.discussion_body({"id": "a/b"}, "sink"))
 
     def test_collect_builds_stars_json(self):
-        out = stars.collect(INDEX, SNAPSHOT, {"faucet-hq": {35492860}}, NOW)
+        out = stars.collect(INDEX, SNAPSHOT, NOW)
         t = out["templates"]
         self.assertEqual(set(out), {"templates"})
         self.assertEqual(t["faucet-hq/example-csv"],
-                         {"stars": 2, "star_url": "https://github.com/x/discussions/1",
+                         {"stars": 3, "star_url": "https://github.com/x/discussions/1",
                           "open_issues": 2, "publisher_account_age_days": 730})
         self.assertEqual(t["octo/netsuite"]["stars"], 0)
         self.assertNotIn("stars", t["faucet-hq/jsonl"])  # no discussion yet
@@ -96,10 +85,10 @@ class Pure(unittest.TestCase):
 class TrustMerge(unittest.TestCase):
     def test_apply_trust_combines_history_matrix_and_stars(self):
         idx = json.loads(json.dumps(INDEX))
-        s = stars.collect(INDEX, SNAPSHOT, {"faucet-hq": {35492860}}, NOW)
+        s = stars.collect(INDEX, SNAPSHOT, NOW)
         index.apply_trust(idx, s)
         csv = idx["sources"][0]["trust"]
-        self.assertEqual(csv["stars"], 2)
+        self.assertEqual(csv["stars"], 3)
         self.assertEqual(csv["updated"], "2026-09-10")
         self.assertEqual(csv["stable_since"], "2026-09-01")
         self.assertEqual(csv["compatible_sinks"], 1)

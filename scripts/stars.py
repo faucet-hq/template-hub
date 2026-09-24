@@ -5,12 +5,11 @@
     python3 scripts/stars.py --fixture F     # offline: read a recorded API snapshot
     python3 scripts/stars.py --dry-run       # print, don't write, never create anything
 
-A star is a 👍 on the template's discussion. Each template gets one discussion
-(opened by this script, marked with `<!-- faucet-template: <id> -->` so the
-link survives title edits). A reaction counts only when the account is at
-least MIN_ACCOUNT_AGE_DAYS old and is not an owner of the template's own
-namespace. Alongside stars this records open issues labelled
-`template:<id>` and each publisher's GitHub account age.
+A star is an upvote (↑) on the template's discussion. Each template gets one
+discussion (opened by this script, marked with `<!-- faucet-template: <id> -->`
+so the link survives title edits). GitHub counts one upvote per account and
+reports only the total, which is the star count. Alongside stars this records open issues
+labelled `template:<id>` and each publisher's GitHub account age.
 
 The output, stars.json, is merged into index.json by scripts/index.py.
 Needs GITHUB_TOKEN with discussions:write and issues:write (the workflow's).
@@ -28,7 +27,6 @@ import urllib.request
 
 REPO_OWNER, REPO_NAME = os.environ.get("GITHUB_REPOSITORY", "faucet-hq/template-hub").split("/", 1)
 CATEGORY = os.environ.get("STAR_CATEGORY", "Templates")
-MIN_ACCOUNT_AGE_DAYS = 30
 MARKER = re.compile(r"<!--\s*faucet-template:\s*([A-Za-z0-9_./-]+)\s*-->")
 LABEL_PREFIX = "template:"
 LABEL_MAX = 50  # GitHub's label-name limit
@@ -42,36 +40,16 @@ def marker_id(body):
     return m.group(1) if m else None
 
 
-def parse_owners(text):
-    """Numeric ids from an OWNERS file (`- { login: x, id: 123 }` / `- id: 123`)."""
-    ids = set()
-    for line in (text or "").splitlines():
-        m = re.search(r"\bid:\s*(\d+)", line)
-        if m and line.strip().startswith("-"):
-            ids.add(int(m.group(1)))
-    return ids
-
-
 def days_between(earlier_iso, now):
     t = dt.datetime.fromisoformat(earlier_iso.replace("Z", "+00:00"))
     return (now - t).days
 
 
-def count_stars(reactors, owner_ids, now, min_age_days=MIN_ACCOUNT_AGE_DAYS):
-    """Qualifying 👍s: one per account, old enough, not a namespace owner."""
-    seen, n = set(), 0
-    for r in reactors:
-        uid = r.get("databaseId")
-        created = r.get("createdAt")
-        if uid is None or created is None or uid in seen:
-            continue
-        seen.add(uid)
-        if uid in owner_ids:
-            continue
-        if days_between(created, now) < min_age_days:
-            continue
-        n += 1
-    return n
+def stars_from(discussion):
+    """A template's stars are its discussion's upvotes. GitHub allows one per
+    account and reports only the total; the bot that opens the thread does not
+    upvote it."""
+    return max(0, discussion.get("upvotes") or 0)
 
 
 def namespace(template_id):
@@ -86,21 +64,20 @@ def label_for(template_id):
 def discussion_body(entry, kind):
     tid = entry["id"]
     return (
-        f"**{tid}** — {entry.get('description') or 'a ' + kind + ' template'}\n\n"
-        f"👍 this discussion to **star** the template. Stars help people choose between "
-        f"templates for the same system; accounts younger than {MIN_ACCOUNT_AGE_DAYS} days and the "
-        f"template's own publishers don't count.\n\n"
+        f"**{tid}**: {entry.get('description') or 'a ' + kind + ' template'}\n\n"
+        f"**Upvote** (↑) this discussion to star the template. Stars help people choose between "
+        f"templates for the same system, and appear on the hub page and in `faucet hub list`.\n\n"
         f"Questions and feedback welcome below. Bugs: open an issue labelled `{LABEL_PREFIX}{tid}`.\n\n"
         f"Source: [`{entry.get('file', '')}`](../blob/main/{entry.get('file', '')})\n\n"
         f"<!-- faucet-template: {tid} -->\n"
     )
 
 
-def collect(index, snapshot, owners_by_ns, now):
+def collect(index, snapshot, now):
     """Build stars.json from index.json + an API snapshot (live or recorded).
 
     snapshot = {
-      "discussions": {id: {"url": str, "reactors": [{databaseId, createdAt}]}},
+      "discussions": {id: {"url": str, "upvotes": int}},
       "open_issues": {id: int},
       "accounts": {login: createdAt},
     }
@@ -115,7 +92,7 @@ def collect(index, snapshot, owners_by_ns, now):
             ns = namespace(tid)
             rec = {}
             if d:
-                rec["stars"] = count_stars(d.get("reactors", []), owners_by_ns.get(ns, set()), now)
+                rec["stars"] = stars_from(d)
                 rec["star_url"] = d.get("url")
             if tid in snapshot.get("open_issues", {}):
                 rec["open_issues"] = snapshot["open_issues"][tid]
@@ -180,32 +157,24 @@ def repo_meta():
 
 
 def all_discussions():
-    """{template id: {url, reactors}} for every marked discussion in the repo."""
+    """{template id: {id, url, body, upvotes}} for every marked discussion."""
     found, after = {}, None
     while True:
         d = gql(
             """query($o:String!,$n:String!,$a:String){repository(owner:$o,name:$n){
                  discussions(first:50,after:$a){pageInfo{hasNextPage endCursor}
-                   nodes{id url body reactions(content:THUMBS_UP,first:100){
-                     pageInfo{hasNextPage endCursor} nodes{user{databaseId createdAt}}}}}}}""",
+                   nodes{id url body upvoteCount}}}}""",
             o=REPO_OWNER, n=REPO_NAME, a=after,
         )["repository"]["discussions"]
         for node in d["nodes"]:
             tid = marker_id(node["body"])
-            if not tid or tid in found:
-                continue
-            reactors = [x["user"] for x in node["reactions"]["nodes"] if x.get("user")]
-            page = node["reactions"]["pageInfo"]
-            while page["hasNextPage"]:
-                more = gql(
-                    """query($id:ID!,$a:String){node(id:$id){... on Discussion{
-                         reactions(content:THUMBS_UP,first:100,after:$a){
-                           pageInfo{hasNextPage endCursor} nodes{user{databaseId createdAt}}}}}}""",
-                    id=node["id"], a=page["endCursor"],
-                )["node"]["reactions"]
-                reactors += [x["user"] for x in more["nodes"] if x.get("user")]
-                page = more["pageInfo"]
-            found[tid] = {"url": node["url"], "reactors": reactors}
+            if tid and tid not in found:
+                found[tid] = {
+                    "id": node["id"],
+                    "url": node["url"],
+                    "body": node["body"],
+                    "upvotes": node["upvoteCount"],
+                }
         if not d["pageInfo"]["hasNextPage"]:
             return found
         after = d["pageInfo"]["endCursor"]
@@ -217,7 +186,14 @@ def create_discussion(repo_id, category_id, entry, kind):
              repositoryId:$r,categoryId:$c,title:$t,body:$b}){discussion{url}}}""",
         r=repo_id, c=category_id, t=f"⭐ {entry['id']}", b=discussion_body(entry, kind),
     )
-    return {"url": d["createDiscussion"]["discussion"]["url"], "reactors": []}
+    return {"url": d["createDiscussion"]["discussion"]["url"], "upvotes": 0}
+
+
+def update_body(discussion_id, body):
+    gql(
+        """mutation($d:ID!,$b:String!){updateDiscussion(input:{discussionId:$d,body:$b}){discussion{id}}}""",
+        d=discussion_id, b=body,
+    )
 
 
 def open_issues(template_id):
@@ -248,6 +224,15 @@ def live_snapshot(index, dry_run):
     for kind, label in (("sources", "source"), ("sinks", "sink")):
         for e in index.get(kind, []):
             tid = e.get("id")
+            if tid and tid in discussions:
+                want = discussion_body(e, label)
+                if discussions[tid].get("body") != want and discussions[tid].get("id"):
+                    if dry_run:
+                        print(f"would refresh the body of {discussions[tid]['url']}")
+                    else:
+                        update_body(discussions[tid]["id"], want)
+                        print(f"refreshed {discussions[tid]['url']}")
+                continue
             if tid and tid not in discussions:
                 if category_id is None:
                     continue
@@ -260,20 +245,6 @@ def live_snapshot(index, dry_run):
     issues = {} if dry_run else {tid: n for tid in ids if (n := open_issues(tid)) is not None}
     accounts = {ns: c for ns in sorted({namespace(t) for t in ids} - {None}) if (c := account_created(ns))}
     return {"discussions": discussions, "open_issues": issues, "accounts": accounts}
-
-
-def owners_by_namespace(root="."):
-    out = {}
-    for sub in ("source-templates", "sink-templates"):
-        base = os.path.join(root, sub)
-        if not os.path.isdir(base):
-            continue
-        for ns in os.listdir(base):
-            p = os.path.join(base, ns, "OWNERS")
-            if os.path.isfile(p):
-                with open(p) as f:
-                    out.setdefault(ns, set()).update(parse_owners(f.read()))
-    return out
 
 
 def main(argv=None):
@@ -292,7 +263,7 @@ def main(argv=None):
             snapshot = json.load(f)
     else:
         snapshot = live_snapshot(index, a.dry_run)
-    result = collect(index, snapshot, owners_by_namespace(), now)
+    result = collect(index, snapshot, now)
     text = json.dumps(result, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
     if a.dry_run:
         print(text)

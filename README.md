@@ -107,8 +107,8 @@ Reference: [Template Hub cookbook](https://faucet-hq.github.io/faucet-stream/coo
 
 ## Stars and trust
 
-Each template has a discussion under **Discussions → Templates**. A 👍 there
-**stars** it. Stars, the last update, how long `stable` has held, open issues
+Each template has a discussion under **Discussions → Templates**. Upvoting
+(↑) it **stars** the template. Stars, the last update, how long `stable` has held, open issues
 and the publisher's track record appear in `index.json` under `trust`, on the
 [hub page](https://faucet-hq.github.io/hub), and in
 `faucet hub list --sort stars|updated`. See
