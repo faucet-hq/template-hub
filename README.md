@@ -17,9 +17,9 @@ The CLI reads this repository directly — no clone:
 
 ```bash
 faucet hub list                                        # default hub = this repository
-faucet hub check --source example-rest-api --sink bigquery
-faucet run       --source example-csv --sink jsonl     # runs offline
-faucet run       --source <source> --sink bigquery \
+faucet hub check --source faucet-hq/example-rest-api --sink faucet-hq/bigquery
+faucet run       --source faucet-hq/example-csv --sink faucet-hq/jsonl     # runs offline
+faucet run       --source <owner>/<name> --sink faucet-hq/bigquery \
   --param api_token="$TOKEN" --param bq_project=my-project --param bq_sa_key="$BQ_SA_KEY"
 ```
 
@@ -49,7 +49,7 @@ Or register one template into a registry by hand:
 
 ```bash
 faucet template register source-templates/example-rest-api.yaml --launch
-faucet template run example-rest-api --sink bigquery --param api_token="$TOKEN" …
+faucet template run faucet-hq/example-rest-api --sink faucet-hq/bigquery --param api_token="$TOKEN" …
 ```
 
 ## Publish a template
@@ -74,7 +74,7 @@ existing file:
 
 ```bash
 faucet hub lint  --hub .
-faucet hub check --hub . --source <yours> --sink jsonl      # and bigquery / postgres / sqlite
+faucet hub check --hub . --source <your-login>/<name> --sink faucet-hq/jsonl      # and bigquery / postgres / sqlite
 faucet hub matrix --hub . --format json > index.json        # CI regenerates this on merge
 ```
 

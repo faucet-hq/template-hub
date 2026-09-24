@@ -131,8 +131,8 @@ upvote its discussion.
 ```bash
 curl -LsSf https://github.com/faucet-hq/faucet-stream/releases/latest/download/faucet-cli-installer.sh | sh
 faucet hub lint   --hub .
-faucet hub check  --hub . --source <yours> --sink jsonl
-faucet hub check  --hub . --source <yours> --sink bigquery
+faucet hub check  --hub . --source <your-login>/<name> --sink faucet-hq/jsonl
+faucet hub check  --hub . --source <your-login>/<name> --sink faucet-hq/bigquery
 faucet hub matrix --hub . --format json > index.json
 ```
 
