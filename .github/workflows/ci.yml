@@ -94,7 +94,7 @@ jobs:
           a, b = json.load(open("index.json")), json.load(open("/tmp/index.json"))
           for coll in ("sources", "sinks"):
               for e in a.get(coll, []) + b.get(coll, []):
-                  for k in ("versions", "newest", "stable", "trust"):
+                  for k in ("versions", "newest", "stable", "live_versions", "trust"):
                       e.pop(k, None)
           if strip(a) != strip(b):
               print("::error::index.json is stale — run: python3 scripts/index.py"); sys.exit(1)

@@ -104,6 +104,10 @@ Reference: [Template Hub cookbook](https://faucet-hq.github.io/faucet-stream/coo
   `<name>.faucet.yaml` beside the template with `launch: false` publishes a new
   version as a preview without moving `stable`; `stable: 3` pins it. Consumers
   select with `--source acme/netsuite@stable` (default), `@newest`, or `@3`.
+  A version is retired with `deprecated:` in the sidecar, never deleted: `@N`
+  still resolves it (with a warning), `@newest` skips it. See
+  [CONTRIBUTING → Versions](CONTRIBUTING.md#versions) for fixing forward,
+  rolling back, and retiring a version.
 
 ## Stars and trust
 
@@ -122,7 +126,7 @@ source-templates/<owner>/<name>.yaml    community source templates (owner: <owne
 source-templates/<owner>/OWNERS       who may change that namespace (GitHub ids)
 sink-templates/…                      the same for destinations
 examples/data/                        fixtures the example-csv template reads (runs offline)
-index.json                            generated: sources, sinks, matrix, commands, versions, stable, trust
+index.json                            generated: sources, sinks, matrix, commands, versions, stable, live_versions, trust
 stars.json                            generated: stars, open issues, publisher ages (scripts/stars.py, hourly)
 scripts/index.py                      regenerates index.json (CI runs it on merge)
 scripts/stars.py                      opens each template's star discussion and collects trust signals

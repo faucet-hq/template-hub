@@ -23,17 +23,52 @@ that touches someone else's namespace fails the **Ownership** check.
 
 ## Versions
 
-You never write a version number. Each merged change to a template's meaning
-becomes its next version (v1, v2, v3 …); comment and whitespace edits fold
-into the previous one. `stable` is the version consumers get by default. A
-sidecar beside the template controls it:
+Versions are computed from git history, never edited. Each merged change to a
+template's meaning becomes its next version (v1, v2, v3 …); comment and
+whitespace edits fold into the previous one. Nobody writes a version number,
+and a version, once published, never changes. `stable` is the version
+consumers get by default. A sidecar beside the template controls it:
 
 ```yaml
 # source-templates/acme/netsuite.faucet.yaml
 launch: false      # publish this change as a preview — stable stays where it is
-# stable: 3        # or pin stable explicitly (a rollback is a PR that lowers it)
+# stable: 3        # or pin stable explicitly
 description: Acme's NetSuite — saved searches + ledger
 ```
+
+Three flows cover every change you will need:
+
+- **Fix forward.** The fix is the next version. Merge it; `stable` follows
+  (or stays put under `launch: false` until you move it).
+- **Roll back.** Re-commit an older body. It becomes a new version with the
+  same content as the old one, and the sidecar sets `stable` to it. History
+  keeps moving forward; nothing is rewritten.
+- **Retire.** Deprecate a version with a reason that names the replacement:
+
+```yaml
+# source-templates/acme/netsuite.faucet.yaml
+stable: 4
+deprecated:
+  2: "drops the invoices stream; use v3+"
+  1: "superseded"
+```
+
+A deprecated version stays resolvable: `acme/netsuite@2` still works, with a
+warning carrying the reason, so existing pins never break. `@newest` skips
+deprecated versions (and `stable` can never be one), a mirroring `faucet serve` skips a
+template whose newest version is deprecated, and the hub page hides deprecated
+versions behind **Show deprecated versions**. In `index.json` each deprecated
+version carries `"deprecated": true` and its `"reason"`, and every entry lists
+its `live_versions`.
+
+CI refuses a sidecar that:
+
+- deprecates the `stable` version — whether pinned with `stable:` or computed
+  (e.g. from `launch: false`); move `stable` to a live version first,
+- deprecates a version that does not exist in the template's history, or
+- uses a key that is not a positive integer (`2`, not `v2`).
+
+The error names the template id and the offending version.
 
 ## What a source template must have
 
