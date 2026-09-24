@@ -1,13 +1,13 @@
 {
-  "commit": "a082498455709e88b1ebc383c16bd215062f9024",
+  "commit": "573ccd81d09cf2ca0689707ab96c6c48fd3d3582",
   "generated_by": "scripts/index.py",
   "matrix": [
     {
-      "command": "faucet run --source example-csv --sink bigquery \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "command": "faucet run --source faucet-hq/example-csv --sink faucet-hq/bigquery \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
       "compatible": true,
       "incompatible": [],
-      "sink": "bigquery",
-      "source": "example-csv",
+      "sink": "faucet-hq/bigquery",
+      "source": "faucet-hq/example-csv",
       "streams": [
         {
           "satisfies": null,
@@ -22,11 +22,11 @@
       ]
     },
     {
-      "command": "faucet run --source example-csv --sink jsonl",
+      "command": "faucet run --source faucet-hq/example-csv --sink faucet-hq/jsonl",
       "compatible": true,
       "incompatible": [],
-      "sink": "jsonl",
-      "source": "example-csv",
+      "sink": "faucet-hq/jsonl",
+      "source": "faucet-hq/example-csv",
       "streams": [
         {
           "satisfies": "overwrite",
@@ -41,11 +41,11 @@
       ]
     },
     {
-      "command": "faucet run --source example-csv --sink postgres \\\n  --param pg_url=\"$PG_URL\"",
+      "command": "faucet run --source faucet-hq/example-csv --sink faucet-hq/postgres \\\n  --param pg_url=\"$PG_URL\"",
       "compatible": true,
       "incompatible": [],
-      "sink": "postgres",
-      "source": "example-csv",
+      "sink": "faucet-hq/postgres",
+      "source": "faucet-hq/example-csv",
       "streams": [
         {
           "satisfies": null,
@@ -60,11 +60,11 @@
       ]
     },
     {
-      "command": "faucet run --source example-csv --sink sqlite",
+      "command": "faucet run --source faucet-hq/example-csv --sink faucet-hq/sqlite",
       "compatible": true,
       "incompatible": [],
-      "sink": "sqlite",
-      "source": "example-csv",
+      "sink": "faucet-hq/sqlite",
+      "source": "faucet-hq/example-csv",
       "streams": [
         {
           "satisfies": null,
@@ -79,11 +79,11 @@
       ]
     },
     {
-      "command": "faucet run --source example-rest-api --sink bigquery \\\n  --param api_token=\"$API_TOKEN\" \\\n  --param base_url=<base_url> \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "command": "faucet run --source faucet-hq/example-rest-api --sink faucet-hq/bigquery \\\n  --param api_token=\"$API_TOKEN\" \\\n  --param base_url=<base_url> \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
       "compatible": true,
       "incompatible": [],
-      "sink": "bigquery",
-      "source": "example-rest-api",
+      "sink": "faucet-hq/bigquery",
+      "source": "faucet-hq/example-rest-api",
       "streams": [
         {
           "satisfies": null,
@@ -98,11 +98,11 @@
       ]
     },
     {
-      "command": "faucet run --source example-rest-api --sink jsonl \\\n  --param api_token=\"$API_TOKEN\" \\\n  --param base_url=<base_url>",
+      "command": "faucet run --source faucet-hq/example-rest-api --sink faucet-hq/jsonl \\\n  --param api_token=\"$API_TOKEN\" \\\n  --param base_url=<base_url>",
       "compatible": true,
       "incompatible": [],
-      "sink": "jsonl",
-      "source": "example-rest-api",
+      "sink": "faucet-hq/jsonl",
+      "source": "faucet-hq/example-rest-api",
       "streams": [
         {
           "satisfies": "overwrite",
@@ -117,11 +117,11 @@
       ]
     },
     {
-      "command": "faucet run --source example-rest-api --sink postgres \\\n  --param api_token=\"$API_TOKEN\" \\\n  --param base_url=<base_url> \\\n  --param pg_url=\"$PG_URL\"",
+      "command": "faucet run --source faucet-hq/example-rest-api --sink faucet-hq/postgres \\\n  --param api_token=\"$API_TOKEN\" \\\n  --param base_url=<base_url> \\\n  --param pg_url=\"$PG_URL\"",
       "compatible": true,
       "incompatible": [],
-      "sink": "postgres",
-      "source": "example-rest-api",
+      "sink": "faucet-hq/postgres",
+      "source": "faucet-hq/example-rest-api",
       "streams": [
         {
           "satisfies": null,
@@ -136,11 +136,11 @@
       ]
     },
     {
-      "command": "faucet run --source example-rest-api --sink sqlite \\\n  --param api_token=\"$API_TOKEN\" \\\n  --param base_url=<base_url>",
+      "command": "faucet run --source faucet-hq/example-rest-api --sink faucet-hq/sqlite \\\n  --param api_token=\"$API_TOKEN\" \\\n  --param base_url=<base_url>",
       "compatible": true,
       "incompatible": [],
-      "sink": "sqlite",
-      "source": "example-rest-api",
+      "sink": "faucet-hq/sqlite",
+      "source": "faucet-hq/example-rest-api",
       "streams": [
         {
           "satisfies": null,
@@ -159,12 +159,12 @@
     {
       "description": "Google BigQuery — one table per stream, atomic overwrite or keyed MERGE upsert",
       "docs": "https://faucet-hq.github.io/faucet-stream/reference/connectors.html",
-      "file": "sink-templates/bigquery.yaml",
-      "id": "bigquery",
+      "file": "sink-templates/faucet-hq/bigquery.yaml",
+      "id": "faucet-hq/bigquery",
       "name": "bigquery",
       "newest": 1,
       "official": true,
-      "owner": null,
+      "owner": "faucet-hq",
       "params": [
         {
           "default": "raw",
@@ -199,8 +199,8 @@
       ],
       "versions": [
         {
-          "commit": "f814e8705c313b126ebfecde60b09cbe97e792a4",
-          "date": "2026-09-23T16:31:23+05:30",
+          "commit": "573ccd81d09cf2ca0689707ab96c6c48fd3d3582",
+          "date": "2026-09-24T07:49:25+05:30",
           "pr": null,
           "version": 1
         }
@@ -215,12 +215,12 @@
     {
       "description": "Local JSON Lines files, one per stream — the local validation destination",
       "docs": null,
-      "file": "sink-templates/jsonl.yaml",
-      "id": "jsonl",
+      "file": "sink-templates/faucet-hq/jsonl.yaml",
+      "id": "faucet-hq/jsonl",
       "name": "jsonl",
       "newest": 1,
       "official": true,
-      "owner": null,
+      "owner": "faucet-hq",
       "params": [
         {
           "default": "./out",
@@ -239,8 +239,8 @@
       ],
       "versions": [
         {
-          "commit": "f814e8705c313b126ebfecde60b09cbe97e792a4",
-          "date": "2026-09-23T16:31:23+05:30",
+          "commit": "573ccd81d09cf2ca0689707ab96c6c48fd3d3582",
+          "date": "2026-09-24T07:49:25+05:30",
           "pr": null,
           "version": 1
         }
@@ -252,12 +252,12 @@
     {
       "description": "PostgreSQL — one auto-mapped table per stream, transactional overwrite or ON CONFLICT upsert",
       "docs": null,
-      "file": "sink-templates/postgres.yaml",
-      "id": "postgres",
+      "file": "sink-templates/faucet-hq/postgres.yaml",
+      "id": "faucet-hq/postgres",
       "name": "postgres",
       "newest": 1,
       "official": true,
-      "owner": null,
+      "owner": "faucet-hq",
       "params": [
         {
           "default": "public",
@@ -283,8 +283,8 @@
       ],
       "versions": [
         {
-          "commit": "f814e8705c313b126ebfecde60b09cbe97e792a4",
-          "date": "2026-09-23T16:31:23+05:30",
+          "commit": "573ccd81d09cf2ca0689707ab96c6c48fd3d3582",
+          "date": "2026-09-24T07:49:25+05:30",
           "pr": null,
           "version": 1
         }
@@ -299,12 +299,12 @@
     {
       "description": "Local SQLite database — one auto-mapped table per stream, real overwrite/upsert semantics without infrastructure",
       "docs": null,
-      "file": "sink-templates/sqlite.yaml",
-      "id": "sqlite",
+      "file": "sink-templates/faucet-hq/sqlite.yaml",
+      "id": "faucet-hq/sqlite",
       "name": "sqlite",
       "newest": 1,
       "official": true,
-      "owner": null,
+      "owner": "faucet-hq",
       "params": [
         {
           "default": "./out/faucet.db",
@@ -323,8 +323,8 @@
       ],
       "versions": [
         {
-          "commit": "f814e8705c313b126ebfecde60b09cbe97e792a4",
-          "date": "2026-09-23T16:31:23+05:30",
+          "commit": "573ccd81d09cf2ca0689707ab96c6c48fd3d3582",
+          "date": "2026-09-24T07:49:25+05:30",
           "pr": null,
           "version": 1
         }
@@ -341,12 +341,12 @@
     {
       "description": "Example — two CSV exports as two streams (runs offline, no credentials)",
       "docs": null,
-      "file": "source-templates/example-csv.yaml",
-      "id": "example-csv",
+      "file": "source-templates/faucet-hq/example-csv.yaml",
+      "id": "faucet-hq/example-csv",
       "name": "example-csv",
       "newest": 1,
       "official": true,
-      "owner": null,
+      "owner": "faucet-hq",
       "params": [
         {
           "default": "./hub/examples/data",
@@ -389,8 +389,8 @@
       ],
       "versions": [
         {
-          "commit": "f814e8705c313b126ebfecde60b09cbe97e792a4",
-          "date": "2026-09-23T16:31:23+05:30",
+          "commit": "573ccd81d09cf2ca0689707ab96c6c48fd3d3582",
+          "date": "2026-09-24T07:49:25+05:30",
           "pr": null,
           "version": 1
         }
@@ -399,12 +399,12 @@
     {
       "description": "Example — a bearer-authenticated REST API with cursor pagination and one stream per endpoint",
       "docs": null,
-      "file": "source-templates/example-rest-api.yaml",
-      "id": "example-rest-api",
+      "file": "source-templates/faucet-hq/example-rest-api.yaml",
+      "id": "faucet-hq/example-rest-api",
       "name": "example-rest-api",
       "newest": 1,
       "official": true,
-      "owner": null,
+      "owner": "faucet-hq",
       "params": [
         {
           "default": null,
@@ -455,8 +455,8 @@
       ],
       "versions": [
         {
-          "commit": "f814e8705c313b126ebfecde60b09cbe97e792a4",
-          "date": "2026-09-23T16:31:23+05:30",
+          "commit": "573ccd81d09cf2ca0689707ab96c6c48fd3d3582",
+          "date": "2026-09-24T07:49:25+05:30",
           "pr": null,
           "version": 1
         }
