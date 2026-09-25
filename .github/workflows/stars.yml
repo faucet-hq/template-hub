@@ -1,7 +1,7 @@
 name: Stars
 
 # Trust signals for index.json (#685): opens a discussion for every template
-# that lacks one, counts qualifying 👍s, open `template:<id>` issues and
+# that lacks one, counts the upvotes on it, open `template:<id>` issues and
 # publisher account ages into stars.json, and refreshes each entry's `trust`
 # block. Runs hourly, after every merge to main, and on demand.
 
