@@ -7,8 +7,8 @@ name: Stars
 
 on:
   schedule:
-    # :05 rather than :00 — GitHub delays or drops jobs queued on the hour.
-    - cron: "5 * * * *"
+    # An off-peak minute: GitHub delays or drops jobs queued on round minutes (:00, :05, :15, :30).
+    - cron: "23 * * * *"
   workflow_dispatch:
   workflow_run:
     workflows: [CI]
