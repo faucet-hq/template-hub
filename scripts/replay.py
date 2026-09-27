@@ -34,6 +34,7 @@ replay.yaml:
           headers: { authorization: Bearer sk_test_replay }   # case-insensitive names
           body: { operation: query }       # JSON subset match (POST)
           body_regex: { query: "SELECT .* WHERE SystemModstamp > .*" }   # top-level string fields, full match
+          form: { grant_type: refresh_token }   # form-encoded body fields (token endpoints)
         response:
           status: 200            # default 200
           headers: { Link: '<{replay}/next>; rel="next"' }
@@ -84,12 +85,13 @@ def specificity(m):
         len(m.get("query") or {})
         + len(m.get("absent") or [])
         + len(m.get("headers") or {})
-        + (1 if m.get("body") is not None else 0)
+        + (len(m["body"]) if isinstance(m.get("body"), dict) else 1 if m.get("body") is not None else 0)
         + len(m.get("body_regex") or {})
+        + len(m.get("form") or {})
     )
 
 
-def matches(m, method, path, query, headers, body):
+def matches(m, method, path, query, headers, body, form=None):
     if (m.get("method") or "GET").upper() != method:
         return False
     if m.get("path") != path:
@@ -105,6 +107,9 @@ def matches(m, method, path, query, headers, body):
             return False
     if m.get("body") is not None:
         if body is None or not subset(m["body"], body):
+            return False
+    for k, v in (m.get("form") or {}).items():
+        if (form or {}).get(k) != [str(v)]:
             return False
     for k, pattern in (m.get("body_regex") or {}).items():
         if not isinstance(body, dict) or not isinstance(body.get(k), str) or not re.fullmatch(pattern, body[k], re.S):
@@ -125,17 +130,17 @@ class Recorder:
     def answer(self, method, raw_path, headers, raw_body):
         parts = urlsplit(raw_path)
         query = parse_qs(parts.query, keep_blank_values=True)
-        body = None
+        body, form = None, None
         if raw_body:
             try:
                 body = json.loads(raw_body)
             except ValueError:
-                body = None
+                form = parse_qs(raw_body.decode(errors="replace"), keep_blank_values=True)
         lowered = {k.lower(): v for k, v in headers.items()}
         best = None
         for i, ex in enumerate(self.exchanges):
             m = ex.get("match") or {}
-            if matches(m, method, parts.path, query, lowered, body):
+            if matches(m, method, parts.path, query, lowered, body, form):
                 if best is None or specificity(m) > specificity(self.exchanges[best]["match"]):
                     best = i
         with self.lock:

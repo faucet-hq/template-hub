@@ -1,0 +1,205 @@
+# Recorded Google Ads API exchanges (shapes from the googleAds:search
+# reference, values synthetic — no live credentials): the OAuth refresh-token
+# grant, then one GAQL search per stream (campaigns across two pages through
+# nextPageToken → pageToken). The expected records show the nested
+# campaign/metrics/segments objects flattened to snake_case columns.
+params:
+  google_ads_customer_id: '1234567890'
+  google_ads_login_customer_id: '9876543210'
+  google_ads_developer_token: devtok-replay
+  google_client_id: replay.apps.googleusercontent.com
+  google_client_secret: replay-secret
+  google_refresh_token: 1//replay-refresh
+  google_token_url: '{replay}/token'
+  api_base_url: '{replay}'
+exchanges:
+- match:
+    method: POST
+    path: /token
+    form:
+      grant_type: refresh_token
+      refresh_token: 1//replay-refresh
+      client_id: replay.apps.googleusercontent.com
+  response:
+    body:
+      access_token: ya29.replay
+      expires_in: 3599
+      scope: https://www.googleapis.com/auth/adwords
+      token_type: Bearer
+- match:
+    method: POST
+    path: /v22/customers/1234567890/googleAds:search
+    headers: &id001
+      authorization: Bearer ya29.replay
+      developer-token: devtok-replay
+      login-customer-id: '9876543210'
+    body:
+      query: SELECT campaign.id, campaign.name, campaign.status, campaign.advertising_channel_type, campaign.bidding_strategy_type, campaign.start_date, campaign.end_date, campaign_budget.amount_micros FROM campaign
+  response:
+    body:
+      results:
+      - campaign:
+          resourceName: customers/1234567890/campaigns/111
+          id: '111'
+          name: Brand - Search
+          status: ENABLED
+          advertisingChannelType: SEARCH
+          biddingStrategyType: TARGET_CPA
+          startDate: '2024-01-01'
+          endDate: '2037-12-30'
+        campaignBudget:
+          resourceName: customers/1234567890/campaignBudgets/901
+          amountMicros: '50000000'
+      fieldMask: redacted.for.brevity
+      requestId: req0
+      nextPageToken: CPg1
+- match:
+    method: POST
+    path: /v22/customers/1234567890/googleAds:search
+    headers: *id001
+    body:
+      query: SELECT campaign.id, campaign.name, campaign.status, campaign.advertising_channel_type, campaign.bidding_strategy_type, campaign.start_date, campaign.end_date, campaign_budget.amount_micros FROM campaign
+      pageToken: CPg1
+  response:
+    body:
+      results:
+      - campaign:
+          resourceName: customers/1234567890/campaigns/112
+          id: '112'
+          name: Generic - Display
+          status: PAUSED
+          advertisingChannelType: DISPLAY
+          biddingStrategyType: MAXIMIZE_CONVERSIONS
+          startDate: '2024-02-01'
+          endDate: '2037-12-30'
+        campaignBudget:
+          resourceName: customers/1234567890/campaignBudgets/902
+          amountMicros: '20000000'
+      fieldMask: redacted.for.brevity
+      requestId: req1
+- match:
+    method: POST
+    path: /v22/customers/1234567890/googleAds:search
+    headers: *id001
+    body:
+      query: SELECT ad_group.id, ad_group.name, ad_group.status, ad_group.type, campaign.id FROM ad_group
+  response:
+    body:
+      results:
+      - adGroup:
+          resourceName: customers/1234567890/adGroups/221
+          id: '221'
+          name: Brand terms
+          status: ENABLED
+          type: SEARCH_STANDARD
+        campaign:
+          resourceName: customers/1234567890/campaigns/111
+          id: '111'
+      fieldMask: redacted.for.brevity
+      requestId: req0
+- match:
+    method: POST
+    path: /v22/customers/1234567890/googleAds:search
+    headers: *id001
+    body:
+      query: SELECT ad_group_ad.ad.id, ad_group_ad.ad.name, ad_group_ad.ad.type, ad_group_ad.status, ad_group_ad.ad.final_urls, ad_group.id, campaign.id FROM ad_group_ad
+  response:
+    body:
+      results:
+      - adGroupAd:
+          resourceName: customers/1234567890/adGroupAds/221~331
+          status: ENABLED
+          ad:
+            resourceName: customers/1234567890/ads/331
+            id: '331'
+            type: RESPONSIVE_SEARCH_AD
+            finalUrls:
+            - https://www.example.com/
+        adGroup:
+          resourceName: customers/1234567890/adGroups/221
+          id: '221'
+        campaign:
+          resourceName: customers/1234567890/campaigns/111
+          id: '111'
+      fieldMask: redacted.for.brevity
+      requestId: req0
+- match:
+    method: POST
+    path: /v22/customers/1234567890/googleAds:search
+    headers: *id001
+    body:
+      query: SELECT segments.date, campaign.id, campaign.name, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions, metrics.conversions_value, metrics.interactions FROM campaign WHERE segments.date DURING LAST_30_DAYS
+  response:
+    body:
+      results:
+      - campaign:
+          resourceName: customers/1234567890/campaigns/111
+          id: '111'
+          name: Brand - Search
+        metrics:
+          clicks: '120'
+          conversions: 6.0
+          conversionsValue: 540.5
+          costMicros: '84210000'
+          impressions: '2400'
+          interactions: '120'
+        segments:
+          date: '2024-04-01'
+      fieldMask: redacted.for.brevity
+      requestId: req0
+- match:
+    method: POST
+    path: /v22/customers/1234567890/googleAds:search
+    headers: *id001
+    body:
+      query: SELECT segments.date, ad_group.id, campaign.id, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions, metrics.conversions_value FROM ad_group WHERE segments.date DURING LAST_30_DAYS
+  response:
+    body:
+      results:
+      - adGroup:
+          resourceName: customers/1234567890/adGroups/221
+          id: '221'
+        campaign:
+          resourceName: customers/1234567890/campaigns/111
+          id: '111'
+        metrics:
+          clicks: '120'
+          conversions: 6.0
+          conversionsValue: 540.5
+          costMicros: '84210000'
+          impressions: '2400'
+        segments:
+          date: '2024-04-01'
+      fieldMask: redacted.for.brevity
+      requestId: req0
+- match:
+    method: POST
+    path: /v22/customers/1234567890/googleAds:search
+    headers: *id001
+    body:
+      query: SELECT segments.date, ad_group_criterion.criterion_id, ad_group_criterion.keyword.text, ad_group_criterion.keyword.match_type, ad_group.id, campaign.id, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions FROM keyword_view
+        WHERE segments.date DURING LAST_30_DAYS
+  response:
+    body:
+      results:
+      - adGroupCriterion:
+          resourceName: customers/1234567890/adGroupCriteria/221~441
+          criterionId: '441'
+          keyword:
+            text: acme widgets
+            matchType: PHRASE
+        adGroup:
+          resourceName: customers/1234567890/adGroups/221
+          id: '221'
+        campaign:
+          resourceName: customers/1234567890/campaigns/111
+          id: '111'
+        metrics:
+          clicks: '80'
+          conversions: 4.0
+          costMicros: '51000000'
+          impressions: '1500'
+        segments:
+          date: '2024-04-01'
+      fieldMask: redacted.for.brevity
+      requestId: req0

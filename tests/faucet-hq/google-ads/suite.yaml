@@ -1,0 +1,24 @@
+# Parameter-space suite for faucet-hq/google-ads (faucet template test, #648).
+# Validation tier: the composed pipeline materializes, expands and compiles for
+# every case — every performance_window value included. Behavioural tier: a raw
+# googleAds:search row (records/campaigns.jsonl) through the shared transforms.
+# The HTTP side (OAuth refresh, GAQL paging) is replay.yaml's job.
+version: 1
+template: source-templates/faucet-hq/google-ads.yaml
+sink: sink-templates/faucet-hq/sqlite.yaml
+suite:
+  auto:
+    enum_coverage: true
+    required_omitted: true
+    defaults_baseline: true
+  cases:
+    - name: rejects-an-unsupported-window
+      params: { google_ads_customer_id: "1234567890", google_ads_login_customer_id: "1234567890", google_ads_developer_token: d, google_client_id: c, google_client_secret: s, google_refresh_token: r, performance_window: LAST_90_DAYS }
+      expect: { error: performance_window }
+  behavioral:
+    - name: search-row-flattens-to-columns
+      params: { google_ads_customer_id: "1234567890", google_ads_login_customer_id: "1234567890", google_ads_developer_token: d, google_client_id: c, google_client_secret: s, google_refresh_token: r }
+      input: tests/faucet-hq/google-ads/records/campaigns.jsonl
+      expect:
+        records:
+          - { campaign_resource_name: customers/1234567890/campaigns/111, campaign_id: "111", campaign_name: Brand - Search, campaign_status: ENABLED, campaign_advertising_channel_type: SEARCH, campaign_budget_amount_micros: "50000000" }

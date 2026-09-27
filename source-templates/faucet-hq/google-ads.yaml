@@ -1,0 +1,74 @@
+# Google Ads — campaigns, ad groups, ads and daily performance reports through
+# the Google Ads API (GAQL over googleAds:search).
+#   faucet run --source faucet-hq/google-ads --sink faucet-hq/bigquery \
+#     --param google_ads_customer_id=1234567890 --param google_ads_login_customer_id=1234567890 \
+#     --param google_ads_developer_token="$DEV_TOKEN" --param google_client_id=… \
+#     --param google_client_secret="$SECRET" --param google_refresh_token="$REFRESH" …
+# Scopes, run times and the changelog: google-ads.md beside this file.
+kind: source-template
+name: google-ads
+owner: faucet-hq
+description: Google Ads — campaigns, ad groups, ads, and daily campaign / ad group / keyword performance over a rolling window (Google Ads API v22, GAQL)
+tags: [advertising, marketing, saas]
+docs: https://developers.google.com/google-ads/api/docs/start
+params:
+  google_ads_customer_id:       { type: string, required: true, description: "Account to read, 10 digits without dashes" }
+  google_ads_login_customer_id: { type: string, required: true, description: "Manager account the credentials act through, 10 digits without dashes — the customer id itself for direct access" }
+  google_ads_developer_token:   { type: string, required: true, secret: true, description: "Google Ads API developer token (API Center of a manager account)" }
+  google_client_id:             { type: string, required: true, description: "OAuth client id (Google Cloud console)" }
+  google_client_secret:         { type: string, required: true, secret: true, description: "OAuth client secret" }
+  google_refresh_token:         { type: string, required: true, secret: true, description: "OAuth refresh token with the https://www.googleapis.com/auth/adwords scope" }
+  performance_window:           { type: string, default: LAST_30_DAYS, values: [LAST_7_DAYS, LAST_14_DAYS, LAST_30_DAYS], description: "Rolling window the performance streams re-read each run (conversions settle for days)" }
+  google_token_url:             { type: string, default: "https://oauth2.googleapis.com/token", description: "OAuth token endpoint — override only to replay recorded fixtures" }
+  api_base_url:                 { type: string, default: "https://googleads.googleapis.com", description: "API root — override only to replay recorded fixtures" }
+auth:
+  google_ads:
+    type: oauth2_refresh
+    config:
+      token_url: "${param.google_token_url}"
+      client_id: "${param.google_client_id}"
+      client_secret: "${param.google_client_secret}"
+      refresh_token: "${param.google_refresh_token}"
+source:
+  type: rest
+  config:
+    base_url: "${param.api_base_url}"
+    path: "/v22/customers/${param.google_ads_customer_id}/googleAds:search"
+    method: POST
+    auth: { ref: google_ads }
+    headers:
+      developer-token: "${param.google_ads_developer_token}"
+      login-customer-id: "${param.google_ads_login_customer_id}"
+    body: { query: "SELECT customer.id FROM customer" }
+    records_path: $.results[*]
+    pagination: { type: CursorInBody, next_token_path: $.nextPageToken, body_cursor_field: pageToken }
+    max_pages: null
+    max_retries: 6
+transforms:
+  - { type: flatten, config: { separator: "_" } }
+  - { type: keys_case, config: { mode: snake } }
+streams:
+  - name: campaigns
+    source: { config: { body: { query: "SELECT campaign.id, campaign.name, campaign.status, campaign.advertising_channel_type, campaign.bidding_strategy_type, campaign.start_date, campaign.end_date, campaign_budget.amount_micros FROM campaign" } } }
+    primary_keys: [campaign_id]
+    write: [overwrite, upsert]
+  - name: ad_groups
+    source: { config: { body: { query: "SELECT ad_group.id, ad_group.name, ad_group.status, ad_group.type, campaign.id FROM ad_group" } } }
+    primary_keys: [ad_group_id]
+    write: [overwrite, upsert]
+  - name: ads
+    source: { config: { body: { query: "SELECT ad_group_ad.ad.id, ad_group_ad.ad.name, ad_group_ad.ad.type, ad_group_ad.status, ad_group_ad.ad.final_urls, ad_group.id, campaign.id FROM ad_group_ad" } } }
+    primary_keys: [ad_group_id, ad_group_ad_ad_id]
+    write: [overwrite, upsert]
+  - name: campaign_performance
+    source: { config: { body: { query: "SELECT segments.date, campaign.id, campaign.name, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions, metrics.conversions_value, metrics.interactions FROM campaign WHERE segments.date DURING ${param.performance_window}" } } }
+    primary_keys: [segments_date, campaign_id]
+    write: [upsert, overwrite]
+  - name: ad_group_performance
+    source: { config: { body: { query: "SELECT segments.date, ad_group.id, campaign.id, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions, metrics.conversions_value FROM ad_group WHERE segments.date DURING ${param.performance_window}" } } }
+    primary_keys: [segments_date, ad_group_id]
+    write: [upsert, overwrite]
+  - name: keyword_performance
+    source: { config: { body: { query: "SELECT segments.date, ad_group_criterion.criterion_id, ad_group_criterion.keyword.text, ad_group_criterion.keyword.match_type, ad_group.id, campaign.id, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions FROM keyword_view WHERE segments.date DURING ${param.performance_window}" } } }
+    primary_keys: [segments_date, ad_group_id, ad_group_criterion_criterion_id]
+    write: [upsert, overwrite]
