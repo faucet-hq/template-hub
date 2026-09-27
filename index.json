@@ -1,5 +1,5 @@
 {
-  "commit": "9854d622fb04af2d63e3cdb0552e29bbd3da4947",
+  "commit": "ec4b4a219b7289936c98014b77a233a7be88a342",
   "generated_by": "scripts/index.py",
   "matrix": [
     {
@@ -502,6 +502,162 @@
         {
           "satisfies": null,
           "stream": "keyword_performance",
+          "write_mode": "upsert"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/google-analytics-4 --sink faucet-hq/bigquery \\\n  --param ga4_property_id=<ga4_property_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\" \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/bigquery",
+      "source": "faucet-hq/google-analytics-4",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "daily_traffic",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "pages",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "events",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "devices",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "geography",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "acquisition",
+          "write_mode": "upsert"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/google-analytics-4 --sink faucet-hq/jsonl \\\n  --param ga4_property_id=<ga4_property_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/jsonl",
+      "source": "faucet-hq/google-analytics-4",
+      "streams": [
+        {
+          "satisfies": "overwrite",
+          "stream": "daily_traffic",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "pages",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "events",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "devices",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "geography",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "acquisition",
+          "write_mode": "append"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/google-analytics-4 --sink faucet-hq/postgres \\\n  --param ga4_property_id=<ga4_property_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\" \\\n  --param pg_url=\"$PG_URL\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/postgres",
+      "source": "faucet-hq/google-analytics-4",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "daily_traffic",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "pages",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "events",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "devices",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "geography",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "acquisition",
+          "write_mode": "upsert"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/google-analytics-4 --sink faucet-hq/sqlite \\\n  --param ga4_property_id=<ga4_property_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/sqlite",
+      "source": "faucet-hq/google-analytics-4",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "daily_traffic",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "pages",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "events",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "devices",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "geography",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "acquisition",
           "write_mode": "upsert"
         }
       ]
@@ -1808,7 +1964,7 @@
         "open_issues": 0,
         "publisher": {
           "account_age_days": 52,
-          "templates": 15
+          "templates": 16
         },
         "stable_since": "2026-09-24",
         "star_url": "https://github.com/faucet-hq/template-hub/discussions/3",
@@ -1862,7 +2018,7 @@
         "open_issues": 0,
         "publisher": {
           "account_age_days": 52,
-          "templates": 15
+          "templates": 16
         },
         "stable_since": "2026-09-24",
         "star_url": "https://github.com/faucet-hq/template-hub/discussions/4",
@@ -1920,7 +2076,7 @@
         "open_issues": 0,
         "publisher": {
           "account_age_days": 52,
-          "templates": 15
+          "templates": 16
         },
         "stable_since": "2026-09-24",
         "star_url": "https://github.com/faucet-hq/template-hub/discussions/5",
@@ -1974,7 +2130,7 @@
         "open_issues": 0,
         "publisher": {
           "account_age_days": 52,
-          "templates": 15
+          "templates": 16
         },
         "stable_since": "2026-09-24",
         "star_url": "https://github.com/faucet-hq/template-hub/discussions/6",
@@ -2055,7 +2211,7 @@
         "open_issues": 0,
         "publisher": {
           "account_age_days": 52,
-          "templates": 15
+          "templates": 16
         },
         "stable_since": "2026-09-24",
         "star_url": "https://github.com/faucet-hq/template-hub/discussions/1",
@@ -2136,7 +2292,7 @@
         "open_issues": 0,
         "publisher": {
           "account_age_days": 52,
-          "templates": 15
+          "templates": 16
         },
         "stable_since": "2026-09-24",
         "star_url": "https://github.com/faucet-hq/template-hub/discussions/2",
@@ -2298,7 +2454,7 @@
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
-          "templates": 15
+          "templates": 16
         },
         "stable_since": "2026-09-27",
         "updated": "2026-09-27"
@@ -2481,7 +2637,7 @@
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
-          "templates": 15
+          "templates": 16
         },
         "stable_since": "2026-09-27",
         "updated": "2026-09-27"
@@ -2490,6 +2646,188 @@
         {
           "commit": "b0a1b93daffe469434b902cd759d8118401d4f69",
           "date": "2026-09-27T17:02:01+05:30",
+          "pr": null,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "description": "Google Analytics 4 — daily traffic, pages, events, devices, geography and acquisition reports over a rolling window (GA4 Data API v1beta)",
+      "docs": "https://developers.google.com/analytics/devguides/reporting/data/v1",
+      "file": "source-templates/faucet-hq/google-analytics-4.yaml",
+      "id": "faucet-hq/google-analytics-4",
+      "live_versions": [
+        1
+      ],
+      "name": "google-analytics-4",
+      "newest": 1,
+      "official": true,
+      "owner": "faucet-hq",
+      "params": [
+        {
+          "default": "https://analyticsdata.googleapis.com",
+          "description": "API root — override only to replay recorded fixtures",
+          "name": "api_base_url",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Numeric GA4 property id (Admin → Property settings), not the G- measurement id",
+          "name": "ga4_property_id",
+          "required": true,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "OAuth client id (Google Cloud console)",
+          "name": "google_client_id",
+          "required": true,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "OAuth client secret",
+          "name": "google_client_secret",
+          "required": true,
+          "secret": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "OAuth refresh token with the https://www.googleapis.com/auth/analytics.readonly scope",
+          "name": "google_refresh_token",
+          "required": true,
+          "secret": true,
+          "type": "string"
+        },
+        {
+          "default": "https://oauth2.googleapis.com/token",
+          "description": "OAuth token endpoint — override only to replay recorded fixtures",
+          "name": "google_token_url",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": 100000,
+          "description": "Rows per runReport request (GA4 allows up to 250000)",
+          "name": "report_page_size",
+          "required": false,
+          "secret": false,
+          "type": "int"
+        },
+        {
+          "default": "30daysAgo",
+          "description": "Start of the rolling window every stream re-reads each run (GA4 keeps processing data for up to 72 hours)",
+          "name": "report_window",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        }
+      ],
+      "source_type": "rest",
+      "stable": 1,
+      "streams": [
+        {
+          "description": null,
+          "name": "daily_traffic",
+          "primary_keys": [
+            "date",
+            "session_default_channel_group"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "pages",
+          "primary_keys": [
+            "date",
+            "host_name",
+            "page_path"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "events",
+          "primary_keys": [
+            "date",
+            "event_name"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "devices",
+          "primary_keys": [
+            "date",
+            "device_category",
+            "operating_system"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "geography",
+          "primary_keys": [
+            "date",
+            "country",
+            "region",
+            "city"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "acquisition",
+          "primary_keys": [
+            "date",
+            "session_source",
+            "session_medium",
+            "session_campaign_name"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        }
+      ],
+      "tags": [
+        "analytics",
+        "marketing",
+        "saas"
+      ],
+      "trust": {
+        "compatible_sinks": 4,
+        "publisher": {
+          "templates": 16
+        },
+        "stable_since": "2026-09-28",
+        "updated": "2026-09-28"
+      },
+      "versions": [
+        {
+          "commit": "ec4b4a219b7289936c98014b77a233a7be88a342",
+          "date": "2026-09-28T02:58:31+05:30",
           "pr": null,
           "version": 1
         }
@@ -2655,7 +2993,7 @@
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
-          "templates": 15
+          "templates": 16
         },
         "stable_since": "2026-09-27",
         "updated": "2026-09-27"
@@ -2801,7 +3139,7 @@
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
-          "templates": 15
+          "templates": 16
         },
         "stable_since": "2026-09-27",
         "updated": "2026-09-27"
@@ -2941,7 +3279,7 @@
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
-          "templates": 15
+          "templates": 16
         },
         "stable_since": "2026-09-27",
         "updated": "2026-09-27"
@@ -3098,7 +3436,7 @@
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
-          "templates": 15
+          "templates": 16
         },
         "stable_since": "2026-09-27",
         "updated": "2026-09-27"
@@ -3228,7 +3566,7 @@
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
-          "templates": 15
+          "templates": 16
         },
         "stable_since": "2026-09-27",
         "updated": "2026-09-27"
@@ -3406,7 +3744,7 @@
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
-          "templates": 15
+          "templates": 16
         },
         "stable_since": "2026-09-27",
         "updated": "2026-09-27"
@@ -3555,7 +3893,7 @@
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
-          "templates": 15
+          "templates": 16
         },
         "stable_since": "2026-09-27",
         "updated": "2026-09-27"
