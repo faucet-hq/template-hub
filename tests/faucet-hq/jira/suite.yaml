@@ -1,0 +1,24 @@
+# Parameter-space suite for faucet-hq/jira (faucet template test, #648).
+# Validation tier: the composed pipeline materializes, expands and compiles for
+# every case. Behavioural tier: a raw issue (records/issues.jsonl) through the
+# shared transforms — keys snake_cased, custom fields kept by id. The HTTP side
+# is replay.yaml's job.
+version: 1
+template: source-templates/faucet-hq/jira.yaml
+sink: sink-templates/faucet-hq/sqlite.yaml
+suite:
+  auto:
+    required_omitted: true
+    defaults_baseline: true
+  cases:
+    - name: one-project
+      params: { jira_url: "https://acme.atlassian.net", jira_email: ops@example.com, jira_api_token: jira_replay, issues_jql: "project = ENG ORDER BY updated ASC" }
+    - name: selected-fields
+      params: { jira_url: "https://acme.atlassian.net", jira_email: ops@example.com, jira_api_token: jira_replay, issue_fields: "summary,status,assignee,updated,customfield_10016" }
+  behavioral:
+    - name: issue-keys-snake-cased
+      params: { jira_url: "https://acme.atlassian.net", jira_email: ops@example.com, jira_api_token: jira_replay }
+      input: tests/faucet-hq/jira/records/issues.jsonl
+      expect:
+        records:
+          - { id: "10001", key: ENG-1, fields: { summary: Login page 500s, status: { name: In Progress, status_category: { key: indeterminate } }, customfield_10016: 5, updated: "2024-04-02T10:00:00.000+0000" } }

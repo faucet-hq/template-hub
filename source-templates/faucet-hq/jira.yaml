@@ -1,0 +1,65 @@
+# Jira Cloud — issues, projects, users and the field/status/issue-type
+# dictionaries over the REST API v3.
+#   faucet run --source faucet-hq/jira --sink faucet-hq/bigquery \
+#     --param jira_url=https://acme.atlassian.net --param jira_email=ops@acme.example --param jira_api_token="$JIRA_TOKEN" …
+# Scopes, run times and the changelog: jira.md beside this file.
+kind: source-template
+name: jira
+owner: faucet-hq
+description: Jira Cloud — issues (JQL enhanced search), projects, users, fields, statuses and issue types (REST API v3)
+tags: [engineering, project-management, saas]
+docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/
+params:
+  jira_url:       { type: string, required: true, description: "Your Jira Cloud site, e.g. https://acme.atlassian.net" }
+  jira_email:     { type: string, required: true, description: "Atlassian account email the API token belongs to" }
+  jira_api_token: { type: string, required: true, secret: true, description: "Atlassian API token (id.atlassian.com → Security → API tokens)" }
+  issues_jql:     { type: string, default: "updated >= \"2000-01-01\" ORDER BY updated ASC", description: "JQL selecting the issues to sync (must be bounded — the enhanced search rejects an unrestricted query)" }
+  issue_fields:   { type: string, default: "*navigable", description: "Comma-separated issue fields to return (`*navigable`, `*all`, or a list)" }
+source:
+  type: rest
+  config:
+    base_url: "${param.jira_url}"
+    auth: { type: basic, config: { username: "${param.jira_email}", password: "${param.jira_api_token}" } }
+    headers: { Accept: application/json }
+    max_pages: null
+    max_retries: 6
+streams:
+  - name: issues
+    source:
+      config:
+        path: /rest/api/3/search/jql
+        query_params: { jql: "${param.issues_jql}", fields: "${param.issue_fields}", maxResults: "100" }
+        records_path: $.issues[*]
+        pagination: { type: Cursor, next_token_path: $.nextPageToken, param_name: nextPageToken }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: projects
+    source:
+      config:
+        path: /rest/api/3/project/search
+        query_params: { maxResults: "50", expand: "description,lead" }
+        records_path: $.values[*]
+        pagination: { type: NextLinkInBody, next_link_path: $.nextPage }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: users
+    source:
+      config:
+        path: /rest/api/3/users/search
+        pagination: { type: Offset, offset_param: startAt, limit_param: maxResults, limit: 100 }
+    primary_keys: [account_id]
+    write: [overwrite, upsert]
+  - name: fields
+    source: { config: { path: /rest/api/3/field } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: statuses
+    source: { config: { path: /rest/api/3/status } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: issue_types
+    source: { config: { path: /rest/api/3/issuetype } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+transforms:
+  - { type: keys_case, config: { mode: snake } }

@@ -1,0 +1,2 @@
+{"custom": false, "id": "summary", "key": "summary", "name": "Summary", "navigable": true, "orderable": true, "schema": {"system": "summary", "type": "string"}, "searchable": true}
+{"custom": true, "id": "customfield_10016", "key": "customfield_10016", "name": "Story point estimate", "navigable": true, "orderable": true, "schema": {"custom": "com.pyxis.greenhopper.jira:jsw-story-points", "custom_id": 10016, "type": "number"}, "searchable": true}
