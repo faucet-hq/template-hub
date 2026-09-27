@@ -71,6 +71,7 @@ sink.
 | [`faucet-hq/github`](source-templates/faucet-hq/github.md) | GitHub REST (2022-11-28) | repository, issues, issue_comments, pull_requests, commits, releases, workflow_runs, contributors | issues, issue_comments |
 | [`faucet-hq/google-ads`](source-templates/faucet-hq/google-ads.md) | Google Ads API v22 | campaigns, ad_groups, ads, campaign/ad_group/keyword performance | rolling window (performance) |
 | [`faucet-hq/meta-ads`](source-templates/faucet-hq/meta-ads.md) | Meta Marketing API v24.0 | ad_account, campaigns, ad_sets, ads, ad_creatives, ad_insights (async) | rolling window (insights) |
+| [`faucet-hq/google-analytics-4`](source-templates/faucet-hq/google-analytics-4.md) | GA4 Data API v1beta (`runReport`) | daily_traffic, pages, events, devices, geography, acquisition | rolling window (all streams) |
 
 Incremental streams keep their bookmark in a `state:` store — supply one with a
 deployment overlay (`--overlay`), or they re-read everything each run.

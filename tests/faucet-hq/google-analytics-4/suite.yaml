@@ -1,0 +1,32 @@
+# Parameter-space suite for faucet-hq/google-analytics-4 (faucet template test,
+# #648). Validation tier: the composed pipeline materializes, expands and
+# compiles for every case — every report_window value included. Behavioural
+# tier: raw runReport rows (records/daily_traffic.jsonl) through the first
+# stream's transforms — the zip against the requested dimensions/metrics, and a
+# row narrower than its metric list failing the page rather than misaligning.
+# The HTTP side (OAuth refresh, offset paging) is replay.yaml's job.
+version: 1
+template: source-templates/faucet-hq/google-analytics-4.yaml
+sink: sink-templates/faucet-hq/sqlite.yaml
+suite:
+  auto:
+    enum_coverage: true
+    required_omitted: true
+    defaults_baseline: true
+  cases:
+    - name: rejects-an-unsupported-window
+      params: { ga4_property_id: "123456789", google_client_id: c, google_client_secret: s, google_refresh_token: r, report_window: 365daysAgo }
+      expect: { error: report_window }
+  behavioral:
+    - name: report-row-zips-to-named-columns
+      params: { ga4_property_id: "123456789", google_client_id: c, google_client_secret: s, google_refresh_token: r }
+      input:
+        - dimensionValues: [ { value: "20260901" }, { value: Organic Search } ]
+          metricValues: [ { value: "1204" }, { value: "980" }, { value: "311" }, { value: "4410" }, { value: "0.63" }, { value: "57" } ]
+      expect:
+        records:
+          - { date: "20260901", session_default_channel_group: Organic Search, sessions: "1204", total_users: "980", new_users: "311", screen_page_views: "4410", engagement_rate: "0.63", key_events: "57" }
+    - name: a-row-narrower-than-its-metrics-fails-the-page
+      params: { ga4_property_id: "123456789", google_client_id: c, google_client_secret: s, google_refresh_token: r }
+      input: tests/faucet-hq/google-analytics-4/records/daily_traffic.jsonl
+      expect: { error: "group 'metricValues'" }
