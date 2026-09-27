@@ -1,0 +1,3 @@
+{"balance": -500, "created": 1714003600, "currency": "usd", "delinquent": false, "email": "alan@example.com", "id": "cus_Q2b", "livemode": false, "metadata": {}, "name": "Alan Turing", "object": "customer"}
+{"balance": 0, "created": 1714000000, "currency": "usd", "delinquent": false, "email": "ada@example.com", "id": "cus_Q1a", "livemode": false, "metadata": {"segment": "smb"}, "name": "Ada Lovelace", "object": "customer"}
+{"balance": 1200, "created": 1714007200, "currency": "eur", "delinquent": true, "email": "grace@example.com", "id": "cus_Q3c", "livemode": false, "metadata": {}, "name": "Grace Hopper", "object": "customer"}

@@ -1,0 +1,516 @@
+# Recorded Stripe exchanges (shapes from the API reference, values synthetic —
+# no live credentials). Replayed by scripts/replay.py: two runs, so the
+# incremental streams (balance_transactions, events) prove their created[gt]
+# resume from the first run's bookmark.
+runs: 2
+overlay: ../../state-overlay.yaml
+params:
+  stripe_api_key: sk_test_replay
+  api_base_url: '{replay}'
+exchanges:
+- match:
+    path: /v1/customers
+    query:
+      limit: '100'
+    headers: &id001
+      authorization: Bearer sk_test_replay
+      stripe-version: '2024-06-20'
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/customers
+      has_more: true
+      data:
+      - id: cus_Q1a
+        object: customer
+        created: 1714000000
+        email: ada@example.com
+        name: Ada Lovelace
+        currency: usd
+        delinquent: false
+        balance: 0
+        livemode: false
+        metadata:
+          segment: smb
+      - id: cus_Q2b
+        object: customer
+        created: 1714003600
+        email: alan@example.com
+        name: Alan Turing
+        currency: usd
+        delinquent: false
+        balance: -500
+        livemode: false
+        metadata: {}
+- match:
+    path: /v1/customers
+    query:
+      limit: '100'
+      starting_after: cus_Q2b
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/customers
+      has_more: false
+      data:
+      - id: cus_Q3c
+        object: customer
+        created: 1714007200
+        email: grace@example.com
+        name: Grace Hopper
+        currency: eur
+        delinquent: true
+        balance: 1200
+        livemode: false
+        metadata: {}
+- match:
+    path: /v1/customers
+    query:
+      limit: '100'
+      starting_after: cus_Q3c
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/customers
+      has_more: false
+      data: []
+- match:
+    path: /v1/subscriptions
+    query:
+      limit: '100'
+      status: all
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/subscriptions
+      has_more: false
+      data:
+      - id: sub_1
+        object: subscription
+        customer: cus_Q1a
+        status: canceled
+        created: 1714100000
+        current_period_start: 1714100000
+        current_period_end: 1716692000
+        cancel_at_period_end: false
+        items:
+          object: list
+          data:
+          - id: si_1
+            price:
+              id: price_1
+            quantity: 1
+- match:
+    path: /v1/subscriptions
+    query:
+      limit: '100'
+      status: all
+      starting_after: sub_1
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/subscriptions
+      has_more: false
+      data: []
+- match:
+    path: /v1/invoices
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/invoices
+      has_more: false
+      data:
+      - id: in_1
+        object: invoice
+        customer: cus_Q1a
+        subscription: sub_1
+        status: paid
+        amount_due: 4900
+        amount_paid: 4900
+        currency: usd
+        created: 1714100100
+        period_start: 1714100000
+        period_end: 1716692000
+- match:
+    path: /v1/invoices
+    query:
+      limit: '100'
+      starting_after: in_1
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/invoices
+      has_more: false
+      data: []
+- match:
+    path: /v1/charges
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/charges
+      has_more: false
+      data:
+      - id: ch_1
+        object: charge
+        amount: 4900
+        amount_refunded: 0
+        currency: usd
+        customer: cus_Q1a
+        invoice: in_1
+        paid: true
+        status: succeeded
+        created: 1714100200
+        payment_intent: pi_1
+- match:
+    path: /v1/charges
+    query:
+      limit: '100'
+      starting_after: ch_1
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/charges
+      has_more: false
+      data: []
+- match:
+    path: /v1/refunds
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/refunds
+      has_more: false
+      data:
+      - id: re_1
+        object: refund
+        amount: 1000
+        charge: ch_1
+        currency: usd
+        status: succeeded
+        reason: requested_by_customer
+        created: 1714200000
+- match:
+    path: /v1/refunds
+    query:
+      limit: '100'
+      starting_after: re_1
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/refunds
+      has_more: false
+      data: []
+- match:
+    path: /v1/payment_intents
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/payment_intents
+      has_more: false
+      data:
+      - id: pi_1
+        object: payment_intent
+        amount: 4900
+        amount_received: 4900
+        currency: usd
+        customer: cus_Q1a
+        status: succeeded
+        created: 1714100150
+- match:
+    path: /v1/payment_intents
+    query:
+      limit: '100'
+      starting_after: pi_1
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/payment_intents
+      has_more: false
+      data: []
+- match:
+    path: /v1/products
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/products
+      has_more: false
+      data:
+      - id: prod_1
+        object: product
+        name: Pro plan
+        active: true
+        created: 1713000000
+        updated: 1713500000
+- match:
+    path: /v1/products
+    query:
+      limit: '100'
+      starting_after: prod_1
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/products
+      has_more: false
+      data: []
+- match:
+    path: /v1/prices
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/prices
+      has_more: false
+      data:
+      - id: price_1
+        object: price
+        product: prod_1
+        currency: usd
+        unit_amount: 4900
+        type: recurring
+        recurring:
+          interval: month
+          interval_count: 1
+        active: true
+        created: 1713000100
+- match:
+    path: /v1/prices
+    query:
+      limit: '100'
+      starting_after: price_1
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/prices
+      has_more: false
+      data: []
+- match:
+    path: /v1/payouts
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/payouts
+      has_more: false
+      data:
+      - id: po_1
+        object: payout
+        amount: 3900
+        currency: usd
+        arrival_date: 1714300000
+        status: paid
+        created: 1714250000
+- match:
+    path: /v1/payouts
+    query:
+      limit: '100'
+      starting_after: po_1
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/payouts
+      has_more: false
+      data: []
+- match:
+    path: /v1/balance_transactions
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+    - created[gt]
+  response:
+    body:
+      object: list
+      url: /v1/balance_transactions
+      has_more: false
+      data:
+      - id: txn_2
+        object: balance_transaction
+        amount: 4900
+        fee: 172
+        net: 4728
+        currency: usd
+        type: charge
+        source: ch_1
+        created: 1714100200
+        available_on: 1714704000
+        status: available
+      - id: txn_1
+        object: balance_transaction
+        amount: -1000
+        fee: 0
+        net: -1000
+        currency: usd
+        type: refund
+        source: re_1
+        created: 1714000500
+        available_on: 1714704000
+        status: available
+- match:
+    path: /v1/balance_transactions
+    query:
+      limit: '100'
+      starting_after: txn_1
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/balance_transactions
+      has_more: false
+      data: []
+- match:
+    path: /v1/balance_transactions
+    query:
+      limit: '100'
+      created[gt]: '1714100200'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/balance_transactions
+      has_more: false
+      data:
+      - id: txn_3
+        object: balance_transaction
+        amount: -3900
+        fee: 0
+        net: -3900
+        currency: usd
+        type: payout
+        source: po_1
+        created: 1714250000
+        available_on: 1714300000
+        status: available
+- match:
+    path: /v1/balance_transactions
+    query:
+      limit: '100'
+      created[gt]: '1714100200'
+      starting_after: txn_3
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/balance_transactions
+      has_more: false
+      data: []
+- match:
+    path: /v1/events
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+    - created[gt]
+  response:
+    body:
+      object: list
+      url: /v1/events
+      has_more: false
+      data:
+      - id: evt_1
+        object: event
+        type: customer.created
+        created: 1714000001
+        api_version: '2024-06-20'
+        data:
+          object:
+            id: cus_Q1a
+            object: customer
+- match:
+    path: /v1/events
+    query:
+      limit: '100'
+      starting_after: evt_1
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/events
+      has_more: false
+      data: []
+- match:
+    path: /v1/events
+    query:
+      limit: '100'
+      created[gt]: '1714000001'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/events
+      has_more: false
+      data:
+      - id: evt_2
+        object: event
+        type: invoice.paid
+        created: 1714100101
+        api_version: '2024-06-20'
+        data:
+          object:
+            id: in_1
+            object: invoice
+- match:
+    path: /v1/events
+    query:
+      limit: '100'
+      created[gt]: '1714000001'
+      starting_after: evt_2
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/events
+      has_more: false
+      data: []

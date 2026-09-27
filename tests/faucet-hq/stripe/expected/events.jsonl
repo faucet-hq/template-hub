@@ -1,0 +1,1 @@
+{"api_version": "2024-06-20", "created": 1714100101, "data": {"object": {"id": "in_1", "object": "invoice"}}, "id": "evt_2", "object": "event", "type": "invoice.paid"}

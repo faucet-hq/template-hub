@@ -1,0 +1,1 @@
+{"cancel_at_period_end": false, "created": 1714100000, "current_period_end": 1716692000, "current_period_start": 1714100000, "customer": "cus_Q1a", "id": "sub_1", "items": {"data": [{"id": "si_1", "price": {"id": "price_1"}, "quantity": 1}], "object": "list"}, "object": "subscription", "status": "canceled"}

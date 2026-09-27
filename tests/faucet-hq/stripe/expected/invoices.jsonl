@@ -1,0 +1,1 @@
+{"amount_due": 4900, "amount_paid": 4900, "created": 1714100100, "currency": "usd", "customer": "cus_Q1a", "id": "in_1", "object": "invoice", "period_end": 1716692000, "period_start": 1714100000, "status": "paid", "subscription": "sub_1"}

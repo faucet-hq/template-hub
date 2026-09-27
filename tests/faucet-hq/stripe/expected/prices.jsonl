@@ -1,0 +1,1 @@
+{"active": true, "created": 1713000100, "currency": "usd", "id": "price_1", "object": "price", "product": "prod_1", "recurring": {"interval": "month", "interval_count": 1}, "type": "recurring", "unit_amount": 4900}

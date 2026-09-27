@@ -1,0 +1,1 @@
+{"amount": 4900, "amount_refunded": 0, "created": 1714100200, "currency": "usd", "customer": "cus_Q1a", "id": "ch_1", "invoice": "in_1", "object": "charge", "paid": true, "payment_intent": "pi_1", "status": "succeeded"}
