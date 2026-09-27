@@ -1,0 +1,4 @@
+# Version metadata for faucet-hq/github — read by scripts/index.py and by
+# `faucet template sync`. Each merged change becomes stable (launch: true).
+launch: true
+description: "v1 — REST API version 2022-11-28; 8 streams, issues + issue_comments incremental on updated_at"

@@ -1,0 +1,229 @@
+# Recorded GitHub REST exchanges (shapes from the API reference, values
+# synthetic — no live credentials). Two runs: the second proves issues and
+# issue_comments resume with `since=<last updated_at>`; issues pages twice via
+# the Link header.
+runs: 2
+overlay: ../../state-overlay.yaml
+params:
+  github_token: ghp_replay
+  github_owner: octo-org
+  github_repo: octo-repo
+  api_base_url: '{replay}'
+exchanges:
+- match:
+    path: /repos/octo-org/octo-repo
+    headers: &id001
+      authorization: Bearer ghp_replay
+      x-github-api-version: '2022-11-28'
+      accept: application/vnd.github+json
+  response:
+    body:
+      id: 1296269
+      node_id: MDEwOlJlcG9zaXRvcnkxMjk2MjY5
+      name: octo-repo
+      full_name: octo-org/octo-repo
+      private: false
+      owner:
+        login: octo-org
+        id: 9919
+        type: Organization
+      default_branch: main
+      stargazers_count: 80
+      forks_count: 9
+      open_issues_count: 2
+      created_at: '2011-01-26T19:01:12Z'
+      updated_at: '2024-05-01T10:00:00Z'
+      pushed_at: '2024-05-01T09:00:00Z'
+- match:
+    path: /repos/octo-org/octo-repo/issues
+    headers: *id001
+    query:
+      per_page: '100'
+      state: all
+      sort: updated
+      direction: asc
+      since: '1970-01-01T00:00:00Z'
+    absent:
+    - page
+  response:
+    body:
+    - id: 1
+      number: 1347
+      title: Found a bug
+      state: closed
+      user: &id002
+        login: octocat
+        id: 583231
+        type: User
+      labels:
+      - id: 208045946
+        name: bug
+      comments: 2
+      created_at: '2024-04-01T10:00:00Z'
+      updated_at: '2024-04-02T10:00:00Z'
+      closed_at: '2024-04-02T10:00:00Z'
+    headers:
+      Link: <{replay}/repos/octo-org/octo-repo/issues?per_page=100&state=all&sort=updated&direction=asc&since=1970-01-01T00:00:00Z&page=2>; rel="next", <{replay}/repos/octo-org/octo-repo/issues?per_page=100&state=all&sort=updated&direction=asc&since=1970-01-01T00:00:00Z&page=2>;
+        rel="last"
+- match:
+    path: /repos/octo-org/octo-repo/issues
+    headers: *id001
+    query:
+      per_page: '100'
+      state: all
+      sort: updated
+      direction: asc
+      since: '1970-01-01T00:00:00Z'
+      page: '2'
+  response:
+    body:
+    - id: 2
+      number: 1348
+      title: Add dark mode
+      state: open
+      user: *id002
+      labels: []
+      comments: 0
+      created_at: '2024-04-03T10:00:00Z'
+      updated_at: '2024-04-05T10:00:00Z'
+      closed_at: null
+      pull_request:
+        url: https://api.github.com/repos/octo-org/octo-repo/pulls/1348
+    headers:
+      Link: <{replay}/repos/octo-org/octo-repo/issues?per_page=100&state=all&sort=updated&direction=asc&since=1970-01-01T00:00:00Z&page=1>; rel="first"
+- match:
+    path: /repos/octo-org/octo-repo/issues
+    headers: *id001
+    query:
+      per_page: '100'
+      state: all
+      sort: updated
+      direction: asc
+      since: '2024-04-05T10:00:00Z'
+  response:
+    body:
+    - id: 2
+      number: 1348
+      title: Add dark mode
+      state: closed
+      user: *id002
+      labels: []
+      comments: 1
+      created_at: '2024-04-03T10:00:00Z'
+      updated_at: '2024-04-09T10:00:00Z'
+      closed_at: '2024-04-09T10:00:00Z'
+      pull_request:
+        url: https://api.github.com/repos/octo-org/octo-repo/pulls/1348
+- match:
+    path: /repos/octo-org/octo-repo/issues/comments
+    headers: *id001
+    query:
+      per_page: '100'
+      sort: updated
+      direction: asc
+      since: '1970-01-01T00:00:00Z'
+  response:
+    body:
+    - id: 10
+      body: Me too
+      user: *id002
+      issue_url: https://api.github.com/repos/octo-org/octo-repo/issues/1347
+      created_at: '2024-04-01T11:00:00Z'
+      updated_at: '2024-04-01T11:00:00Z'
+- match:
+    path: /repos/octo-org/octo-repo/issues/comments
+    headers: *id001
+    query:
+      per_page: '100'
+      sort: updated
+      direction: asc
+      since: '2024-04-01T11:00:00Z'
+  response:
+    body: []
+- match:
+    path: /repos/octo-org/octo-repo/pulls
+    headers: *id001
+    query:
+      per_page: '100'
+      state: all
+      sort: updated
+      direction: desc
+  response:
+    body:
+    - id: 1
+      number: 1348
+      state: closed
+      title: Add dark mode
+      user: *id002
+      head:
+        ref: dark-mode
+        sha: 6dcb09b
+      base:
+        ref: main
+        sha: '7638417'
+      merged_at: '2024-04-09T10:00:00Z'
+      created_at: '2024-04-03T10:00:00Z'
+      updated_at: '2024-04-09T10:00:00Z'
+- match:
+    path: /repos/octo-org/octo-repo/commits
+    headers: *id001
+    query:
+      per_page: '100'
+  response:
+    body:
+    - sha: 6dcb09b5b57875f334f61aebed695e2e4193db5e
+      commit:
+        author:
+          name: Monalisa Octocat
+          email: mona@example.com
+          date: '2024-04-08T10:00:00Z'
+        message: Add dark mode
+      author: *id002
+      parents:
+      - sha: 7638417db6d59f3c431d3e1f261cc637155684cd
+- match:
+    path: /repos/octo-org/octo-repo/releases
+    headers: *id001
+    query:
+      per_page: '100'
+  response:
+    body:
+    - id: 11
+      tag_name: v1.0.0
+      name: v1.0.0
+      draft: false
+      prerelease: false
+      author: *id002
+      created_at: '2024-04-10T10:00:00Z'
+      published_at: '2024-04-10T11:00:00Z'
+- match:
+    path: /repos/octo-org/octo-repo/actions/runs
+    headers: *id001
+    query:
+      per_page: '100'
+  response:
+    body:
+      total_count: 1
+      workflow_runs:
+      - id: 30433642
+        name: CI
+        head_branch: main
+        head_sha: 6dcb09b
+        event: push
+        status: completed
+        conclusion: success
+        workflow_id: 159038
+        run_number: 562
+        created_at: '2024-04-09T10:05:00Z'
+        updated_at: '2024-04-09T10:15:00Z'
+- match:
+    path: /repos/octo-org/octo-repo/contributors
+    headers: *id001
+    query:
+      per_page: '100'
+  response:
+    body:
+    - login: octocat
+      id: 583231
+      type: User
+      contributions: 32

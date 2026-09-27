@@ -1,0 +1,25 @@
+# Parameter-space suite for faucet-hq/github (faucet template test, #648).
+# Validation tier: the composed pipeline materializes, expands and compiles for
+# every case. Behavioural tier: a recorded record through the first stream's
+# transforms. The HTTP side (Link paging, since-resume) is replay.yaml's job —
+# see scripts/replay.py.
+version: 1
+template: source-templates/faucet-hq/github.yaml
+sink: sink-templates/faucet-hq/sqlite.yaml
+suite:
+  auto:
+    required_omitted: true
+    defaults_baseline: true
+  cases:
+    - name: github-com
+      params: { github_token: ghp_replay, github_owner: octo-org, github_repo: octo-repo }
+    - name: enterprise-server
+      params: { github_token: ghp_replay, github_owner: octo-org, github_repo: octo-repo, api_base_url: "https://github.example.com/api/v3" }
+  behavioral:
+    - name: repository-record-unchanged
+      params: { github_token: ghp_replay, github_owner: octo-org, github_repo: octo-repo }
+      input: tests/faucet-hq/github/expected/repository.jsonl
+      expect:
+        match: subset
+        records:
+          - { id: 1296269, full_name: octo-org/octo-repo, default_branch: main }

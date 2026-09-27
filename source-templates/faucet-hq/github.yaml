@@ -1,0 +1,75 @@
+# GitHub — one repository's issues, pull requests, commits, releases and
+# Actions runs over the REST API.
+#   faucet run --source faucet-hq/github --sink faucet-hq/postgres \
+#     --param github_token="$GITHUB_TOKEN" --param github_owner=octo-org --param github_repo=octo-repo …
+# Scopes, run times and the changelog: github.md beside this file.
+kind: source-template
+name: github
+owner: faucet-hq
+description: GitHub — a repository's issues, issue comments, pull requests, commits, releases, Actions workflow runs, contributors and metadata
+tags: [engineering, developer-tools, saas]
+docs: https://docs.github.com/en/rest
+params:
+  github_token: { type: string, required: true, secret: true, description: "Fine-grained personal access token (or GitHub App installation token) with read access to the repository" }
+  github_owner: { type: string, required: true, description: "Repository owner — a user or organization login" }
+  github_repo:  { type: string, required: true, description: "Repository name" }
+  api_base_url: { type: string, default: "https://api.github.com", description: "API root — https://<host>/api/v3 for GitHub Enterprise Server" }
+source:
+  type: rest
+  config:
+    base_url: "${param.api_base_url}"
+    auth: { type: bearer, config: { token: "${param.github_token}" } }
+    headers:
+      Accept: application/vnd.github+json
+      X-GitHub-Api-Version: "2022-11-28"
+    query_params: { per_page: "100" }
+    pagination: { type: LinkHeader }
+    max_pages: null
+    max_retries: 5
+streams:
+  - name: repository
+    source: { config: { path: "/repos/${param.github_owner}/${param.github_repo}", pagination: { type: None } } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: issues
+    source:
+      config:
+        path: "/repos/${param.github_owner}/${param.github_repo}/issues?since={since}"
+        query_params: { state: all, sort: updated, direction: asc }
+        replication_method: { type: Incremental }
+        replication_key: updated_at
+        start_replication_value: "1970-01-01T00:00:00Z"
+        replication_bind: { into: path, name: since, format: raw }
+    primary_keys: [id]
+    write: [upsert, overwrite]
+  - name: issue_comments
+    source:
+      config:
+        path: "/repos/${param.github_owner}/${param.github_repo}/issues/comments?since={since}"
+        query_params: { sort: updated, direction: asc }
+        replication_method: { type: Incremental }
+        replication_key: updated_at
+        start_replication_value: "1970-01-01T00:00:00Z"
+        replication_bind: { into: path, name: since, format: raw }
+    primary_keys: [id]
+    write: [upsert, overwrite]
+  - name: pull_requests
+    source: { config: { path: "/repos/${param.github_owner}/${param.github_repo}/pulls", query_params: { state: all, sort: updated, direction: desc } } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: commits
+    source: { config: { path: "/repos/${param.github_owner}/${param.github_repo}/commits" } }
+    primary_keys: [sha]
+    write: [overwrite, upsert]
+  - name: releases
+    source: { config: { path: "/repos/${param.github_owner}/${param.github_repo}/releases" } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: workflow_runs
+    source: { config: { path: "/repos/${param.github_owner}/${param.github_repo}/actions/runs", records_path: "$.workflow_runs[*]" } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: contributors
+    source: { config: { path: "/repos/${param.github_owner}/${param.github_repo}/contributors" } }
+    primary_keys: [id]
+    write: [overwrite, upsert]

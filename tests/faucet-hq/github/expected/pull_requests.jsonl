@@ -1,0 +1,1 @@
+{"base": {"ref": "main", "sha": "7638417"}, "created_at": "2024-04-03T10:00:00Z", "head": {"ref": "dark-mode", "sha": "6dcb09b"}, "id": 1, "merged_at": "2024-04-09T10:00:00Z", "number": 1348, "state": "closed", "title": "Add dark mode", "updated_at": "2024-04-09T10:00:00Z", "user": {"id": 583231, "login": "octocat", "type": "User"}}
