@@ -1,0 +1,88 @@
+# Meta Ads (Facebook / Instagram) — the ad account, campaigns, ad sets, ads,
+# creatives and daily ad-level insights (async report runs) over the Marketing API.
+#   faucet run --source faucet-hq/meta-ads --sink faucet-hq/bigquery \
+#     --param meta_ad_account_id=1234567890 --param meta_access_token="$META_TOKEN" …
+# Scopes, run times and the changelog: meta-ads.md beside this file.
+kind: source-template
+name: meta-ads
+owner: faucet-hq
+description: Meta Ads — ad account, campaigns, ad sets, ads, creatives and daily ad-level insights via async report runs (Marketing API v24.0)
+tags: [advertising, marketing, social, saas]
+docs: https://developers.facebook.com/docs/marketing-api
+params:
+  meta_ad_account_id: { type: string, required: true, description: "Ad account id, digits only (without the act_ prefix)" }
+  meta_access_token:  { type: string, required: true, secret: true, description: "System-user (or long-lived user) access token with ads_read" }
+  insights_window:    { type: string, default: last_28d, values: [last_7d, last_14d, last_28d, last_30d, last_90d], description: "Rolling date preset the insights stream re-reads each run (attribution settles for up to 28 days)" }
+  api_base_url:       { type: string, default: "https://graph.facebook.com", description: "API root — override only to replay recorded fixtures" }
+source:
+  type: rest
+  config:
+    base_url: "${param.api_base_url}"
+    auth: { type: bearer, config: { token: "${param.meta_access_token}" } }
+    records_path: $.data[*]
+    pagination: { type: NextLinkInBody, next_link_path: $.paging.next }
+    max_pages: null
+    max_retries: 8
+    retry_backoff: 5
+streams:
+  - name: ad_account
+    source:
+      config:
+        path: "/v24.0/act_${param.meta_ad_account_id}"
+        query_params: { fields: "id,account_id,name,account_status,currency,timezone_name,amount_spent,balance,spend_cap,business,created_time" }
+        records_path: null
+        pagination: { type: None }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: campaigns
+    source:
+      config:
+        path: "/v24.0/act_${param.meta_ad_account_id}/campaigns"
+        query_params: { fields: "id,name,status,effective_status,objective,buying_type,daily_budget,lifetime_budget,budget_remaining,start_time,stop_time,created_time,updated_time", limit: "500" }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: ad_sets
+    source:
+      config:
+        path: "/v24.0/act_${param.meta_ad_account_id}/adsets"
+        query_params: { fields: "id,name,campaign_id,status,effective_status,optimization_goal,billing_event,bid_strategy,daily_budget,lifetime_budget,targeting,start_time,end_time,created_time,updated_time", limit: "500" }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: ads
+    source:
+      config:
+        path: "/v24.0/act_${param.meta_ad_account_id}/ads"
+        query_params: { fields: "id,name,adset_id,campaign_id,status,effective_status,creative{id},created_time,updated_time", limit: "500" }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: ad_creatives
+    source:
+      config:
+        path: "/v24.0/act_${param.meta_ad_account_id}/adcreatives"
+        query_params: { fields: "id,name,title,body,object_type,status,call_to_action_type,thumbnail_url", limit: "500" }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: ad_insights
+    source:
+      config:
+        pagination: { type: None }
+        async_job:
+          submit:
+            method: POST
+            url: "/v24.0/act_${param.meta_ad_account_id}/insights"
+            query:
+              level: ad
+              time_increment: "1"
+              date_preset: "${param.insights_window}"
+              fields: "account_id,campaign_id,campaign_name,adset_id,adset_name,ad_id,ad_name,date_start,date_stop,impressions,reach,frequency,clicks,unique_clicks,ctr,cpc,cpm,spend,actions,action_values"
+          job_id: $.report_run_id
+          poll: { url: "/v24.0/${job_id}", interval_secs: 15, timeout_secs: 3600 }
+          status: { path: $.async_status, success: ["Job Completed"], failure: ["Job Failed", "Job Skipped"] }
+          fetch:
+            url: "/v24.0/${job_id}/insights"
+            query: { limit: "500" }
+            records_path: $.data[*]
+            locator_body: $.paging.cursors.after
+            locator_param: after
+    primary_keys: [ad_id, date_start]
+    write: [upsert, overwrite]

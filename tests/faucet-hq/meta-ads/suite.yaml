@@ -1,0 +1,25 @@
+# Parameter-space suite for faucet-hq/meta-ads (faucet template test, #648).
+# Validation tier: the composed pipeline (including the async insights job)
+# materializes, expands and compiles for every case — every insights_window
+# value included. Behavioural tier: a recorded account record through the
+# first stream's transforms. The HTTP side is replay.yaml's job.
+version: 1
+template: source-templates/faucet-hq/meta-ads.yaml
+sink: sink-templates/faucet-hq/sqlite.yaml
+suite:
+  auto:
+    enum_coverage: true
+    required_omitted: true
+    defaults_baseline: true
+  cases:
+    - name: rejects-an-unsupported-window
+      params: { meta_ad_account_id: "1234567890", meta_access_token: EAAreplay, insights_window: lifetime }
+      expect: { error: insights_window }
+  behavioral:
+    - name: ad-account-record-unchanged
+      params: { meta_ad_account_id: "1234567890", meta_access_token: EAAreplay }
+      input: tests/faucet-hq/meta-ads/expected/ad_account.jsonl
+      expect:
+        match: subset
+        records:
+          - { id: act_1234567890, currency: USD, business: { name: Acme } }
