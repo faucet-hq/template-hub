@@ -1,5 +1,5 @@
 {
-  "commit": "cc5b1a8e2e6c9781ae4158eb9af9cd44da07cb2e",
+  "commit": "9854d622fb04af2d63e3cdb0552e29bbd3da4947",
   "generated_by": "scripts/index.py",
   "matrix": [
     {
@@ -153,6 +153,1610 @@
           "write_mode": "upsert"
         }
       ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/github --sink faucet-hq/bigquery \\\n  --param github_owner=<github_owner> \\\n  --param github_repo=<github_repo> \\\n  --param github_token=\"$GITHUB_TOKEN\" \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/bigquery",
+      "source": "faucet-hq/github",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "repository",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "issues",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "issue_comments",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "pull_requests",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "commits",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "releases",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "workflow_runs",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "contributors",
+          "write_mode": "overwrite"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/github --sink faucet-hq/jsonl \\\n  --param github_owner=<github_owner> \\\n  --param github_repo=<github_repo> \\\n  --param github_token=\"$GITHUB_TOKEN\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/jsonl",
+      "source": "faucet-hq/github",
+      "streams": [
+        {
+          "satisfies": "overwrite",
+          "stream": "repository",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "issues",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "issue_comments",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "pull_requests",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "commits",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "releases",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "workflow_runs",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "contributors",
+          "write_mode": "append"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/github --sink faucet-hq/postgres \\\n  --param github_owner=<github_owner> \\\n  --param github_repo=<github_repo> \\\n  --param github_token=\"$GITHUB_TOKEN\" \\\n  --param pg_url=\"$PG_URL\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/postgres",
+      "source": "faucet-hq/github",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "repository",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "issues",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "issue_comments",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "pull_requests",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "commits",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "releases",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "workflow_runs",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "contributors",
+          "write_mode": "overwrite"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/github --sink faucet-hq/sqlite \\\n  --param github_owner=<github_owner> \\\n  --param github_repo=<github_repo> \\\n  --param github_token=\"$GITHUB_TOKEN\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/sqlite",
+      "source": "faucet-hq/github",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "repository",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "issues",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "issue_comments",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "pull_requests",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "commits",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "releases",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "workflow_runs",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "contributors",
+          "write_mode": "overwrite"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/google-ads --sink faucet-hq/bigquery \\\n  --param google_ads_customer_id=<google_ads_customer_id> \\\n  --param google_ads_developer_token=\"$GOOGLE_ADS_DEVELOPER_TOKEN\" \\\n  --param google_ads_login_customer_id=<google_ads_login_customer_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\" \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/bigquery",
+      "source": "faucet-hq/google-ads",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "campaigns",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_groups",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ads",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "campaign_performance",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_group_performance",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "keyword_performance",
+          "write_mode": "upsert"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/google-ads --sink faucet-hq/jsonl \\\n  --param google_ads_customer_id=<google_ads_customer_id> \\\n  --param google_ads_developer_token=\"$GOOGLE_ADS_DEVELOPER_TOKEN\" \\\n  --param google_ads_login_customer_id=<google_ads_login_customer_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/jsonl",
+      "source": "faucet-hq/google-ads",
+      "streams": [
+        {
+          "satisfies": "overwrite",
+          "stream": "campaigns",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "ad_groups",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "ads",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "campaign_performance",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "ad_group_performance",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "keyword_performance",
+          "write_mode": "append"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/google-ads --sink faucet-hq/postgres \\\n  --param google_ads_customer_id=<google_ads_customer_id> \\\n  --param google_ads_developer_token=\"$GOOGLE_ADS_DEVELOPER_TOKEN\" \\\n  --param google_ads_login_customer_id=<google_ads_login_customer_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\" \\\n  --param pg_url=\"$PG_URL\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/postgres",
+      "source": "faucet-hq/google-ads",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "campaigns",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_groups",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ads",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "campaign_performance",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_group_performance",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "keyword_performance",
+          "write_mode": "upsert"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/google-ads --sink faucet-hq/sqlite \\\n  --param google_ads_customer_id=<google_ads_customer_id> \\\n  --param google_ads_developer_token=\"$GOOGLE_ADS_DEVELOPER_TOKEN\" \\\n  --param google_ads_login_customer_id=<google_ads_login_customer_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/sqlite",
+      "source": "faucet-hq/google-ads",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "campaigns",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_groups",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ads",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "campaign_performance",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_group_performance",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "keyword_performance",
+          "write_mode": "upsert"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/hubspot --sink faucet-hq/bigquery \\\n  --param hubspot_token=\"$HUBSPOT_TOKEN\" \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/bigquery",
+      "source": "faucet-hq/hubspot",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "contacts",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "companies",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "deals",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "tickets",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "products",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "owners",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "deal_pipelines",
+          "write_mode": "overwrite"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/hubspot --sink faucet-hq/jsonl \\\n  --param hubspot_token=\"$HUBSPOT_TOKEN\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/jsonl",
+      "source": "faucet-hq/hubspot",
+      "streams": [
+        {
+          "satisfies": "overwrite",
+          "stream": "contacts",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "companies",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "deals",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "tickets",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "products",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "owners",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "deal_pipelines",
+          "write_mode": "append"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/hubspot --sink faucet-hq/postgres \\\n  --param hubspot_token=\"$HUBSPOT_TOKEN\" \\\n  --param pg_url=\"$PG_URL\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/postgres",
+      "source": "faucet-hq/hubspot",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "contacts",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "companies",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "deals",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "tickets",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "products",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "owners",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "deal_pipelines",
+          "write_mode": "overwrite"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/hubspot --sink faucet-hq/sqlite \\\n  --param hubspot_token=\"$HUBSPOT_TOKEN\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/sqlite",
+      "source": "faucet-hq/hubspot",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "contacts",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "companies",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "deals",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "tickets",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "products",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "owners",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "deal_pipelines",
+          "write_mode": "overwrite"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/jira --sink faucet-hq/bigquery \\\n  --param jira_api_token=\"$JIRA_API_TOKEN\" \\\n  --param jira_email=<jira_email> \\\n  --param jira_url=<jira_url> \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/bigquery",
+      "source": "faucet-hq/jira",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "issues",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "projects",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "users",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "fields",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "statuses",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "issue_types",
+          "write_mode": "overwrite"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/jira --sink faucet-hq/jsonl \\\n  --param jira_api_token=\"$JIRA_API_TOKEN\" \\\n  --param jira_email=<jira_email> \\\n  --param jira_url=<jira_url>",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/jsonl",
+      "source": "faucet-hq/jira",
+      "streams": [
+        {
+          "satisfies": "overwrite",
+          "stream": "issues",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "projects",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "users",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "fields",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "statuses",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "issue_types",
+          "write_mode": "append"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/jira --sink faucet-hq/postgres \\\n  --param jira_api_token=\"$JIRA_API_TOKEN\" \\\n  --param jira_email=<jira_email> \\\n  --param jira_url=<jira_url> \\\n  --param pg_url=\"$PG_URL\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/postgres",
+      "source": "faucet-hq/jira",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "issues",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "projects",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "users",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "fields",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "statuses",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "issue_types",
+          "write_mode": "overwrite"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/jira --sink faucet-hq/sqlite \\\n  --param jira_api_token=\"$JIRA_API_TOKEN\" \\\n  --param jira_email=<jira_email> \\\n  --param jira_url=<jira_url>",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/sqlite",
+      "source": "faucet-hq/jira",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "issues",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "projects",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "users",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "fields",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "statuses",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "issue_types",
+          "write_mode": "overwrite"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/meta-ads --sink faucet-hq/bigquery \\\n  --param meta_access_token=\"$META_ACCESS_TOKEN\" \\\n  --param meta_ad_account_id=<meta_ad_account_id> \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/bigquery",
+      "source": "faucet-hq/meta-ads",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "ad_account",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "campaigns",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_sets",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ads",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_creatives",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_insights",
+          "write_mode": "upsert"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/meta-ads --sink faucet-hq/jsonl \\\n  --param meta_access_token=\"$META_ACCESS_TOKEN\" \\\n  --param meta_ad_account_id=<meta_ad_account_id>",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/jsonl",
+      "source": "faucet-hq/meta-ads",
+      "streams": [
+        {
+          "satisfies": "overwrite",
+          "stream": "ad_account",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "campaigns",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "ad_sets",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "ads",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "ad_creatives",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "ad_insights",
+          "write_mode": "append"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/meta-ads --sink faucet-hq/postgres \\\n  --param meta_access_token=\"$META_ACCESS_TOKEN\" \\\n  --param meta_ad_account_id=<meta_ad_account_id> \\\n  --param pg_url=\"$PG_URL\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/postgres",
+      "source": "faucet-hq/meta-ads",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "ad_account",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "campaigns",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_sets",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ads",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_creatives",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_insights",
+          "write_mode": "upsert"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/meta-ads --sink faucet-hq/sqlite \\\n  --param meta_access_token=\"$META_ACCESS_TOKEN\" \\\n  --param meta_ad_account_id=<meta_ad_account_id>",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/sqlite",
+      "source": "faucet-hq/meta-ads",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "ad_account",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "campaigns",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_sets",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ads",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_creatives",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_insights",
+          "write_mode": "upsert"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/salesforce --sink faucet-hq/bigquery \\\n  --param salesforce_client_id=<salesforce_client_id> \\\n  --param salesforce_client_secret=\"$SALESFORCE_CLIENT_SECRET\" \\\n  --param salesforce_instance_url=<salesforce_instance_url> \\\n  --param salesforce_refresh_token=\"$SALESFORCE_REFRESH_TOKEN\" \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/bigquery",
+      "source": "faucet-hq/salesforce",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "accounts",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "contacts",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "leads",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "opportunities",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "users",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "campaigns",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "tasks",
+          "write_mode": "upsert"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/salesforce --sink faucet-hq/jsonl \\\n  --param salesforce_client_id=<salesforce_client_id> \\\n  --param salesforce_client_secret=\"$SALESFORCE_CLIENT_SECRET\" \\\n  --param salesforce_instance_url=<salesforce_instance_url> \\\n  --param salesforce_refresh_token=\"$SALESFORCE_REFRESH_TOKEN\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/jsonl",
+      "source": "faucet-hq/salesforce",
+      "streams": [
+        {
+          "satisfies": "overwrite",
+          "stream": "accounts",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "contacts",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "leads",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "opportunities",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "users",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "campaigns",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "tasks",
+          "write_mode": "append"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/salesforce --sink faucet-hq/postgres \\\n  --param salesforce_client_id=<salesforce_client_id> \\\n  --param salesforce_client_secret=\"$SALESFORCE_CLIENT_SECRET\" \\\n  --param salesforce_instance_url=<salesforce_instance_url> \\\n  --param salesforce_refresh_token=\"$SALESFORCE_REFRESH_TOKEN\" \\\n  --param pg_url=\"$PG_URL\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/postgres",
+      "source": "faucet-hq/salesforce",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "accounts",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "contacts",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "leads",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "opportunities",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "users",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "campaigns",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "tasks",
+          "write_mode": "upsert"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/salesforce --sink faucet-hq/sqlite \\\n  --param salesforce_client_id=<salesforce_client_id> \\\n  --param salesforce_client_secret=\"$SALESFORCE_CLIENT_SECRET\" \\\n  --param salesforce_instance_url=<salesforce_instance_url> \\\n  --param salesforce_refresh_token=\"$SALESFORCE_REFRESH_TOKEN\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/sqlite",
+      "source": "faucet-hq/salesforce",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "accounts",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "contacts",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "leads",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "opportunities",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "users",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "campaigns",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "tasks",
+          "write_mode": "upsert"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/shopify --sink faucet-hq/bigquery \\\n  --param shopify_access_token=\"$SHOPIFY_ACCESS_TOKEN\" \\\n  --param shopify_store_url=<shopify_store_url> \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/bigquery",
+      "source": "faucet-hq/shopify",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "orders",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "customers",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "products",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "custom_collections",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "smart_collections",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "locations",
+          "write_mode": "overwrite"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/shopify --sink faucet-hq/jsonl \\\n  --param shopify_access_token=\"$SHOPIFY_ACCESS_TOKEN\" \\\n  --param shopify_store_url=<shopify_store_url>",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/jsonl",
+      "source": "faucet-hq/shopify",
+      "streams": [
+        {
+          "satisfies": "overwrite",
+          "stream": "orders",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "customers",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "products",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "custom_collections",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "smart_collections",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "locations",
+          "write_mode": "append"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/shopify --sink faucet-hq/postgres \\\n  --param shopify_access_token=\"$SHOPIFY_ACCESS_TOKEN\" \\\n  --param shopify_store_url=<shopify_store_url> \\\n  --param pg_url=\"$PG_URL\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/postgres",
+      "source": "faucet-hq/shopify",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "orders",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "customers",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "products",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "custom_collections",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "smart_collections",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "locations",
+          "write_mode": "overwrite"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/shopify --sink faucet-hq/sqlite \\\n  --param shopify_access_token=\"$SHOPIFY_ACCESS_TOKEN\" \\\n  --param shopify_store_url=<shopify_store_url>",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/sqlite",
+      "source": "faucet-hq/shopify",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "orders",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "customers",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "products",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "custom_collections",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "smart_collections",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "locations",
+          "write_mode": "overwrite"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/stripe --sink faucet-hq/bigquery \\\n  --param stripe_api_key=\"$STRIPE_API_KEY\" \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/bigquery",
+      "source": "faucet-hq/stripe",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "customers",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "subscriptions",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "invoices",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "charges",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "refunds",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "payment_intents",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "products",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "prices",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "payouts",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "balance_transactions",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "events",
+          "write_mode": "upsert"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/stripe --sink faucet-hq/jsonl \\\n  --param stripe_api_key=\"$STRIPE_API_KEY\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/jsonl",
+      "source": "faucet-hq/stripe",
+      "streams": [
+        {
+          "satisfies": "overwrite",
+          "stream": "customers",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "subscriptions",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "invoices",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "charges",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "refunds",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "payment_intents",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "products",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "prices",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "payouts",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "balance_transactions",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "events",
+          "write_mode": "append"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/stripe --sink faucet-hq/postgres \\\n  --param stripe_api_key=\"$STRIPE_API_KEY\" \\\n  --param pg_url=\"$PG_URL\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/postgres",
+      "source": "faucet-hq/stripe",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "customers",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "subscriptions",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "invoices",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "charges",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "refunds",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "payment_intents",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "products",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "prices",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "payouts",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "balance_transactions",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "events",
+          "write_mode": "upsert"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/stripe --sink faucet-hq/sqlite \\\n  --param stripe_api_key=\"$STRIPE_API_KEY\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/sqlite",
+      "source": "faucet-hq/stripe",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "customers",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "subscriptions",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "invoices",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "charges",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "refunds",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "payment_intents",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "products",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "prices",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "payouts",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "balance_transactions",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "events",
+          "write_mode": "upsert"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/zendesk --sink faucet-hq/bigquery \\\n  --param zendesk_api_token=\"$ZENDESK_API_TOKEN\" \\\n  --param zendesk_email=<zendesk_email> \\\n  --param zendesk_url=<zendesk_url> \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/bigquery",
+      "source": "faucet-hq/zendesk",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "tickets",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "users",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "organizations",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "satisfaction_ratings",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "groups",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ticket_metrics",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ticket_fields",
+          "write_mode": "overwrite"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/zendesk --sink faucet-hq/jsonl \\\n  --param zendesk_api_token=\"$ZENDESK_API_TOKEN\" \\\n  --param zendesk_email=<zendesk_email> \\\n  --param zendesk_url=<zendesk_url>",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/jsonl",
+      "source": "faucet-hq/zendesk",
+      "streams": [
+        {
+          "satisfies": "overwrite",
+          "stream": "tickets",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "users",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "organizations",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "satisfaction_ratings",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "groups",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "ticket_metrics",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "ticket_fields",
+          "write_mode": "append"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/zendesk --sink faucet-hq/postgres \\\n  --param zendesk_api_token=\"$ZENDESK_API_TOKEN\" \\\n  --param zendesk_email=<zendesk_email> \\\n  --param zendesk_url=<zendesk_url> \\\n  --param pg_url=\"$PG_URL\"",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/postgres",
+      "source": "faucet-hq/zendesk",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "tickets",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "users",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "organizations",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "satisfaction_ratings",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "groups",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ticket_metrics",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ticket_fields",
+          "write_mode": "overwrite"
+        }
+      ]
+    },
+    {
+      "command": "faucet run --source faucet-hq/zendesk --sink faucet-hq/sqlite \\\n  --param zendesk_api_token=\"$ZENDESK_API_TOKEN\" \\\n  --param zendesk_email=<zendesk_email> \\\n  --param zendesk_url=<zendesk_url>",
+      "compatible": true,
+      "incompatible": [],
+      "sink": "faucet-hq/sqlite",
+      "source": "faucet-hq/zendesk",
+      "streams": [
+        {
+          "satisfies": null,
+          "stream": "tickets",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "users",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "organizations",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "satisfaction_ratings",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "groups",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ticket_metrics",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ticket_fields",
+          "write_mode": "overwrite"
+        }
+      ]
     }
   ],
   "sinks": [
@@ -204,7 +1808,7 @@
         "open_issues": 0,
         "publisher": {
           "account_age_days": 52,
-          "templates": 6
+          "templates": 15
         },
         "stable_since": "2026-09-24",
         "star_url": "https://github.com/faucet-hq/template-hub/discussions/3",
@@ -258,7 +1862,7 @@
         "open_issues": 0,
         "publisher": {
           "account_age_days": 52,
-          "templates": 6
+          "templates": 15
         },
         "stable_since": "2026-09-24",
         "star_url": "https://github.com/faucet-hq/template-hub/discussions/4",
@@ -316,7 +1920,7 @@
         "open_issues": 0,
         "publisher": {
           "account_age_days": 52,
-          "templates": 6
+          "templates": 15
         },
         "stable_since": "2026-09-24",
         "star_url": "https://github.com/faucet-hq/template-hub/discussions/5",
@@ -370,7 +1974,7 @@
         "open_issues": 0,
         "publisher": {
           "account_age_days": 52,
-          "templates": 6
+          "templates": 15
         },
         "stable_since": "2026-09-24",
         "star_url": "https://github.com/faucet-hq/template-hub/discussions/6",
@@ -451,7 +2055,7 @@
         "open_issues": 0,
         "publisher": {
           "account_age_days": 52,
-          "templates": 6
+          "templates": 15
         },
         "stable_since": "2026-09-24",
         "star_url": "https://github.com/faucet-hq/template-hub/discussions/1",
@@ -532,7 +2136,7 @@
         "open_issues": 0,
         "publisher": {
           "account_age_days": 52,
-          "templates": 6
+          "templates": 15
         },
         "stable_since": "2026-09-24",
         "star_url": "https://github.com/faucet-hq/template-hub/discussions/2",
@@ -543,6 +2147,1423 @@
         {
           "commit": "573ccd81d09cf2ca0689707ab96c6c48fd3d3582",
           "date": "2026-09-24T07:49:25+05:30",
+          "pr": null,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "description": "GitHub — a repository's issues, issue comments, pull requests, commits, releases, Actions workflow runs, contributors and metadata",
+      "docs": "https://docs.github.com/en/rest",
+      "file": "source-templates/faucet-hq/github.yaml",
+      "id": "faucet-hq/github",
+      "live_versions": [
+        1
+      ],
+      "name": "github",
+      "newest": 1,
+      "official": true,
+      "owner": "faucet-hq",
+      "params": [
+        {
+          "default": "https://api.github.com",
+          "description": "API root — https://<host>/api/v3 for GitHub Enterprise Server",
+          "name": "api_base_url",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Repository owner — a user or organization login",
+          "name": "github_owner",
+          "required": true,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Repository name",
+          "name": "github_repo",
+          "required": true,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Fine-grained personal access token (or GitHub App installation token) with read access to the repository",
+          "name": "github_token",
+          "required": true,
+          "secret": true,
+          "type": "string"
+        }
+      ],
+      "source_type": "rest",
+      "stable": 1,
+      "streams": [
+        {
+          "description": null,
+          "name": "repository",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "issues",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "issue_comments",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "pull_requests",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "commits",
+          "primary_keys": [
+            "sha"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "releases",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "workflow_runs",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "contributors",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        }
+      ],
+      "tags": [
+        "engineering",
+        "developer-tools",
+        "saas"
+      ],
+      "trust": {
+        "compatible_sinks": 4,
+        "publisher": {
+          "templates": 15
+        },
+        "stable_since": "2026-09-27",
+        "updated": "2026-09-27"
+      },
+      "versions": [
+        {
+          "commit": "35af7bd84aac97ad968062d073f36a58c6c9f7ad",
+          "date": "2026-09-27T16:49:39+05:30",
+          "pr": null,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "description": "Google Ads — campaigns, ad groups, ads, and daily campaign / ad group / keyword performance over a rolling window (Google Ads API v22, GAQL)",
+      "docs": "https://developers.google.com/google-ads/api/docs/start",
+      "file": "source-templates/faucet-hq/google-ads.yaml",
+      "id": "faucet-hq/google-ads",
+      "live_versions": [
+        1
+      ],
+      "name": "google-ads",
+      "newest": 1,
+      "official": true,
+      "owner": "faucet-hq",
+      "params": [
+        {
+          "default": "https://googleads.googleapis.com",
+          "description": "API root — override only to replay recorded fixtures",
+          "name": "api_base_url",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Account to read, 10 digits without dashes",
+          "name": "google_ads_customer_id",
+          "required": true,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Google Ads API developer token (API Center of a manager account)",
+          "name": "google_ads_developer_token",
+          "required": true,
+          "secret": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Manager account the credentials act through, 10 digits without dashes — the customer id itself for direct access",
+          "name": "google_ads_login_customer_id",
+          "required": true,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "OAuth client id (Google Cloud console)",
+          "name": "google_client_id",
+          "required": true,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "OAuth client secret",
+          "name": "google_client_secret",
+          "required": true,
+          "secret": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "OAuth refresh token with the https://www.googleapis.com/auth/adwords scope",
+          "name": "google_refresh_token",
+          "required": true,
+          "secret": true,
+          "type": "string"
+        },
+        {
+          "default": "https://oauth2.googleapis.com/token",
+          "description": "OAuth token endpoint — override only to replay recorded fixtures",
+          "name": "google_token_url",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": "LAST_30_DAYS",
+          "description": "Rolling window the performance streams re-read each run (conversions settle for days)",
+          "name": "performance_window",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        }
+      ],
+      "source_type": "rest",
+      "stable": 1,
+      "streams": [
+        {
+          "description": null,
+          "name": "campaigns",
+          "primary_keys": [
+            "campaign_id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "ad_groups",
+          "primary_keys": [
+            "ad_group_id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "ads",
+          "primary_keys": [
+            "ad_group_id",
+            "ad_group_ad_ad_id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "campaign_performance",
+          "primary_keys": [
+            "segments_date",
+            "campaign_id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "ad_group_performance",
+          "primary_keys": [
+            "segments_date",
+            "ad_group_id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "keyword_performance",
+          "primary_keys": [
+            "segments_date",
+            "ad_group_id",
+            "ad_group_criterion_criterion_id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        }
+      ],
+      "tags": [
+        "advertising",
+        "marketing",
+        "saas"
+      ],
+      "trust": {
+        "compatible_sinks": 4,
+        "publisher": {
+          "templates": 15
+        },
+        "stable_since": "2026-09-27",
+        "updated": "2026-09-27"
+      },
+      "versions": [
+        {
+          "commit": "b0a1b93daffe469434b902cd759d8118401d4f69",
+          "date": "2026-09-27T17:02:01+05:30",
+          "pr": null,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "description": "HubSpot CRM — contacts, companies, deals, tickets, products, owners and deal pipelines (CRM v3), properties lifted to columns",
+      "docs": "https://developers.hubspot.com/docs/api/crm/understanding-the-crm",
+      "file": "source-templates/faucet-hq/hubspot.yaml",
+      "id": "faucet-hq/hubspot",
+      "live_versions": [
+        1
+      ],
+      "name": "hubspot",
+      "newest": 1,
+      "official": true,
+      "owner": "faucet-hq",
+      "params": [
+        {
+          "default": "https://api.hubapi.com",
+          "description": "API root — override only to replay recorded fixtures",
+          "name": "api_base_url",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": "name,domain,industry,city,state,country,numberofemployees,annualrevenue,lifecyclestage,hubspot_owner_id,createdate,hs_lastmodifieddate",
+          "description": "Comma-separated company properties to read",
+          "name": "company_properties",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": "email,firstname,lastname,phone,company,jobtitle,lifecyclestage,hs_lead_status,hubspot_owner_id,createdate,lastmodifieddate",
+          "description": "Comma-separated contact properties to read",
+          "name": "contact_properties",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": "dealname,amount,dealstage,pipeline,closedate,dealtype,hubspot_owner_id,hs_is_closed_won,createdate,hs_lastmodifieddate",
+          "description": "Comma-separated deal properties to read",
+          "name": "deal_properties",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Private app access token (Settings → Integrations → Private Apps)",
+          "name": "hubspot_token",
+          "required": true,
+          "secret": true,
+          "type": "string"
+        },
+        {
+          "default": "name,description,price,hs_sku,hs_recurring_billing_period,createdate,hs_lastmodifieddate",
+          "description": "Comma-separated product properties to read",
+          "name": "product_properties",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": "subject,content,hs_pipeline,hs_pipeline_stage,hs_ticket_priority,hs_ticket_category,hubspot_owner_id,closed_date,createdate,hs_lastmodifieddate",
+          "description": "Comma-separated ticket properties to read",
+          "name": "ticket_properties",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        }
+      ],
+      "source_type": "rest",
+      "stable": 1,
+      "streams": [
+        {
+          "description": null,
+          "name": "contacts",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "companies",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "deals",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "tickets",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "products",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "owners",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "deal_pipelines",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        }
+      ],
+      "tags": [
+        "crm",
+        "marketing",
+        "sales",
+        "saas"
+      ],
+      "trust": {
+        "compatible_sinks": 4,
+        "publisher": {
+          "templates": 15
+        },
+        "stable_since": "2026-09-27",
+        "updated": "2026-09-27"
+      },
+      "versions": [
+        {
+          "commit": "6711bdb3e01b044e66ad7ba383c19c886fd53672",
+          "date": "2026-09-27T16:53:11+05:30",
+          "pr": null,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "description": "Jira Cloud — issues (JQL enhanced search), projects, users, fields, statuses and issue types (REST API v3)",
+      "docs": "https://developer.atlassian.com/cloud/jira/platform/rest/v3/",
+      "file": "source-templates/faucet-hq/jira.yaml",
+      "id": "faucet-hq/jira",
+      "live_versions": [
+        1
+      ],
+      "name": "jira",
+      "newest": 1,
+      "official": true,
+      "owner": "faucet-hq",
+      "params": [
+        {
+          "default": "*navigable",
+          "description": "Comma-separated issue fields to return (`*navigable`, `*all`, or a list)",
+          "name": "issue_fields",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": "updated >= \"2000-01-01\" ORDER BY updated ASC",
+          "description": "JQL selecting the issues to sync (must be bounded — the enhanced search rejects an unrestricted query)",
+          "name": "issues_jql",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Atlassian API token (id.atlassian.com → Security → API tokens)",
+          "name": "jira_api_token",
+          "required": true,
+          "secret": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Atlassian account email the API token belongs to",
+          "name": "jira_email",
+          "required": true,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Your Jira Cloud site, e.g. https://acme.atlassian.net",
+          "name": "jira_url",
+          "required": true,
+          "secret": false,
+          "type": "string"
+        }
+      ],
+      "source_type": "rest",
+      "stable": 1,
+      "streams": [
+        {
+          "description": null,
+          "name": "issues",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "projects",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "users",
+          "primary_keys": [
+            "account_id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "fields",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "statuses",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "issue_types",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        }
+      ],
+      "tags": [
+        "engineering",
+        "project-management",
+        "saas"
+      ],
+      "trust": {
+        "compatible_sinks": 4,
+        "publisher": {
+          "templates": 15
+        },
+        "stable_since": "2026-09-27",
+        "updated": "2026-09-27"
+      },
+      "versions": [
+        {
+          "commit": "64455ac5c81a10420ba13e8c8f55f234d42171ce",
+          "date": "2026-09-27T16:54:28+05:30",
+          "pr": null,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "description": "Meta Ads — ad account, campaigns, ad sets, ads, creatives and daily ad-level insights via async report runs (Marketing API v24.0)",
+      "docs": "https://developers.facebook.com/docs/marketing-api",
+      "file": "source-templates/faucet-hq/meta-ads.yaml",
+      "id": "faucet-hq/meta-ads",
+      "live_versions": [
+        1
+      ],
+      "name": "meta-ads",
+      "newest": 1,
+      "official": true,
+      "owner": "faucet-hq",
+      "params": [
+        {
+          "default": "https://graph.facebook.com",
+          "description": "API root — override only to replay recorded fixtures",
+          "name": "api_base_url",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": "last_28d",
+          "description": "Rolling date preset the insights stream re-reads each run (attribution settles for up to 28 days)",
+          "name": "insights_window",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "System-user (or long-lived user) access token with ads_read",
+          "name": "meta_access_token",
+          "required": true,
+          "secret": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Ad account id, digits only (without the act_ prefix)",
+          "name": "meta_ad_account_id",
+          "required": true,
+          "secret": false,
+          "type": "string"
+        }
+      ],
+      "source_type": "rest",
+      "stable": 1,
+      "streams": [
+        {
+          "description": null,
+          "name": "ad_account",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "campaigns",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "ad_sets",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "ads",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "ad_creatives",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "ad_insights",
+          "primary_keys": [
+            "ad_id",
+            "date_start"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        }
+      ],
+      "tags": [
+        "advertising",
+        "marketing",
+        "social",
+        "saas"
+      ],
+      "trust": {
+        "compatible_sinks": 4,
+        "publisher": {
+          "templates": 15
+        },
+        "stable_since": "2026-09-27",
+        "updated": "2026-09-27"
+      },
+      "versions": [
+        {
+          "commit": "9854d622fb04af2d63e3cdb0552e29bbd3da4947",
+          "date": "2026-09-27T17:03:47+05:30",
+          "pr": null,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "description": "Salesforce — accounts, contacts, leads, opportunities, users, campaigns and tasks via Bulk API 2.0 (v62.0), incremental on SystemModstamp, soft deletes included",
+      "docs": "https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/queries.htm",
+      "file": "source-templates/faucet-hq/salesforce.yaml",
+      "id": "faucet-hq/salesforce",
+      "live_versions": [
+        1
+      ],
+      "name": "salesforce",
+      "newest": 1,
+      "official": true,
+      "owner": "faucet-hq",
+      "params": [
+        {
+          "default": null,
+          "description": "Connected app consumer key",
+          "name": "salesforce_client_id",
+          "required": true,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Connected app consumer secret",
+          "name": "salesforce_client_secret",
+          "required": true,
+          "secret": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Your org's My Domain URL, e.g. https://acme.my.salesforce.com",
+          "name": "salesforce_instance_url",
+          "required": true,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": "https://login.salesforce.com",
+          "description": "OAuth host — https://test.salesforce.com for a sandbox",
+          "name": "salesforce_login_url",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "OAuth refresh token for the integration user (scopes: api, refresh_token)",
+          "name": "salesforce_refresh_token",
+          "required": true,
+          "secret": true,
+          "type": "string"
+        }
+      ],
+      "source_type": "rest",
+      "stable": 1,
+      "streams": [
+        {
+          "description": null,
+          "name": "accounts",
+          "primary_keys": [
+            "Id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "contacts",
+          "primary_keys": [
+            "Id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "leads",
+          "primary_keys": [
+            "Id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "opportunities",
+          "primary_keys": [
+            "Id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "users",
+          "primary_keys": [
+            "Id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "campaigns",
+          "primary_keys": [
+            "Id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "tasks",
+          "primary_keys": [
+            "Id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        }
+      ],
+      "tags": [
+        "crm",
+        "sales",
+        "saas"
+      ],
+      "trust": {
+        "compatible_sinks": 4,
+        "publisher": {
+          "templates": 15
+        },
+        "stable_since": "2026-09-27",
+        "updated": "2026-09-27"
+      },
+      "versions": [
+        {
+          "commit": "cdc9f17bb238735528dae45172fe8eccaa8e82b1",
+          "date": "2026-09-27T16:59:46+05:30",
+          "pr": null,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "description": "Shopify — orders, customers, products (incremental on updated_at), custom and smart collections and locations (Admin REST API 2025-07)",
+      "docs": "https://shopify.dev/docs/api/admin-rest",
+      "file": "source-templates/faucet-hq/shopify.yaml",
+      "id": "faucet-hq/shopify",
+      "live_versions": [
+        1
+      ],
+      "name": "shopify",
+      "newest": 1,
+      "official": true,
+      "owner": "faucet-hq",
+      "params": [
+        {
+          "default": null,
+          "description": "Custom app Admin API access token (shpat_…)",
+          "name": "shopify_access_token",
+          "required": true,
+          "secret": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Store admin root, e.g. https://acme.myshopify.com",
+          "name": "shopify_store_url",
+          "required": true,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": "2000-01-01T00:00:00Z",
+          "description": "Earliest update to read on the first run (RFC 3339)",
+          "name": "start_date",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        }
+      ],
+      "source_type": "rest",
+      "stable": 1,
+      "streams": [
+        {
+          "description": null,
+          "name": "orders",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "customers",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "products",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "custom_collections",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "smart_collections",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "locations",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        }
+      ],
+      "tags": [
+        "ecommerce",
+        "retail",
+        "saas"
+      ],
+      "trust": {
+        "compatible_sinks": 4,
+        "publisher": {
+          "templates": 15
+        },
+        "stable_since": "2026-09-27",
+        "updated": "2026-09-27"
+      },
+      "versions": [
+        {
+          "commit": "46b67b5ad0ad59cc452561b1a3688a42fcca8981",
+          "date": "2026-09-27T16:56:23+05:30",
+          "pr": null,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "description": "Stripe — customers, subscriptions, invoices, charges, refunds, payment intents, products, prices, payouts, balance transactions and events",
+      "docs": "https://docs.stripe.com/api",
+      "file": "source-templates/faucet-hq/stripe.yaml",
+      "id": "faucet-hq/stripe",
+      "live_versions": [
+        1
+      ],
+      "name": "stripe",
+      "newest": 1,
+      "official": true,
+      "owner": "faucet-hq",
+      "params": [
+        {
+          "default": "https://api.stripe.com",
+          "description": "API root — override only to replay recorded fixtures",
+          "name": "api_base_url",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Secret or restricted API key (read-only restricted key recommended)",
+          "name": "stripe_api_key",
+          "required": true,
+          "secret": true,
+          "type": "string"
+        }
+      ],
+      "source_type": "rest",
+      "stable": 1,
+      "streams": [
+        {
+          "description": null,
+          "name": "customers",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "subscriptions",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "invoices",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "charges",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "refunds",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "payment_intents",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "products",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "prices",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "payouts",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "balance_transactions",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "events",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        }
+      ],
+      "tags": [
+        "payments",
+        "billing",
+        "finance",
+        "saas"
+      ],
+      "trust": {
+        "compatible_sinks": 4,
+        "publisher": {
+          "templates": 15
+        },
+        "stable_since": "2026-09-27",
+        "updated": "2026-09-27"
+      },
+      "versions": [
+        {
+          "commit": "ba2c69c5cb0d6da63a229eb06febda51c21b7b10",
+          "date": "2026-09-27T16:47:33+05:30",
+          "pr": null,
+          "version": 1
+        }
+      ]
+    },
+    {
+      "description": "Zendesk Support — tickets, users, organizations (incremental exports), groups, ticket metrics, satisfaction ratings and ticket fields",
+      "docs": "https://developer.zendesk.com/api-reference/",
+      "file": "source-templates/faucet-hq/zendesk.yaml",
+      "id": "faucet-hq/zendesk",
+      "live_versions": [
+        1
+      ],
+      "name": "zendesk",
+      "newest": 1,
+      "official": true,
+      "owner": "faucet-hq",
+      "params": [
+        {
+          "default": "2010-01-01T00:00:00Z",
+          "description": "Earliest update to export on the first run (RFC 3339)",
+          "name": "start_date",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Zendesk API token (Admin Center → Apps and integrations → Zendesk API)",
+          "name": "zendesk_api_token",
+          "required": true,
+          "secret": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Email of the agent/admin the API token belongs to",
+          "name": "zendesk_email",
+          "required": true,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Your Zendesk root, e.g. https://acme.zendesk.com",
+          "name": "zendesk_url",
+          "required": true,
+          "secret": false,
+          "type": "string"
+        }
+      ],
+      "source_type": "rest",
+      "stable": 1,
+      "streams": [
+        {
+          "description": null,
+          "name": "tickets",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "users",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "organizations",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "satisfaction_ratings",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "groups",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "ticket_metrics",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "ticket_fields",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        }
+      ],
+      "tags": [
+        "support",
+        "customer-service",
+        "saas"
+      ],
+      "trust": {
+        "compatible_sinks": 4,
+        "publisher": {
+          "templates": 15
+        },
+        "stable_since": "2026-09-27",
+        "updated": "2026-09-27"
+      },
+      "versions": [
+        {
+          "commit": "7a17701e8b071515ac888ce9a6468fee9a714d1c",
+          "date": "2026-09-27T16:51:27+05:30",
           "pr": null,
           "version": 1
         }
