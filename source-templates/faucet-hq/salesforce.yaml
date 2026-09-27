@@ -1,0 +1,99 @@
+# Salesforce — accounts, contacts, leads, opportunities, users, campaigns and
+# tasks through Bulk API 2.0 query jobs (CSV), incremental on SystemModstamp.
+#   faucet run --source faucet-hq/salesforce --sink faucet-hq/bigquery \
+#     --param salesforce_instance_url=https://acme.my.salesforce.com \
+#     --param salesforce_client_id=… --param salesforce_client_secret="$SF_SECRET" \
+#     --param salesforce_refresh_token="$SF_REFRESH_TOKEN" …
+# Scopes, run times and the changelog: salesforce.md beside this file.
+kind: source-template
+name: salesforce
+owner: faucet-hq
+description: Salesforce — accounts, contacts, leads, opportunities, users, campaigns and tasks via Bulk API 2.0 (v62.0), incremental on SystemModstamp, soft deletes included
+tags: [crm, sales, saas]
+docs: https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/queries.htm
+params:
+  salesforce_instance_url:  { type: string, required: true, description: "Your org's My Domain URL, e.g. https://acme.my.salesforce.com" }
+  salesforce_login_url:     { type: string, default: "https://login.salesforce.com", description: "OAuth host — https://test.salesforce.com for a sandbox" }
+  salesforce_client_id:     { type: string, required: true, description: "Connected app consumer key" }
+  salesforce_client_secret: { type: string, required: true, secret: true, description: "Connected app consumer secret" }
+  salesforce_refresh_token: { type: string, required: true, secret: true, description: "OAuth refresh token for the integration user (scopes: api, refresh_token)" }
+auth:
+  salesforce:
+    type: oauth2_refresh
+    config:
+      token_url: "${param.salesforce_login_url}/services/oauth2/token"
+      client_id: "${param.salesforce_client_id}"
+      client_secret: "${param.salesforce_client_secret}"
+      refresh_token: "${param.salesforce_refresh_token}"
+source:
+  type: rest
+  config:
+    base_url: "${param.salesforce_instance_url}"
+    auth: { ref: salesforce }
+    pagination: { type: None }
+    replication_method: { type: Incremental }
+    replication_key: SystemModstamp
+    max_retries: 5
+    async_job:
+      submit: { method: POST, url: /services/data/v62.0/jobs/query, json: { operation: query, query: "SELECT Id FROM Account", lineEnding: LF } }
+      job_id: $.id
+      poll: { url: "/services/data/v62.0/jobs/query/${job_id}", interval_secs: 10, timeout_secs: 7200 }
+      status: { path: $.state, success: [JobComplete], failure: [Failed, Aborted] }
+      fetch:
+        url: "/services/data/v62.0/jobs/query/${job_id}/results"
+        query: { maxRecords: "100000" }
+        locator_header: Sforce-Locator
+        locator_param: locator
+      lookback: 10m
+    decode:
+      - parse: { format: csv }
+streams:
+  - name: accounts
+    source:
+      config:
+        async_job:
+          submit: { json: { operation: queryAll, query: "SELECT Id, Name, Type, ParentId, BillingStreet, BillingCity, BillingState, BillingPostalCode, BillingCountry, Phone, Website, Industry, AnnualRevenue, NumberOfEmployees, OwnerId, CreatedDate, LastModifiedDate, SystemModstamp, IsDeleted FROM Account" } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
+  - name: contacts
+    source:
+      config:
+        async_job:
+          submit: { json: { operation: queryAll, query: "SELECT Id, AccountId, FirstName, LastName, Email, Phone, Title, Department, LeadSource, MailingCity, MailingState, MailingCountry, OwnerId, CreatedDate, LastModifiedDate, SystemModstamp, IsDeleted FROM Contact" } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
+  - name: leads
+    source:
+      config:
+        async_job:
+          submit: { json: { operation: queryAll, query: "SELECT Id, FirstName, LastName, Company, Email, Phone, Title, Status, LeadSource, Industry, Rating, IsConverted, ConvertedAccountId, ConvertedContactId, ConvertedOpportunityId, ConvertedDate, OwnerId, CreatedDate, LastModifiedDate, SystemModstamp, IsDeleted FROM Lead" } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
+  - name: opportunities
+    source:
+      config:
+        async_job:
+          submit: { json: { operation: queryAll, query: "SELECT Id, AccountId, Name, StageName, Amount, Probability, CloseDate, Type, LeadSource, ForecastCategoryName, IsClosed, IsWon, CampaignId, OwnerId, CreatedDate, LastModifiedDate, SystemModstamp, IsDeleted FROM Opportunity" } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
+  - name: users
+    source:
+      config:
+        async_job:
+          submit: { json: { operation: query, query: "SELECT Id, Username, FirstName, LastName, Email, IsActive, UserRoleId, ProfileId, UserType, Title, Department, ManagerId, TimeZoneSidKey, CreatedDate, LastModifiedDate, SystemModstamp FROM User" } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
+  - name: campaigns
+    source:
+      config:
+        async_job:
+          submit: { json: { operation: queryAll, query: "SELECT Id, Name, Type, Status, StartDate, EndDate, IsActive, ParentId, BudgetedCost, ActualCost, ExpectedRevenue, NumberOfLeads, NumberOfContacts, NumberOfOpportunities, OwnerId, CreatedDate, LastModifiedDate, SystemModstamp, IsDeleted FROM Campaign" } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
+  - name: tasks
+    source:
+      config:
+        async_job:
+          submit: { json: { operation: queryAll, query: "SELECT Id, WhoId, WhatId, AccountId, Subject, Status, Priority, ActivityDate, TaskSubtype, Type, IsClosed, OwnerId, CreatedDate, LastModifiedDate, SystemModstamp, IsDeleted FROM Task" } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]

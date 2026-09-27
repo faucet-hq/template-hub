@@ -32,7 +32,8 @@ replay.yaml:
           query: { limit: "100" }          # each listed key must equal
           absent: [starting_after]         # each listed key must be missing
           headers: { authorization: Bearer sk_test_replay }   # case-insensitive names
-          body: { query: "…" }             # JSON subset match (POST)
+          body: { operation: query }       # JSON subset match (POST)
+          body_regex: { query: "SELECT .* WHERE SystemModstamp > .*" }   # top-level string fields, full match
         response:
           status: 200            # default 200
           headers: { Link: '<{replay}/next>; rel="next"' }
@@ -44,6 +45,7 @@ request, the one with the most constraints wins.
 """
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -83,6 +85,7 @@ def specificity(m):
         + len(m.get("absent") or [])
         + len(m.get("headers") or {})
         + (1 if m.get("body") is not None else 0)
+        + len(m.get("body_regex") or {})
     )
 
 
@@ -102,6 +105,9 @@ def matches(m, method, path, query, headers, body):
             return False
     if m.get("body") is not None:
         if body is None or not subset(m["body"], body):
+            return False
+    for k, pattern in (m.get("body_regex") or {}).items():
+        if not isinstance(body, dict) or not isinstance(body.get(k), str) or not re.fullmatch(pattern, body[k], re.S):
             return False
     return True
 
