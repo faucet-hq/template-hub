@@ -1,0 +1,205 @@
+# Recorded Shopify Admin REST exchanges (shapes from the API reference, values
+# synthetic — no live credentials). Two runs: orders page through the Link
+# header (the page_info URL carries no other filters, as Shopify requires), and
+# the second run resumes with updated_at_min=<last updated_at, in UTC>.
+runs: 2
+overlay: ../../state-overlay.yaml
+params:
+  shopify_store_url: '{replay}'
+  shopify_access_token: shpat_replay
+exchanges:
+- match:
+    path: /admin/api/2025-07/orders.json
+    headers: &id001
+      x-shopify-access-token: shpat_replay
+    query:
+      updated_at_min: '2000-01-01T00:00:00Z'
+      status: any
+      limit: '250'
+  response:
+    body:
+      orders:
+      - id: 450789469
+        name: '#1001'
+        email: bob@example.com
+        financial_status: paid
+        fulfillment_status: null
+        currency: USD
+        total_price: '598.94'
+        subtotal_price: '597.00'
+        total_tax: '11.94'
+        customer: &id002
+          id: 207119551
+        line_items: &id003
+        - id: 466157049
+          product_id: 632910392
+          variant_id: 39072856
+          quantity: 1
+          price: '199.00'
+          sku: IPOD2008GREEN
+        created_at: '2024-04-01T09:00:00-04:00'
+        updated_at: '2024-04-01T10:00:00-04:00'
+        cancelled_at: null
+    headers:
+      Link: <{replay}/admin/api/2025-07/orders.json?limit=250&page_info=eyJsYXN0X2lkIjo0NTA3ODk0Njl9>; rel="next"
+- match:
+    path: /admin/api/2025-07/orders.json
+    headers: *id001
+    query:
+      page_info: eyJsYXN0X2lkIjo0NTA3ODk0Njl9
+      limit: '250'
+    absent:
+    - updated_at_min
+    - status
+  response:
+    body:
+      orders:
+      - id: 450789470
+        name: '#1002'
+        email: bob@example.com
+        financial_status: paid
+        fulfillment_status: null
+        currency: USD
+        total_price: '29.00'
+        subtotal_price: '597.00'
+        total_tax: '11.94'
+        customer: *id002
+        line_items: []
+        created_at: '2024-04-02T09:00:00-04:00'
+        updated_at: '2024-04-02T10:00:00-04:00'
+        cancelled_at: null
+    headers:
+      Link: <{replay}/admin/api/2025-07/orders.json?limit=250&page_info=eyJwcmV2Ijp0cnVlfQ>; rel="previous"
+- match:
+    path: /admin/api/2025-07/orders.json
+    headers: *id001
+    query:
+      updated_at_min: '2024-04-02T14:00:00Z'
+      status: any
+      limit: '250'
+  response:
+    body:
+      orders:
+      - id: 450789469
+        name: '#1001'
+        email: bob@example.com
+        financial_status: refunded
+        fulfillment_status: null
+        currency: USD
+        total_price: '598.94'
+        subtotal_price: '597.00'
+        total_tax: '11.94'
+        customer: *id002
+        line_items: *id003
+        created_at: '2024-04-01T09:00:00-04:00'
+        updated_at: '2024-04-06T08:00:00-04:00'
+        cancelled_at: null
+- match:
+    path: /admin/api/2025-07/customers.json
+    headers: *id001
+    query:
+      updated_at_min: '2000-01-01T00:00:00Z'
+      limit: '250'
+  response:
+    body:
+      customers:
+      - id: 207119551
+        email: bob@example.com
+        first_name: Bob
+        last_name: Norman
+        orders_count: 1
+        state: enabled
+        total_spent: '598.94'
+        verified_email: true
+        tags: ''
+        currency: USD
+        created_at: '2024-03-01T12:00:00-05:00'
+        updated_at: '2024-04-01T10:00:00-04:00'
+- match:
+    path: /admin/api/2025-07/customers.json
+    headers: *id001
+    query:
+      updated_at_min: '2024-04-01T14:00:00Z'
+      limit: '250'
+  response:
+    body:
+      customers: []
+- match:
+    path: /admin/api/2025-07/products.json
+    headers: *id001
+    query:
+      updated_at_min: '2000-01-01T00:00:00Z'
+      limit: '250'
+  response:
+    body:
+      products:
+      - id: 632910392
+        title: IPod Nano - 8GB
+        vendor: Apple
+        product_type: Cult Products
+        handle: ipod-nano
+        status: active
+        tags: Emotive, Flash Memory
+        variants:
+        - id: 39072856
+          sku: IPOD2008GREEN
+          price: '199.00'
+          inventory_item_id: 39072856
+        created_at: '2024-01-01T12:00:00-05:00'
+        updated_at: '2024-03-15T12:00:00-04:00'
+- match:
+    path: /admin/api/2025-07/products.json
+    headers: *id001
+    query:
+      updated_at_min: '2024-03-15T16:00:00Z'
+      limit: '250'
+  response:
+    body:
+      products: []
+- match:
+    path: /admin/api/2025-07/custom_collections.json
+    headers: *id001
+    query:
+      limit: '250'
+  response:
+    body:
+      custom_collections:
+      - id: 841564295
+        handle: ipods
+        title: IPods
+        published_at: '2024-01-01T12:00:00-05:00'
+        sort_order: manual
+        updated_at: '2024-01-02T12:00:00-05:00'
+- match:
+    path: /admin/api/2025-07/smart_collections.json
+    headers: *id001
+    query:
+      limit: '250'
+  response:
+    body:
+      smart_collections:
+      - id: 482865238
+        handle: smart-ipods
+        title: Smart iPods
+        rules:
+        - column: type
+          relation: equals
+          condition: Cult Products
+        disjunctive: false
+        updated_at: '2024-01-02T12:00:00-05:00'
+- match:
+    path: /admin/api/2025-07/locations.json
+    headers: *id001
+    query:
+      limit: '250'
+  response:
+    body:
+      locations:
+      - id: 487838322
+        name: Main warehouse
+        address1: 126 York St
+        city: Ottawa
+        country_code: CA
+        active: true
+        created_at: '2020-01-01T00:00:00-05:00'
+        updated_at: '2023-01-01T00:00:00-05:00'

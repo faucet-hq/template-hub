@@ -1,0 +1,23 @@
+# Parameter-space suite for faucet-hq/shopify (faucet template test, #648).
+# Validation tier: the composed pipeline materializes, expands and compiles for
+# every case. Behavioural tier: recorded orders through the first stream's
+# transforms. The HTTP side (Link paging, updated_at_min resume) is
+# replay.yaml's job — see scripts/replay.py.
+version: 1
+template: source-templates/faucet-hq/shopify.yaml
+sink: sink-templates/faucet-hq/sqlite.yaml
+suite:
+  auto:
+    required_omitted: true
+    defaults_baseline: true
+  cases:
+    - name: recent-start
+      params: { shopify_store_url: "https://acme.myshopify.com", shopify_access_token: shpat_replay, start_date: "2024-01-01T00:00:00Z" }
+  behavioral:
+    - name: orders-keep-line-items
+      params: { shopify_store_url: "https://acme.myshopify.com", shopify_access_token: shpat_replay }
+      input: tests/faucet-hq/shopify/expected/orders.jsonl
+      expect:
+        match: subset
+        records:
+          - { id: 450789469, financial_status: refunded, line_items: [{ sku: IPOD2008GREEN, quantity: 1 }] }
