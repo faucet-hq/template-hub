@@ -1,0 +1,1 @@
+{"archived": false, "created_at": "2022-01-01T00:00:00Z", "email": "sam@example.com", "first_name": "Sam", "id": "77", "last_name": "Seller", "teams": [{"id": "12", "name": "EMEA", "primary": true}], "type": "PERSON", "updated_at": "2024-01-01T00:00:00Z", "user_id": 9001}

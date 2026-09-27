@@ -1,0 +1,22 @@
+# Parameter-space suite for faucet-hq/hubspot (faucet template test, #648).
+# Validation tier: the composed pipeline materializes, expands and compiles for
+# every case. Behavioural tier: a raw CRM record (as the API returns it,
+# records/contacts.jsonl) through the shared transforms — properties lifted to
+# columns, keys snake_cased. The HTTP side is replay.yaml's job.
+version: 1
+template: source-templates/faucet-hq/hubspot.yaml
+sink: sink-templates/faucet-hq/sqlite.yaml
+suite:
+  auto:
+    required_omitted: true
+    defaults_baseline: true
+  cases:
+    - name: custom-contact-properties
+      params: { hubspot_token: pat-na1-replay, contact_properties: "email,firstname,my_custom_score" }
+  behavioral:
+    - name: contacts-properties-become-columns
+      params: { hubspot_token: pat-na1-replay }
+      input: tests/faucet-hq/hubspot/records/contacts.jsonl
+      expect:
+        records:
+          - { id: "101", hs_object_id: "101", email: ada@example.com, firstname: Ada, lastname: Lovelace, lifecyclestage: customer, created_at: "2024-01-02T10:00:00.000Z", updated_at: "2024-04-01T10:00:00.000Z", archived: false }
