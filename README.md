@@ -52,6 +52,29 @@ faucet template register source-templates/example-rest-api.yaml --launch
 faucet template run faucet-hq/example-rest-api --sink faucet-hq/bigquery --param api_token="$TOKEN" …
 ```
 
+## Official templates
+
+The `faucet-hq/` namespace is the maintained set. Each source template has a
+README beside it (`source-templates/faucet-hq/<name>.md` — required scopes,
+run times, changelog), a `faucet template test` suite and recorded API
+fixtures under `tests/faucet-hq/<name>/`, and composes with every official
+sink.
+
+| Template | System | Streams | Incremental |
+|---|---|---|---|
+| [`faucet-hq/salesforce`](source-templates/faucet-hq/salesforce.md) | Salesforce (Bulk API 2.0, v62.0) | accounts, contacts, leads, opportunities, users, campaigns, tasks | all streams, `SystemModstamp` (+ soft deletes) |
+| [`faucet-hq/hubspot`](source-templates/faucet-hq/hubspot.md) | HubSpot CRM v3 | contacts, companies, deals, tickets, products, owners, deal_pipelines | — (full refresh) |
+| [`faucet-hq/stripe`](source-templates/faucet-hq/stripe.md) | Stripe (API 2024-06-20) | customers, subscriptions, invoices, charges, refunds, payment_intents, products, prices, payouts, balance_transactions, events | balance_transactions, events |
+| [`faucet-hq/jira`](source-templates/faucet-hq/jira.md) | Jira Cloud REST v3 | issues, projects, users, fields, statuses, issue_types | — (full refresh) |
+| [`faucet-hq/zendesk`](source-templates/faucet-hq/zendesk.md) | Zendesk Support API v2 | tickets, users, organizations, satisfaction_ratings, groups, ticket_metrics, ticket_fields | tickets, users, organizations, satisfaction_ratings |
+| [`faucet-hq/shopify`](source-templates/faucet-hq/shopify.md) | Shopify Admin REST 2025-07 | orders, customers, products, custom_collections, smart_collections, locations | orders, customers, products |
+| [`faucet-hq/github`](source-templates/faucet-hq/github.md) | GitHub REST (2022-11-28) | repository, issues, issue_comments, pull_requests, commits, releases, workflow_runs, contributors | issues, issue_comments |
+| [`faucet-hq/google-ads`](source-templates/faucet-hq/google-ads.md) | Google Ads API v22 | campaigns, ad_groups, ads, campaign/ad_group/keyword performance | rolling window (performance) |
+| [`faucet-hq/meta-ads`](source-templates/faucet-hq/meta-ads.md) | Meta Marketing API v24.0 | ad_account, campaigns, ad_sets, ads, ad_creatives, ad_insights (async) | rolling window (insights) |
+
+Incremental streams keep their bookmark in a `state:` store — supply one with a
+deployment overlay (`--overlay`), or they re-read everything each run.
+
 ## Publish a template
 
 **Registering a template in the hub is a pull request into your own
@@ -75,10 +98,13 @@ existing file:
 ```bash
 faucet hub lint  --hub .
 faucet hub check --hub . --source <your-login>/<name> --sink faucet-hq/jsonl      # and bigquery / postgres / sqlite
+faucet template test tests/<your-login>/<name>/suite.yaml   # if you add a suite (see CONTRIBUTING → Tests)
+python3 scripts/replay.py <your-login>/<name>               # if you add recorded fixtures
 faucet hub matrix --hub . --format json > index.json        # CI regenerates this on merge
 ```
 
-CI lints every template, composes every source × sink pairing, and keeps
+CI lints every template, composes every source × sink pairing, runs every
+`tests/*/*/suite.yaml` and replays every recorded fixture, and keeps
 `index.json` current. A green check is the review bar; a maintainer merges.
 
 Schemas: `faucet schema source-template` / `faucet schema sink-template`.
@@ -125,11 +151,15 @@ source-templates/faucet-hq/<name>.yaml  the hub's official source templates (own
 source-templates/<owner>/<name>.yaml    community source templates (owner: <owner>)
 source-templates/<owner>/OWNERS       who may change that namespace (GitHub ids)
 sink-templates/…                      the same for destinations
+source-templates/faucet-hq/<name>.md  an official template's README: scopes, run times, changelog
+tests/<owner>/<name>/suite.yaml       `faucet template test` suite for a template
+tests/<owner>/<name>/replay.yaml      recorded API exchanges + expected/<stream>.jsonl (scripts/replay.py)
 examples/data/                        fixtures the example-csv template reads (runs offline)
 index.json                            generated: sources, sinks, matrix, commands, versions, stable, live_versions, trust
 stars.json                            generated: stars, open issues, publisher ages (scripts/stars.py, hourly)
 scripts/index.py                      regenerates index.json (CI runs it on merge)
 scripts/stars.py                      opens each template's star discussion and collects trust signals
+scripts/replay.py                     serves recorded exchanges and runs a template's streams against them
 ```
 
 ## License
