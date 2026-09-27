@@ -15,6 +15,25 @@ sys.path.insert(0, os.path.dirname(__file__))
 import replay  # noqa: E402
 
 
+class KeepLatestRecords(unittest.TestCase):
+    def test_an_empty_later_run_keeps_the_previous_output(self):
+        with tempfile.TemporaryDirectory() as d:
+            produced, kept = os.path.join(d, "out"), os.path.join(d, "kept")
+            os.makedirs(produced)
+            write = lambda s, rows: open(os.path.join(produced, f"{s}.jsonl"), "w").write("".join(json.dumps(r) + "\n" for r in rows))
+            write("a", [{"id": 1}])
+            write("b", [])
+            replay.keep_latest_records(produced, kept)
+            write("a", [])
+            write("b", [{"id": 2}])
+            replay.keep_latest_records(produced, kept)
+            self.assertEqual(replay.read_jsonl(os.path.join(kept, "a.jsonl")), [{"id": 1}])
+            self.assertEqual(replay.read_jsonl(os.path.join(kept, "b.jsonl")), [{"id": 2}])
+            write("a", [{"id": 3}])
+            replay.keep_latest_records(produced, kept)
+            self.assertEqual(replay.read_jsonl(os.path.join(kept, "a.jsonl")), [{"id": 3}])
+
+
 class Subset(unittest.TestCase):
     def test_objects_match_by_key_and_arrays_element_wise(self):
         self.assertTrue(replay.subset({"a": 1}, {"a": 1, "b": 2}))

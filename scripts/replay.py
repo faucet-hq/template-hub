@@ -8,7 +8,8 @@ without credentials. This script serves them from a local HTTP server, runs
     faucet run --hub . --source <owner>/<name> --sink faucet-hq/jsonl \
         --param out_dir=<tmp> --param <replay params…>
 
-and compares every stream's written records with `tests/<owner>/<name>/expected/<stream>.jsonl`.
+and compares every stream's written records (from the latest run that wrote
+the stream, when `runs` > 1) with `tests/<owner>/<name>/expected/<stream>.jsonl`.
 It fails when a request matches no recorded exchange (the template asked for
 something the API was never shown to answer), when a recorded exchange is never
 requested (a page the template skipped), or when a stream's records differ.
@@ -198,6 +199,21 @@ def jsonl_stems(d):
     return {f[: -len(".jsonl")] for f in os.listdir(d) if f.endswith(".jsonl")}
 
 
+def keep_latest_records(produced, kept):
+    """Keep each stream's newest non-empty output across runs.
+
+    The jsonl sink rewrites a stream's file on every run, and an incremental
+    stream's second run usually finds nothing new — its file is then empty.
+    The comparison is against the latest run that wrote the stream.
+    """
+    os.makedirs(kept, exist_ok=True)
+    for s in jsonl_stems(produced):
+        src = os.path.join(produced, f"{s}.jsonl")
+        dst = os.path.join(kept, f"{s}.jsonl")
+        if read_jsonl(src) or not os.path.exists(dst):
+            shutil.copyfile(src, dst)
+
+
 def canonical(records):
     return sorted(json.dumps(r, sort_keys=True) for r in records)
 
@@ -217,19 +233,20 @@ def run_one(tid, faucet="faucet", update=False):
         for k, v in (spec.get("params") or {}).items():
             cmd += ["--param", f"{k}={subst(str(v), recorder.base)}"]
         failures = []
+        kept = os.path.join(out, ".kept")
         for n in range(int(spec.get("runs", 1))):
             proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, env={**os.environ, "FAUCET_HUB_OFFLINE": "1"})
             if proc.returncode != 0:
                 failures.append(f"faucet run #{n + 1} exited {proc.returncode}:\n{proc.stdout[-4000:]}\n{proc.stderr[-4000:]}")
                 break
+            keep_latest_records(os.path.join(out, tid.split("/")[-1]), kept)
         for req in recorder.unmatched:
             failures.append(f"request matches no recorded exchange: {req}")
         for i, n in enumerate(recorder.hits):
             if n == 0:
                 m = recorder.exchanges[i].get("match") or {}
                 failures.append(f"recorded exchange #{i + 1} was never requested: {m.get('method', 'GET')} {m.get('path')} {m.get('query') or ''}")
-        name = tid.split("/")[-1]
-        produced = os.path.join(out, name)
+        produced = kept
         expected_dir = os.path.join(case_dir, "expected")
         streams = sorted(jsonl_stems(produced) | jsonl_stems(expected_dir))
         if update and not failures:
