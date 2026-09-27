@@ -6,6 +6,8 @@
 /source-templates/faucet-hq/   @pecsorabs
 /sink-templates/faucet-hq/     @pecsorabs
 /examples/                     @pecsorabs
+/tests/faucet-hq/              @pecsorabs
+/tests/state-overlay.yaml      @pecsorabs
 /scripts/                      @pecsorabs
 /.github/                      @pecsorabs
 /index.json                    @pecsorabs
