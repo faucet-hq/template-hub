@@ -1,0 +1,86 @@
+# Zendesk Support — tickets, users and organizations through the incremental
+# export API, plus groups, ticket metrics, satisfaction ratings and ticket fields.
+#   faucet run --source faucet-hq/zendesk --sink faucet-hq/bigquery \
+#     --param zendesk_url=https://acme.zendesk.com --param zendesk_email=ops@acme.example \
+#     --param zendesk_api_token="$ZENDESK_TOKEN" …
+# Scopes, run times and the changelog: zendesk.md beside this file.
+kind: source-template
+name: zendesk
+owner: faucet-hq
+description: Zendesk Support — tickets, users, organizations (incremental exports), groups, ticket metrics, satisfaction ratings and ticket fields
+tags: [support, customer-service, saas]
+docs: https://developer.zendesk.com/api-reference/
+params:
+  zendesk_url:       { type: string, required: true, description: "Your Zendesk root, e.g. https://acme.zendesk.com" }
+  zendesk_email:     { type: string, required: true, description: "Email of the agent/admin the API token belongs to" }
+  zendesk_api_token: { type: string, required: true, secret: true, description: "Zendesk API token (Admin Center → Apps and integrations → Zendesk API)" }
+  start_date:        { type: string, default: "2010-01-01T00:00:00Z", description: "Earliest update to export on the first run (RFC 3339)" }
+source:
+  type: rest
+  config:
+    base_url: "${param.zendesk_url}"
+    auth: { type: basic, config: { username: "${param.zendesk_email}/token", password: "${param.zendesk_api_token}" } }
+    pagination: { type: NextLinkInBody, next_link_path: $.links.next }
+    max_pages: null
+    max_retries: 8
+streams:
+  - name: tickets
+    source:
+      config:
+        path: "/api/v2/incremental/tickets/cursor.json?start_time={start_time}"
+        records_path: $.tickets[*]
+        pagination: { type: NextLinkInBody, next_link_path: $.after_url }
+        replication_method: { type: Incremental }
+        replication_key: updated_at
+        start_replication_value: "${param.start_date}"
+        replication_bind: { into: path, name: start_time, format: epoch_s }
+    primary_keys: [id]
+    write: [upsert, overwrite]
+  - name: users
+    source:
+      config:
+        path: "/api/v2/incremental/users/cursor.json?start_time={start_time}"
+        records_path: $.users[*]
+        pagination: { type: NextLinkInBody, next_link_path: $.after_url }
+        replication_method: { type: Incremental }
+        replication_key: updated_at
+        start_replication_value: "${param.start_date}"
+        replication_bind: { into: path, name: start_time, format: epoch_s }
+    primary_keys: [id]
+    write: [upsert, overwrite]
+  - name: organizations
+    source:
+      config:
+        path: "/api/v2/incremental/organizations.json?start_time={start_time}"
+        records_path: $.organizations[*]
+        pagination: { type: NextLinkInBody, next_link_path: $.next_page }
+        replication_method: { type: Incremental }
+        replication_key: updated_at
+        start_replication_value: "${param.start_date}"
+        replication_bind: { into: path, name: start_time, format: epoch_s }
+    primary_keys: [id]
+    write: [upsert, overwrite]
+  - name: satisfaction_ratings
+    source:
+      config:
+        path: "/api/v2/satisfaction_ratings.json?start_time={start_time}"
+        query_params: { "page[size]": "100" }
+        records_path: $.satisfaction_ratings[*]
+        replication_method: { type: Incremental }
+        replication_key: updated_at
+        start_replication_value: "${param.start_date}"
+        replication_bind: { into: path, name: start_time, format: epoch_s }
+    primary_keys: [id]
+    write: [upsert, overwrite]
+  - name: groups
+    source: { config: { path: /api/v2/groups.json, query_params: { "page[size]": "100" }, records_path: "$.groups[*]" } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: ticket_metrics
+    source: { config: { path: /api/v2/ticket_metrics.json, query_params: { "page[size]": "100" }, records_path: "$.ticket_metrics[*]" } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: ticket_fields
+    source: { config: { path: /api/v2/ticket_fields.json, query_params: { "page[size]": "100" }, records_path: "$.ticket_fields[*]" } }
+    primary_keys: [id]
+    write: [overwrite, upsert]

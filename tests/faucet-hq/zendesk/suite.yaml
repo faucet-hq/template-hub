@@ -1,0 +1,27 @@
+# Parameter-space suite for faucet-hq/zendesk (faucet template test, #648).
+# Validation tier: the composed pipeline materializes, expands and compiles for
+# every case. Behavioural tier: recorded tickets through the first stream's
+# transforms. The HTTP side (incremental exports, start_time resume) is
+# replay.yaml's job — see scripts/replay.py.
+version: 1
+template: source-templates/faucet-hq/zendesk.yaml
+sink: sink-templates/faucet-hq/sqlite.yaml
+suite:
+  auto:
+    required_omitted: true
+    defaults_baseline: true
+  cases:
+    - name: recent-start-date
+      params: { zendesk_url: "https://acme.zendesk.com", zendesk_email: ops@example.com, zendesk_api_token: zd_replay, start_date: "2024-01-01T00:00:00Z" }
+  combine:
+    params:
+      start_date: ["2010-01-01T00:00:00Z", "2020-06-15T12:30:00Z"]
+      zendesk_url: ["https://acme.zendesk.com", "https://support.example.com"]
+  behavioral:
+    - name: tickets-keep-custom-fields
+      params: { zendesk_url: "https://acme.zendesk.com", zendesk_email: ops@example.com, zendesk_api_token: zd_replay }
+      input: tests/faucet-hq/zendesk/expected/tickets.jsonl
+      expect:
+        match: subset
+        records:
+          - { id: 35436, status: solved, custom_fields: [{ id: 27642, value: "745" }] }
