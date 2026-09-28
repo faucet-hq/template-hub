@@ -2383,7 +2383,7 @@
       "trust": {
         "open_issues": 0,
         "publisher": {
-          "account_age_days": 55,
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-24",
@@ -2437,7 +2437,7 @@
       "trust": {
         "open_issues": 0,
         "publisher": {
-          "account_age_days": 55,
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-24",
@@ -2495,7 +2495,7 @@
       "trust": {
         "open_issues": 0,
         "publisher": {
-          "account_age_days": 55,
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-24",
@@ -2549,7 +2549,7 @@
       "trust": {
         "open_issues": 0,
         "publisher": {
-          "account_age_days": 55,
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-24",
@@ -2630,7 +2630,7 @@
         "compatible_sinks": 4,
         "open_issues": 0,
         "publisher": {
-          "account_age_days": 55,
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-24",
@@ -2711,7 +2711,7 @@
         "compatible_sinks": 4,
         "open_issues": 0,
         "publisher": {
-          "account_age_days": 55,
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-24",
@@ -2882,10 +2882,14 @@
       ],
       "trust": {
         "compatible_sinks": 4,
+        "open_issues": 0,
         "publisher": {
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-28",
+        "star_url": "https://github.com/faucet-hq/template-hub/discussions/12",
+        "stars": 0,
         "updated": "2026-09-28"
       },
       "versions": [
@@ -3132,10 +3136,14 @@
       ],
       "trust": {
         "compatible_sinks": 4,
+        "open_issues": 0,
         "publisher": {
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-28",
+        "star_url": "https://github.com/faucet-hq/template-hub/discussions/13",
+        "stars": 0,
         "updated": "2026-09-28"
       },
       "versions": [
@@ -3341,10 +3349,14 @@
       ],
       "trust": {
         "compatible_sinks": 4,
+        "open_issues": 0,
         "publisher": {
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-28",
+        "star_url": "https://github.com/faucet-hq/template-hub/discussions/14",
+        "stars": 0,
         "updated": "2026-09-28"
       },
       "versions": [
@@ -3541,10 +3553,14 @@
       ],
       "trust": {
         "compatible_sinks": 4,
+        "open_issues": 0,
         "publisher": {
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-28",
+        "star_url": "https://github.com/faucet-hq/template-hub/discussions/15",
+        "stars": 0,
         "updated": "2026-09-28"
       },
       "versions": [
@@ -3700,10 +3716,14 @@
       ],
       "trust": {
         "compatible_sinks": 4,
+        "open_issues": 0,
         "publisher": {
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-28",
+        "star_url": "https://github.com/faucet-hq/template-hub/discussions/16",
+        "stars": 0,
         "updated": "2026-09-28"
       },
       "versions": [
@@ -3900,10 +3920,14 @@
       ],
       "trust": {
         "compatible_sinks": 4,
+        "open_issues": 0,
         "publisher": {
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-28",
+        "star_url": "https://github.com/faucet-hq/template-hub/discussions/17",
+        "stars": 0,
         "updated": "2026-09-28"
       },
       "versions": [
@@ -4101,10 +4125,14 @@
       ],
       "trust": {
         "compatible_sinks": 4,
+        "open_issues": 0,
         "publisher": {
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-28",
+        "star_url": "https://github.com/faucet-hq/template-hub/discussions/18",
+        "stars": 0,
         "updated": "2026-09-28"
       },
       "versions": [
@@ -4262,10 +4290,14 @@
       ],
       "trust": {
         "compatible_sinks": 4,
+        "open_issues": 0,
         "publisher": {
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-28",
+        "star_url": "https://github.com/faucet-hq/template-hub/discussions/19",
+        "stars": 0,
         "updated": "2026-09-28"
       },
       "versions": [
@@ -4474,10 +4506,14 @@
       ],
       "trust": {
         "compatible_sinks": 4,
+        "open_issues": 0,
         "publisher": {
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-28",
+        "star_url": "https://github.com/faucet-hq/template-hub/discussions/20",
+        "stars": 0,
         "updated": "2026-09-28"
       },
       "versions": [
@@ -4636,10 +4672,14 @@
       ],
       "trust": {
         "compatible_sinks": 4,
+        "open_issues": 0,
         "publisher": {
+          "account_age_days": 56,
           "templates": 16
         },
         "stable_since": "2026-09-28",
+        "star_url": "https://github.com/faucet-hq/template-hub/discussions/21",
+        "stars": 0,
         "updated": "2026-09-28"
       },
       "versions": [
