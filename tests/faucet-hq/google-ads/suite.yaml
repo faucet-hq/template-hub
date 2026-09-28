@@ -1,0 +1,44 @@
+# `faucet template test` suite for faucet-hq/google-ads: parameter combinations
+# compose and compile against the postgres sink, and a GoogleAdsRow is
+# flattened into snake_case columns with typed metrics.
+version: 1
+template: source-templates/faucet-hq/google-ads.yaml
+sink: sink-templates/faucet-hq/postgres.yaml
+suite:
+  auto:
+    required_omitted: true
+  cases:
+    - name: rolling-window
+      params:
+        google_ads_customer_id: "1234567890"
+        google_ads_login_customer_id: "9876543210"
+        google_ads_developer_token: dev-token
+        google_client_id: client-id
+        google_client_secret: client-secret
+        google_refresh_token: refresh-token
+        pg_url: postgres://suite@localhost:5432/suite
+    - name: backfill-range
+      params:
+        google_ads_customer_id: "1234567890"
+        google_ads_login_customer_id: "9876543210"
+        google_ads_developer_token: dev-token
+        google_client_id: client-id
+        google_client_secret: client-secret
+        google_refresh_token: refresh-token
+        pg_url: postgres://suite@localhost:5432/suite
+        google_ads_date_filter: "BETWEEN '2025-01-01' AND '2025-12-31'"
+  behavioral:
+    - name: customer-row-shape
+      params:
+        google_ads_customer_id: "1234567890"
+        google_ads_login_customer_id: "9876543210"
+        google_ads_developer_token: dev-token
+        google_client_id: client-id
+        google_client_secret: client-secret
+        google_refresh_token: refresh-token
+        pg_url: postgres://suite@localhost:5432/suite
+      input:
+        - customer: { resourceName: customers/1234567890, id: "1234567890", descriptiveName: Demo, currencyCode: USD, timeZone: America/New_York, manager: false, testAccount: false, status: ENABLED }
+      expect:
+        records:
+          - { customer_resource_name: customers/1234567890, customer_id: "1234567890", customer_descriptive_name: Demo, customer_currency_code: USD, customer_time_zone: America/New_York, customer_manager: false, customer_test_account: false, customer_status: ENABLED }

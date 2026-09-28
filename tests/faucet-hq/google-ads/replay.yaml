@@ -1,0 +1,336 @@
+# Recorded Google Ads API v25 exchanges for faucet-hq/google-ads, built from
+# the documented GoogleAdsService.Search REST response (camelCase fields,
+# int64 as strings, nextPageToken absent on the last page) with synthetic
+# values. The OAuth refresh-token exchange is served by the replay.
+# campaign_performance spans two pages (the second carries `pageToken`); the
+# performance streams are a stateless rolling window (DURING LAST_30_DAYS),
+# so one run covers them — a later run re-reads the same window and upserts.
+params:
+  google_ads_api_url: '{replay}'
+  google_token_uri: '{replay}/token'
+  google_ads_customer_id: '1234567890'
+  google_ads_login_customer_id: '9876543210'
+  google_ads_developer_token: replay-developer-token
+  google_client_id: replay-client.apps.googleusercontent.com
+  google_client_secret: replay-client-secret
+  google_refresh_token: 1//replay-refresh-token
+exchanges:
+- match:
+    method: POST
+    path: /token
+    form:
+      grant_type: refresh_token
+      refresh_token: 1//replay-refresh-token
+  response:
+    body:
+      access_token: ya29.replay-ads-token
+      expires_in: 3599
+      scope: https://www.googleapis.com/auth/adwords
+      token_type: Bearer
+- match:
+    method: POST
+    path: /v25/customers/1234567890/googleAds:search
+    body_regex:
+      query: SELECT .* FROM customer
+    headers:
+      authorization: Bearer ya29.replay-ads-token
+      developer-token: replay-developer-token
+      login-customer-id: '9876543210'
+  response:
+    body:
+      results:
+      - customer:
+          id: '1234567890'
+          descriptiveName: Demo Store Ads
+          currencyCode: USD
+          timeZone: America/New_York
+          manager: false
+          testAccount: false
+          status: ENABLED
+      fieldMask: customer.id,customer.descriptiveName,customer.currencyCode,customer.timeZone,customer.manager,customer.testAccount,customer.status
+      requestId: replay-customer
+- match:
+    method: POST
+    path: /v25/customers/1234567890/googleAds:search
+    body_regex:
+      query: SELECT .* FROM campaign
+  response:
+    body:
+      results:
+      - campaign:
+          id: '111'
+          name: Brand Search
+          status: ENABLED
+          servingStatus: SERVING
+          primaryStatus: ELIGIBLE
+          advertisingChannelType: SEARCH
+          advertisingChannelSubType: UNKNOWN
+          biddingStrategyType: TARGET_SPEND
+          startDateTime: '2025-01-01 00:00:00'
+          endDateTime: '2037-12-30 23:59:59'
+          campaignBudget: customers/1234567890/campaignBudgets/555
+        campaignBudget:
+          amountMicros: '50000000'
+        customer:
+          id: '1234567890'
+      fieldMask: campaign.id,campaign.name,campaign.status,campaign.servingStatus,campaign.primaryStatus,campaign.advertisingChannelType,campaign.advertisingChannelSubType,campaign.biddingStrategyType,campaign.startDateTime,campaign.endDateTime,campaign.campaignBudget,campaignBudget.amountMicros,customer.id
+      requestId: replay-campaigns
+- match:
+    method: POST
+    path: /v25/customers/1234567890/googleAds:search
+    body_regex:
+      query: SELECT .* FROM ad_group
+  response:
+    body:
+      results:
+      - adGroup:
+          id: '222'
+          name: Brand - Exact
+          status: ENABLED
+          type: SEARCH_STANDARD
+          cpcBidMicros: '1500000'
+        campaign:
+          id: '111'
+        customer:
+          id: '1234567890'
+      fieldMask: adGroup.id,adGroup.name,adGroup.status,adGroup.type,adGroup.cpcBidMicros,campaign.id,customer.id
+      requestId: replay-ad_groups
+- match:
+    method: POST
+    path: /v25/customers/1234567890/googleAds:search
+    body_regex:
+      query: SELECT .* FROM ad_group_ad
+  response:
+    body:
+      results:
+      - adGroupAd:
+          ad:
+            id: '333'
+            name: ''
+            type: RESPONSIVE_SEARCH_AD
+            finalUrls:
+            - https://www.example.com/
+          status: ENABLED
+          policySummary:
+            approvalStatus: APPROVED
+          adStrength: GOOD
+        adGroup:
+          id: '222'
+        campaign:
+          id: '111'
+        customer:
+          id: '1234567890'
+      fieldMask: adGroupAd.ad.id,adGroupAd.ad.name,adGroupAd.ad.type,adGroupAd.status,adGroupAd.ad.finalUrls,adGroupAd.policySummary.approvalStatus,adGroupAd.adStrength,adGroup.id,campaign.id,customer.id
+      requestId: replay-ads
+- match:
+    method: POST
+    path: /v25/customers/1234567890/googleAds:search
+    body_regex:
+      query: SELECT .* FROM ad_group_criterion WHERE .*
+  response:
+    body:
+      results:
+      - adGroupCriterion:
+          criterionId: '444'
+          keyword:
+            text: demo store
+            matchType: EXACT
+          status: ENABLED
+          approvalStatus: APPROVED
+          negative: false
+        adGroup:
+          id: '222'
+        campaign:
+          id: '111'
+        customer:
+          id: '1234567890'
+      fieldMask: adGroupCriterion.criterionId,adGroupCriterion.keyword.text,adGroupCriterion.keyword.matchType,adGroupCriterion.status,adGroupCriterion.approvalStatus,adGroupCriterion.negative,adGroup.id,campaign.id,customer.id
+      requestId: replay-keywords
+- match:
+    method: POST
+    path: /v25/customers/1234567890/googleAds:search
+    body_regex:
+      query: SELECT .* FROM campaign WHERE segments\.date DURING LAST_30_DAYS
+  response:
+    body:
+      results:
+      - customer:
+          id: '1234567890'
+        segments:
+          date: '2026-09-01'
+        campaign:
+          id: '111'
+        metrics:
+          impressions: '123'
+          clicks: '7'
+          costMicros: '4560000'
+          interactions: '9'
+          conversions: '1.5'
+          conversionsValue: '42.0'
+          allConversions: '2.5'
+          viewThroughConversions: '1'
+      - customer:
+          id: '1234567890'
+        segments:
+          date: '2026-09-02'
+        campaign:
+          id: '111'
+        metrics:
+          impressions: '123'
+          clicks: '7'
+          costMicros: '4560000'
+          interactions: '9'
+          conversions: '1.5'
+          conversionsValue: '42.0'
+          allConversions: '2.5'
+          viewThroughConversions: '1'
+      nextPageToken: CPii5aS8replay-page-2
+      fieldMask: customer.id,segments.date,campaign.id,metrics.impressions,metrics.clicks,metrics.costMicros,metrics.interactions,metrics.conversions,metrics.conversionsValue,metrics.allConversions,metrics.viewThroughConversions
+      requestId: replay-req-1
+- match:
+    method: POST
+    path: /v25/customers/1234567890/googleAds:search
+    body:
+      pageToken: CPii5aS8replay-page-2
+    body_regex:
+      query: SELECT .* FROM campaign WHERE segments\.date DURING LAST_30_DAYS
+  response:
+    body:
+      results:
+      - customer:
+          id: '1234567890'
+        segments:
+          date: '2026-09-01'
+        campaign:
+          id: '112'
+        metrics:
+          impressions: '123'
+          clicks: '7'
+          costMicros: '4560000'
+          interactions: '9'
+          conversions: '1.5'
+          conversionsValue: '42.0'
+          allConversions: '2.5'
+          viewThroughConversions: '1'
+      fieldMask: customer.id,segments.date,campaign.id,metrics.impressions,metrics.clicks,metrics.costMicros,metrics.interactions,metrics.conversions,metrics.conversionsValue,metrics.allConversions,metrics.viewThroughConversions
+      requestId: replay-req-2
+- match:
+    method: POST
+    path: /v25/customers/1234567890/googleAds:search
+    body_regex:
+      query: SELECT .* FROM ad_group WHERE segments\.date DURING LAST_30_DAYS
+  response:
+    body:
+      results:
+      - customer:
+          id: '1234567890'
+        segments:
+          date: '2026-09-01'
+        campaign:
+          id: '111'
+        adGroup:
+          id: '222'
+        metrics:
+          impressions: '123'
+          clicks: '7'
+          costMicros: '4560000'
+          interactions: '9'
+          conversions: '1.5'
+          conversionsValue: '42.0'
+          allConversions: '2.5'
+          viewThroughConversions: '1'
+      fieldMask: customer.id,segments.date,campaign.id,adGroup.id,metrics.impressions,metrics.clicks,metrics.costMicros,metrics.interactions,metrics.conversions,metrics.conversionsValue,metrics.allConversions,metrics.viewThroughConversions
+      requestId: replay-ad_group_performance
+- match:
+    method: POST
+    path: /v25/customers/1234567890/googleAds:search
+    body_regex:
+      query: SELECT .* FROM ad_group_ad WHERE segments\.date DURING LAST_30_DAYS
+  response:
+    body:
+      results:
+      - customer:
+          id: '1234567890'
+        segments:
+          date: '2026-09-01'
+        campaign:
+          id: '111'
+        adGroup:
+          id: '222'
+        adGroupAd:
+          ad:
+            id: '333'
+        metrics:
+          impressions: '123'
+          clicks: '7'
+          costMicros: '4560000'
+          interactions: '9'
+          conversions: '1.5'
+          conversionsValue: '42.0'
+          allConversions: '2.5'
+          viewThroughConversions: '1'
+      fieldMask: customer.id,segments.date,campaign.id,adGroup.id,adGroupAd.ad.id,metrics.impressions,metrics.clicks,metrics.costMicros,metrics.interactions,metrics.conversions,metrics.conversionsValue,metrics.allConversions,metrics.viewThroughConversions
+      requestId: replay-ad_performance
+- match:
+    method: POST
+    path: /v25/customers/1234567890/googleAds:search
+    body_regex:
+      query: SELECT .* FROM keyword_view WHERE segments\.date DURING LAST_30_DAYS
+  response:
+    body:
+      results:
+      - customer:
+          id: '1234567890'
+        segments:
+          date: '2026-09-01'
+        campaign:
+          id: '111'
+        adGroup:
+          id: '222'
+        adGroupCriterion:
+          criterionId: '444'
+        metrics:
+          impressions: '123'
+          clicks: '7'
+          costMicros: '4560000'
+          interactions: '9'
+          conversions: '1.5'
+          conversionsValue: '42.0'
+          allConversions: '2.5'
+          viewThroughConversions: '1'
+      fieldMask: customer.id,segments.date,campaign.id,adGroup.id,adGroupCriterion.criterionId,metrics.impressions,metrics.clicks,metrics.costMicros,metrics.interactions,metrics.conversions,metrics.conversionsValue,metrics.allConversions,metrics.viewThroughConversions
+      requestId: replay-keyword_performance
+- match:
+    method: POST
+    path: /v25/customers/1234567890/googleAds:search
+    body_regex:
+      query: SELECT .* FROM search_term_view WHERE segments\.date DURING LAST_30_DAYS
+  response:
+    body:
+      results:
+      - customer:
+          id: '1234567890'
+        segments:
+          date: '2026-09-01'
+          keyword:
+            info:
+              text: demo store
+              matchType: PHRASE
+        campaign:
+          id: '111'
+        adGroup:
+          id: '222'
+        searchTermView:
+          searchTerm: demo store shoes
+          status: NONE
+        metrics:
+          impressions: '123'
+          clicks: '7'
+          costMicros: '4560000'
+          interactions: '9'
+          conversions: '1.5'
+          conversionsValue: '42.0'
+          allConversions: '2.5'
+          viewThroughConversions: '1'
+      fieldMask: customer.id,segments.date,campaign.id,adGroup.id,searchTermView.searchTerm,segments.keyword.info.text,segments.keyword.info.matchType,searchTermView.status,metrics.impressions,metrics.clicks,metrics.costMicros,metrics.interactions,metrics.conversions,metrics.conversionsValue,metrics.allConversions,metrics.viewThroughConversions
+      requestId: replay-search_terms

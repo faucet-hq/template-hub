@@ -1,0 +1,156 @@
+# Google Ads API v25 — GAQL reports through GoogleAdsService.Search (REST),
+# one customer account per run. Queries, headers and limits are taken from
+# developers.google.com/google-ads/api; the per-stream doc links are in
+# google-ads.md beside this file.
+kind: source-template
+name: google-ads
+owner: faucet-hq
+description: Google Ads API v25 (GAQL search) — account, campaigns, ad groups, ads, keywords and daily performance reports
+tags: [marketing, advertising, google]
+docs: https://developers.google.com/google-ads/api/docs/start
+params:
+  google_ads_customer_id: { type: string, required: true, description: "Customer id of the account to read, digits only (1234567890)" }
+  google_ads_login_customer_id: { type: string, required: true, description: "Customer id of the manager account you authenticate through, digits only; the account's own id when you have direct access" }
+  google_ads_developer_token: { type: string, required: true, secret: true, description: "Developer token from the manager account's API Center" }
+  google_client_id: { type: string, required: true, secret: true, description: "OAuth 2.0 client id (Google Cloud project)" }
+  google_client_secret: { type: string, required: true, secret: true, description: "OAuth 2.0 client secret" }
+  google_refresh_token: { type: string, required: true, secret: true, description: "OAuth 2.0 refresh token for a user with access to the account (scope https://www.googleapis.com/auth/adwords)" }
+  google_ads_date_filter:
+    type: string
+    default: "DURING LAST_30_DAYS"
+    description: "GAQL condition on segments.date for the performance streams — a rolling window (`DURING LAST_30_DAYS`) or a backfill range (`BETWEEN '2025-01-01' AND '2025-12-31'`)"
+  google_ads_api_url: { type: string, default: "https://googleads.googleapis.com", description: "Google Ads API root" }
+  google_token_uri: { type: string, default: "https://oauth2.googleapis.com/token", description: "OAuth 2.0 token endpoint" }
+auth:
+  google_ads:
+    type: oauth2_refresh
+    config:
+      token_url: "${param.google_token_uri}"
+      client_id: "${param.google_client_id}"
+      client_secret: "${param.google_client_secret}"
+      refresh_token: "${param.google_refresh_token}"
+source:
+  type: rest
+  config:
+    base_url: "${param.google_ads_api_url}"
+    path: "/v25/customers/${param.google_ads_customer_id}/googleAds:search"
+    method: POST
+    auth: { ref: google_ads }
+    headers:
+      developer-token: "${param.google_ads_developer_token}"
+      login-customer-id: "${param.google_ads_login_customer_id}"
+    records_path: "$.results[*]"
+    # Search returns fixed pages of 10,000 rows; nextPageToken is absent on the last.
+    pagination: { type: CursorInBody, next_token_path: "$.nextPageToken", body_cursor_field: pageToken }
+    max_pages: null
+    timeout: 300
+transforms:
+  # {campaign: {id}, metrics: {costMicros}} → campaign_id, cost_micros, date, …
+  - { type: flatten, config: { separator: "_" } }
+  - { type: keys_case, config: { mode: snake } }
+  - { type: rename_keys, config: { pattern: "^(metrics|segments)_", replacement: "" } }
+  - { type: json_encode, config: { fields: [ad_group_ad_ad_final_urls] } }
+streams:
+  # The account itself.
+  - name: customer
+    source:
+      config:
+        body:
+          query: "SELECT customer.id, customer.descriptive_name, customer.currency_code, customer.time_zone, customer.manager, customer.test_account, customer.status FROM customer"
+    primary_keys: [customer_id]
+    write: [overwrite, upsert]
+
+  # Campaign settings.
+  - name: campaigns
+    source:
+      config:
+        body:
+          query: "SELECT campaign.id, campaign.name, campaign.status, campaign.serving_status, campaign.primary_status, campaign.advertising_channel_type, campaign.advertising_channel_sub_type, campaign.bidding_strategy_type, campaign.start_date_time, campaign.end_date_time, campaign.campaign_budget, campaign_budget.amount_micros, customer.id FROM campaign"
+    transforms:
+      - { type: cast, config: { fields: { campaign_budget_amount_micros: int }, on_error: error } }
+    primary_keys: [customer_id, campaign_id]
+    write: [overwrite, upsert]
+
+  # Ad group settings.
+  - name: ad_groups
+    source:
+      config:
+        body:
+          query: "SELECT ad_group.id, ad_group.name, ad_group.status, ad_group.type, ad_group.cpc_bid_micros, campaign.id, customer.id FROM ad_group"
+    transforms:
+      - { type: cast, config: { fields: { ad_group_cpc_bid_micros: int }, on_error: error } }
+    primary_keys: [customer_id, ad_group_id]
+    write: [overwrite, upsert]
+
+  # Ads (ad_group_ad) with type, status, final URLs and policy approval.
+  - name: ads
+    source:
+      config:
+        body:
+          query: "SELECT ad_group_ad.ad.id, ad_group_ad.ad.name, ad_group_ad.ad.type, ad_group_ad.status, ad_group_ad.ad.final_urls, ad_group_ad.policy_summary.approval_status, ad_group_ad.ad_strength, ad_group.id, campaign.id, customer.id FROM ad_group_ad"
+    primary_keys: [customer_id, ad_group_id, ad_group_ad_ad_id]
+    write: [overwrite, upsert]
+
+  # Keyword criteria of ad groups.
+  - name: keywords
+    source:
+      config:
+        body:
+          query: "SELECT ad_group_criterion.criterion_id, ad_group_criterion.keyword.text, ad_group_criterion.keyword.match_type, ad_group_criterion.status, ad_group_criterion.approval_status, ad_group_criterion.negative, ad_group.id, campaign.id, customer.id FROM ad_group_criterion WHERE ad_group_criterion.type = 'KEYWORD'"
+    primary_keys: [customer_id, ad_group_id, ad_group_criterion_criterion_id]
+    write: [overwrite, upsert]
+
+  # Daily campaign metrics.
+  - name: campaign_performance
+    source:
+      config:
+        body:
+          query: "SELECT customer.id, segments.date, campaign.id, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.interactions, metrics.conversions, metrics.conversions_value, metrics.all_conversions, metrics.view_through_conversions FROM campaign WHERE segments.date ${param.google_ads_date_filter}"
+    transforms:
+      - { type: cast, config: { fields: { impressions: int, clicks: int, cost_micros: int, interactions: int, view_through_conversions: int, conversions: float, conversions_value: float, all_conversions: float }, on_error: error } }
+    primary_keys: [customer_id, date, campaign_id]
+    write: [upsert, append]
+
+  # Daily ad group metrics.
+  - name: ad_group_performance
+    source:
+      config:
+        body:
+          query: "SELECT customer.id, segments.date, campaign.id, ad_group.id, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.interactions, metrics.conversions, metrics.conversions_value, metrics.all_conversions, metrics.view_through_conversions FROM ad_group WHERE segments.date ${param.google_ads_date_filter}"
+    transforms:
+      - { type: cast, config: { fields: { impressions: int, clicks: int, cost_micros: int, interactions: int, view_through_conversions: int, conversions: float, conversions_value: float, all_conversions: float }, on_error: error } }
+    primary_keys: [customer_id, date, ad_group_id]
+    write: [upsert, append]
+
+  # Daily ad metrics.
+  - name: ad_performance
+    source:
+      config:
+        body:
+          query: "SELECT customer.id, segments.date, campaign.id, ad_group.id, ad_group_ad.ad.id, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.interactions, metrics.conversions, metrics.conversions_value, metrics.all_conversions, metrics.view_through_conversions FROM ad_group_ad WHERE segments.date ${param.google_ads_date_filter}"
+    transforms:
+      - { type: cast, config: { fields: { impressions: int, clicks: int, cost_micros: int, interactions: int, view_through_conversions: int, conversions: float, conversions_value: float, all_conversions: float }, on_error: error } }
+    primary_keys: [customer_id, date, ad_group_id, ad_group_ad_ad_id]
+    write: [upsert, append]
+
+  # Daily keyword metrics.
+  - name: keyword_performance
+    source:
+      config:
+        body:
+          query: "SELECT customer.id, segments.date, campaign.id, ad_group.id, ad_group_criterion.criterion_id, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.interactions, metrics.conversions, metrics.conversions_value, metrics.all_conversions, metrics.view_through_conversions FROM keyword_view WHERE segments.date ${param.google_ads_date_filter}"
+    transforms:
+      - { type: cast, config: { fields: { impressions: int, clicks: int, cost_micros: int, interactions: int, view_through_conversions: int, conversions: float, conversions_value: float, all_conversions: float }, on_error: error } }
+    primary_keys: [customer_id, date, ad_group_id, ad_group_criterion_criterion_id]
+    write: [upsert, append]
+
+  # Daily search-term metrics per ad group and matched keyword.
+  - name: search_terms
+    source:
+      config:
+        body:
+          query: "SELECT customer.id, segments.date, campaign.id, ad_group.id, search_term_view.search_term, segments.keyword.info.text, segments.keyword.info.match_type, search_term_view.status, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.interactions, metrics.conversions, metrics.conversions_value, metrics.all_conversions, metrics.view_through_conversions FROM search_term_view WHERE segments.date ${param.google_ads_date_filter}"
+    transforms:
+      - { type: cast, config: { fields: { impressions: int, clicks: int, cost_micros: int, interactions: int, view_through_conversions: int, conversions: float, conversions_value: float, all_conversions: float }, on_error: error } }
+    primary_keys: [customer_id, date, ad_group_id, search_term_view_search_term, keyword_info_text, keyword_info_match_type]
+    write: [upsert, append]

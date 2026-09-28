@@ -1,0 +1,3 @@
+{"all_conversions": 2.5, "campaign_id": "111", "clicks": 7, "conversions": 1.5, "conversions_value": 42.0, "cost_micros": 4560000, "customer_id": "1234567890", "date": "2026-09-01", "impressions": 123, "interactions": 9, "view_through_conversions": 1}
+{"all_conversions": 2.5, "campaign_id": "111", "clicks": 7, "conversions": 1.5, "conversions_value": 42.0, "cost_micros": 4560000, "customer_id": "1234567890", "date": "2026-09-02", "impressions": 123, "interactions": 9, "view_through_conversions": 1}
+{"all_conversions": 2.5, "campaign_id": "112", "clicks": 7, "conversions": 1.5, "conversions_value": 42.0, "cost_micros": 4560000, "customer_id": "1234567890", "date": "2026-09-01", "impressions": 123, "interactions": 9, "view_through_conversions": 1}
