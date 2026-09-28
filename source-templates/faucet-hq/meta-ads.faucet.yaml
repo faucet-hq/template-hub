@@ -1,0 +1,3 @@
+# Catalog sidecar for faucet-hq/meta-ads: every merged version launches as stable.
+launch: true
+description: Meta Marketing API v25.0 — ad account, campaigns, ad sets, ads, creatives and daily Insights via async report runs

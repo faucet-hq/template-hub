@@ -1,0 +1,22 @@
+# `faucet template test` suite for faucet-hq/meta-ads: every Insights window
+# composes and compiles against the bigquery sink, an undeclared window is
+# refused, and an account record keeps its nested business as JSON.
+version: 1
+template: source-templates/faucet-hq/meta-ads.yaml
+sink: sink-templates/faucet-hq/bigquery.yaml
+suite:
+  auto:
+    required_omitted: true
+    enum_coverage: true
+  cases:
+    - name: rejects-an-undeclared-window
+      params: { meta_ad_account_id: "1234567890", meta_access_token: token, bq_project: analytics, bq_sa_key: "{}", meta_insights_date_preset: last_2_years }
+      expect: { error: meta_insights_date_preset }
+  behavioral:
+    - name: ad-account-shape
+      params: { meta_ad_account_id: "1234567890", meta_access_token: token, bq_project: analytics, bq_sa_key: "{}" }
+      input:
+        - { id: act_1234567890, account_id: "1234567890", name: Demo, currency: USD, business: { id: "555", name: Demo LLC } }
+      expect:
+        records:
+          - { id: act_1234567890, account_id: "1234567890", name: Demo, currency: USD, business: '{"id":"555","name":"Demo LLC"}' }
