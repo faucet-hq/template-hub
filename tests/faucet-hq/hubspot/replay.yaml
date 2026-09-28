@@ -1,0 +1,464 @@
+# Recorded HubSpot CRM (2026-09) exchanges, rebuilt from the documented response
+# shapes (https://developers.hubspot.com/docs/api-reference/latest/crm) with synthetic values.
+# Page size 2 so the keyset cursor turns pages; two runs so the second resumes from the bookmark.
+runs: 2
+overlay: ../../state-overlay.yaml
+params:
+  hubspot_access_token: pat-replay-token
+  api_base_url: '{replay}'
+  hubspot_page_size: 2
+exchanges:
+- match:
+    method: POST
+    path: /crm/objects/2026-09/contacts/search
+    headers: &id001
+      authorization: Bearer pat-replay-token
+    body:
+      filterGroups:
+      - filters:
+        - propertyName: lastmodifieddate
+          operator: GTE
+          value: '1970-01-01T00:00:00Z'
+        - propertyName: lastmodifieddate
+          operator: GTE
+          value: '1970-01-01T00:00:00Z'
+      sorts:
+      - propertyName: lastmodifieddate
+        direction: ASCENDING
+  response:
+    body:
+      total: 2
+      results:
+      - id: '101'
+        properties:
+          email: c101@example.test
+          firstname: Replay
+          lastname: Contact101
+          lifecyclestage: lead
+          hubspot_owner_id: '501'
+          hs_object_id: '101'
+          lastmodifieddate: '2026-01-02T10:00:00.100Z'
+          createdate: '2026-01-01T09:00:00.000Z'
+        createdAt: '2026-01-01T09:00:00.000Z'
+        updatedAt: '2026-01-02T10:00:00.100Z'
+        archived: false
+      - &id002
+        id: '102'
+        properties:
+          email: c102@example.test
+          firstname: Replay
+          lastname: Contact102
+          lifecyclestage: lead
+          hubspot_owner_id: '501'
+          hs_object_id: '102'
+          lastmodifieddate: '2026-01-02T11:00:00.200Z'
+          createdate: '2026-01-01T09:00:00.000Z'
+        createdAt: '2026-01-01T09:00:00.000Z'
+        updatedAt: '2026-01-02T11:00:00.200Z'
+        archived: false
+- match:
+    method: POST
+    path: /crm/objects/2026-09/contacts/search
+    headers: *id001
+    body:
+      filterGroups:
+      - filters:
+        - propertyName: lastmodifieddate
+          operator: GTE
+          value: '1970-01-01T00:00:00Z'
+        - propertyName: lastmodifieddate
+          operator: GTE
+          value: '2026-01-02T11:00:00.200Z'
+      sorts:
+      - propertyName: lastmodifieddate
+        direction: ASCENDING
+  response:
+    body:
+      total: 2
+      results:
+      - *id002
+      - &id003
+        id: '103'
+        properties:
+          email: c103@example.test
+          firstname: Replay
+          lastname: Contact103
+          lifecyclestage: lead
+          hubspot_owner_id: '501'
+          hs_object_id: '103'
+          lastmodifieddate: '2026-01-02T12:00:00.500Z'
+          createdate: '2026-01-01T09:00:00.000Z'
+        createdAt: '2026-01-01T09:00:00.000Z'
+        updatedAt: '2026-01-02T12:00:00.500Z'
+        archived: false
+- match:
+    method: POST
+    path: /crm/objects/2026-09/contacts/search
+    headers: *id001
+    body:
+      filterGroups:
+      - filters:
+        - propertyName: lastmodifieddate
+          operator: GTE
+          value: '1970-01-01T00:00:00Z'
+        - propertyName: lastmodifieddate
+          operator: GTE
+          value: '2026-01-02T12:00:00.500Z'
+      sorts:
+      - propertyName: lastmodifieddate
+        direction: ASCENDING
+  response:
+    body:
+      total: 1
+      results:
+      - *id003
+- match:
+    method: POST
+    path: /crm/objects/2026-09/contacts/search
+    headers: *id001
+    body:
+      filterGroups:
+      - filters:
+        - propertyName: lastmodifieddate
+          operator: GTE
+          value: '2026-01-02T12:00:00Z'
+        - propertyName: lastmodifieddate
+          operator: GTE
+          value: '1970-01-01T00:00:00Z'
+      sorts:
+      - propertyName: lastmodifieddate
+        direction: ASCENDING
+  response:
+    body:
+      total: 1
+      results:
+      - *id003
+- match:
+    method: POST
+    path: /crm/objects/2026-09/companies/search
+    headers: *id001
+    body:
+      filterGroups:
+      - filters:
+        - propertyName: hs_lastmodifieddate
+          operator: GTE
+          value: '1970-01-01T00:00:00Z'
+        - propertyName: hs_lastmodifieddate
+          operator: GTE
+          value: '1970-01-01T00:00:00Z'
+      sorts:
+      - propertyName: hs_lastmodifieddate
+        direction: ASCENDING
+  response:
+    body:
+      total: 1
+      results:
+      - &id004
+        id: '201'
+        properties:
+          name: Replay Co
+          domain: replay.example.test
+          hubspot_owner_id: '501'
+          hs_object_id: '201'
+          hs_lastmodifieddate: '2026-01-03T08:00:00.000Z'
+          createdate: '2026-01-01T09:00:00.000Z'
+        createdAt: '2026-01-01T09:00:00.000Z'
+        updatedAt: '2026-01-03T08:00:00.000Z'
+        archived: false
+- match:
+    method: POST
+    path: /crm/objects/2026-09/companies/search
+    headers: *id001
+    body:
+      filterGroups:
+      - filters:
+        - propertyName: hs_lastmodifieddate
+          operator: GTE
+          value: '2026-01-03T08:00:00Z'
+        - propertyName: hs_lastmodifieddate
+          operator: GTE
+          value: '1970-01-01T00:00:00Z'
+      sorts:
+      - propertyName: hs_lastmodifieddate
+        direction: ASCENDING
+  response:
+    body:
+      total: 1
+      results:
+      - *id004
+- match:
+    method: POST
+    path: /crm/objects/2026-09/deals/search
+    headers: *id001
+    body:
+      filterGroups:
+      - filters:
+        - propertyName: hs_lastmodifieddate
+          operator: GTE
+          value: '1970-01-01T00:00:00Z'
+        - propertyName: hs_lastmodifieddate
+          operator: GTE
+          value: '1970-01-01T00:00:00Z'
+      sorts:
+      - propertyName: hs_lastmodifieddate
+        direction: ASCENDING
+  response:
+    body:
+      total: 1
+      results:
+      - &id005
+        id: '301'
+        properties:
+          dealname: Replay deal
+          amount: '1200'
+          dealstage: closedwon
+          pipeline: default
+          hs_object_id: '301'
+          hs_lastmodifieddate: '2026-01-03T08:00:00.000Z'
+          createdate: '2026-01-01T09:00:00.000Z'
+        createdAt: '2026-01-01T09:00:00.000Z'
+        updatedAt: '2026-01-03T08:00:00.000Z'
+        archived: false
+- match:
+    method: POST
+    path: /crm/objects/2026-09/deals/search
+    headers: *id001
+    body:
+      filterGroups:
+      - filters:
+        - propertyName: hs_lastmodifieddate
+          operator: GTE
+          value: '2026-01-03T08:00:00Z'
+        - propertyName: hs_lastmodifieddate
+          operator: GTE
+          value: '1970-01-01T00:00:00Z'
+      sorts:
+      - propertyName: hs_lastmodifieddate
+        direction: ASCENDING
+  response:
+    body:
+      total: 1
+      results:
+      - *id005
+- match:
+    method: POST
+    path: /crm/objects/2026-09/tickets/search
+    headers: *id001
+    body:
+      filterGroups:
+      - filters:
+        - propertyName: hs_lastmodifieddate
+          operator: GTE
+          value: '1970-01-01T00:00:00Z'
+        - propertyName: hs_lastmodifieddate
+          operator: GTE
+          value: '1970-01-01T00:00:00Z'
+      sorts:
+      - propertyName: hs_lastmodifieddate
+        direction: ASCENDING
+  response:
+    body:
+      total: 1
+      results:
+      - &id006
+        id: '401'
+        properties:
+          subject: Replay ticket
+          hs_pipeline: '0'
+          hs_pipeline_stage: '1'
+          hs_ticket_priority: HIGH
+          hs_object_id: '401'
+          hs_lastmodifieddate: '2026-01-03T08:00:00.000Z'
+          createdate: '2026-01-01T09:00:00.000Z'
+        createdAt: '2026-01-01T09:00:00.000Z'
+        updatedAt: '2026-01-03T08:00:00.000Z'
+        archived: false
+- match:
+    method: POST
+    path: /crm/objects/2026-09/tickets/search
+    headers: *id001
+    body:
+      filterGroups:
+      - filters:
+        - propertyName: hs_lastmodifieddate
+          operator: GTE
+          value: '2026-01-03T08:00:00Z'
+        - propertyName: hs_lastmodifieddate
+          operator: GTE
+          value: '1970-01-01T00:00:00Z'
+      sorts:
+      - propertyName: hs_lastmodifieddate
+        direction: ASCENDING
+  response:
+    body:
+      total: 1
+      results:
+      - *id006
+- match:
+    path: /crm/objects/2026-09/contacts
+    query:
+      limit: '100'
+      archived: 'true'
+    headers: *id001
+    absent:
+    - after
+  response:
+    body:
+      results:
+      - id: '109'
+        properties:
+          hs_object_id: '109'
+        createdAt: '2025-12-01T09:00:00.000Z'
+        updatedAt: '2026-01-02T13:00:00.000Z'
+        archived: true
+        archivedAt: '2026-01-02T13:00:00.000Z'
+      paging:
+        next:
+          after: '110'
+          link: '{replay}/crm/objects/2026-09/contacts?after=110'
+- match:
+    path: /crm/objects/2026-09/contacts
+    query:
+      limit: '100'
+      archived: 'true'
+      after: '110'
+    headers: *id001
+  response:
+    body:
+      results:
+      - id: '110'
+        properties:
+          hs_object_id: '110'
+        createdAt: '2025-12-01T09:00:00.000Z'
+        updatedAt: '2026-01-02T14:00:00.000Z'
+        archived: true
+        archivedAt: '2026-01-02T14:00:00.000Z'
+- match:
+    path: /crm/objects/2026-09/companies
+    query:
+      limit: '100'
+      archived: 'true'
+    headers: *id001
+    absent:
+    - after
+  response:
+    body:
+      results:
+      - id: '209'
+        properties:
+          hs_object_id: '209'
+        createdAt: '2025-12-01T09:00:00.000Z'
+        updatedAt: '2026-01-02T15:00:00.000Z'
+        archived: true
+        archivedAt: '2026-01-02T15:00:00.000Z'
+- match:
+    path: /crm/objects/2026-09/deals
+    query:
+      limit: '100'
+      archived: 'true'
+    headers: *id001
+    absent:
+    - after
+  response:
+    body:
+      results:
+      - id: '309'
+        properties:
+          hs_object_id: '309'
+        createdAt: '2025-12-01T09:00:00.000Z'
+        updatedAt: '2026-01-02T15:00:00.000Z'
+        archived: true
+        archivedAt: '2026-01-02T15:00:00.000Z'
+- match:
+    path: /crm/objects/2026-09/tickets
+    query:
+      limit: '100'
+      archived: 'true'
+    headers: *id001
+    absent:
+    - after
+  response:
+    body:
+      results:
+      - id: '409'
+        properties:
+          hs_object_id: '409'
+        createdAt: '2025-12-01T09:00:00.000Z'
+        updatedAt: '2026-01-02T15:00:00.000Z'
+        archived: true
+        archivedAt: '2026-01-02T15:00:00.000Z'
+- match:
+    path: /crm/owners/2026-09
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - after
+  response:
+    body:
+      results:
+      - id: '501'
+        email: owner@example.test
+        firstName: Replay
+        lastName: Owner
+        userId: 9001
+        teams: []
+        archived: false
+        createdAt: '2025-01-01T00:00:00.000Z'
+        updatedAt: '2025-06-01T00:00:00.000Z'
+- match:
+    path: /crm/pipelines/2026-09/deals
+    headers: *id001
+  response:
+    body:
+      results:
+      - id: default
+        label: deals pipeline
+        displayOrder: 0
+        archived: false
+        createdAt: '2025-01-01T00:00:00.000Z'
+        updatedAt: '2025-01-01T00:00:00.000Z'
+        stages:
+        - id: appointmentscheduled
+          label: appointmentscheduled
+          displayOrder: 0
+          metadata: {}
+          archived: false
+        - id: closedwon
+          label: closedwon
+          displayOrder: 1
+          metadata: {}
+          archived: false
+        - id: closedlost
+          label: closedlost
+          displayOrder: 2
+          metadata: {}
+          archived: false
+- match:
+    path: /crm/pipelines/2026-09/tickets
+    headers: *id001
+  response:
+    body:
+      results:
+      - id: '0'
+        label: tickets pipeline
+        displayOrder: 0
+        archived: false
+        createdAt: '2025-01-01T00:00:00.000Z'
+        updatedAt: '2025-01-01T00:00:00.000Z'
+        stages:
+        - id: '1'
+          label: '1'
+          displayOrder: 0
+          metadata: {}
+          archived: false
+        - id: '2'
+          label: '2'
+          displayOrder: 1
+          metadata: {}
+          archived: false
+        - id: '4'
+          label: '4'
+          displayOrder: 2
+          metadata: {}
+          archived: false

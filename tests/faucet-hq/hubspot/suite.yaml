@@ -1,0 +1,20 @@
+# `faucet template test` suite for faucet-hq/hubspot, composed with the BigQuery
+# sink: every parameter combination must materialize, expand and compile.
+version: 1
+template: source-templates/faucet-hq/hubspot.yaml
+sink: sink-templates/faucet-hq/bigquery.yaml
+suite:
+  auto:
+    required_omitted: true
+    defaults_baseline: true
+  combine:
+    params:
+      hubspot_page_size: [1, 100, 200]
+  cases:
+    - name: private-app-token
+      params: { hubspot_access_token: pat-suite, bq_project: analytics, bq_sa_key: "{}" }
+    - name: recent-start
+      params: { hubspot_access_token: pat-suite, hubspot_start_date: "2026-01-01T00:00:00Z", bq_project: analytics, bq_sa_key: "{}" }
+    - name: missing-token-is-named
+      params: { bq_project: analytics, bq_sa_key: "{}" }
+      expect: { error: hubspot_access_token }

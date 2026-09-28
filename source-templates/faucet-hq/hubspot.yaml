@@ -1,0 +1,202 @@
+# HubSpot CRM — contacts, companies, deals and tickets (incremental through the
+# CRM search API), their archived records, owners and pipelines, on the
+# date-versioned 2026-09 API. Design notes and doc links per stream: hubspot.md.
+#   faucet run --source faucet-hq/hubspot --sink faucet-hq/bigquery \
+#     --param hubspot_access_token="$HUBSPOT_TOKEN" --param bq_project=… --param bq_sa_key="$BQ_SA_KEY"
+kind: source-template
+name: hubspot
+owner: faucet-hq
+description: HubSpot CRM — contacts, companies, deals, tickets (incremental on last-modified, archived records as delete markers), owners, deal and ticket pipelines
+tags: [crm, marketing, sales]
+docs: https://developers.hubspot.com/docs/api-reference/latest/crm
+params:
+  hubspot_access_token:
+    type: string
+    required: true
+    secret: true
+    description: "Access token of a private app (or app static token) holding the read scopes listed in hubspot.md"
+  hubspot_start_date:
+    type: string
+    default: "1970-01-01T00:00:00Z"
+    description: "RFC 3339 lower bound on last-modified for the first run (default: every record)"
+  hubspot_page_size:
+    type: int
+    default: 200
+    description: "Records per search request (the search API's maximum is 200)"
+  api_base_url:
+    type: string
+    default: https://api.hubapi.com
+    description: "API root; override only for replay tests"
+source:
+  type: rest
+  config:
+    base_url: "${param.api_base_url}"
+    auth: { type: bearer, config: { token: "${param.hubspot_access_token}" } }
+    max_pages: null
+    max_retries: 8
+    retry_backoff: 2
+streams:
+  # CRM search, ascending by last-modified. Filter 0 is the run's lower bound
+  # (the stored bookmark); filter 1 is the keyset cursor, moved to the largest
+  # updatedAt of each page, so every page is a fresh query and the search API's
+  # 10,000-results-per-query cap never applies.
+  - name: contacts
+    source:
+      config:
+        path: /crm/objects/2026-09/contacts/search
+        method: POST
+        body:
+          filterGroups:
+            - filters:
+                - { propertyName: lastmodifieddate, operator: GTE, value: null }
+                - { propertyName: lastmodifieddate, operator: GTE, value: "1970-01-01T00:00:00Z" }
+          sorts: [{ propertyName: lastmodifieddate, direction: ASCENDING }]
+          limit: "${param.hubspot_page_size}"
+          properties: [email, firstname, lastname, phone, mobilephone, company, jobtitle, website, address, city, state, zip, country, lifecyclestage, hs_lead_status, hubspot_owner_id, associatedcompanyid, createdate, lastmodifieddate]
+        records_path: "$.results[*]"
+        pagination: { type: RecordFieldCursor, field: updatedAt, into: body, param: /filterGroups/0/filters/1/value, agg: max, page_size: "${param.hubspot_page_size}" }
+        request_delay: 1
+        replication_method: { type: Incremental }
+        replication_key: updatedAt
+        start_replication_value: "${param.hubspot_start_date}"
+        replication_bind: { into: body, path: /filterGroups/0/filters/0/value, format: iso8601 }
+    transforms:
+      - { type: flatten, config: { separator: "__" } }
+    primary_keys: [id]
+    write: [upsert, overwrite]
+  - name: companies
+    source:
+      config:
+        path: /crm/objects/2026-09/companies/search
+        method: POST
+        body:
+          filterGroups:
+            - filters:
+                - { propertyName: hs_lastmodifieddate, operator: GTE, value: null }
+                - { propertyName: hs_lastmodifieddate, operator: GTE, value: "1970-01-01T00:00:00Z" }
+          sorts: [{ propertyName: hs_lastmodifieddate, direction: ASCENDING }]
+          limit: "${param.hubspot_page_size}"
+          properties: [name, domain, industry, type, phone, website, city, state, country, numberofemployees, annualrevenue, lifecyclestage, hubspot_owner_id, createdate, hs_lastmodifieddate]
+        records_path: "$.results[*]"
+        pagination: { type: RecordFieldCursor, field: updatedAt, into: body, param: /filterGroups/0/filters/1/value, agg: max, page_size: "${param.hubspot_page_size}" }
+        request_delay: 1
+        replication_method: { type: Incremental }
+        replication_key: updatedAt
+        start_replication_value: "${param.hubspot_start_date}"
+        replication_bind: { into: body, path: /filterGroups/0/filters/0/value, format: iso8601 }
+    transforms:
+      - { type: flatten, config: { separator: "__" } }
+    primary_keys: [id]
+    write: [upsert, overwrite]
+  - name: deals
+    source:
+      config:
+        path: /crm/objects/2026-09/deals/search
+        method: POST
+        body:
+          filterGroups:
+            - filters:
+                - { propertyName: hs_lastmodifieddate, operator: GTE, value: null }
+                - { propertyName: hs_lastmodifieddate, operator: GTE, value: "1970-01-01T00:00:00Z" }
+          sorts: [{ propertyName: hs_lastmodifieddate, direction: ASCENDING }]
+          limit: "${param.hubspot_page_size}"
+          properties: [dealname, amount, dealstage, pipeline, closedate, dealtype, hubspot_owner_id, hs_is_closed, hs_is_closed_won, createdate, hs_lastmodifieddate]
+        records_path: "$.results[*]"
+        pagination: { type: RecordFieldCursor, field: updatedAt, into: body, param: /filterGroups/0/filters/1/value, agg: max, page_size: "${param.hubspot_page_size}" }
+        request_delay: 1
+        replication_method: { type: Incremental }
+        replication_key: updatedAt
+        start_replication_value: "${param.hubspot_start_date}"
+        replication_bind: { into: body, path: /filterGroups/0/filters/0/value, format: iso8601 }
+    transforms:
+      - { type: flatten, config: { separator: "__" } }
+    primary_keys: [id]
+    write: [upsert, overwrite]
+  - name: tickets
+    source:
+      config:
+        path: /crm/objects/2026-09/tickets/search
+        method: POST
+        body:
+          filterGroups:
+            - filters:
+                - { propertyName: hs_lastmodifieddate, operator: GTE, value: null }
+                - { propertyName: hs_lastmodifieddate, operator: GTE, value: "1970-01-01T00:00:00Z" }
+          sorts: [{ propertyName: hs_lastmodifieddate, direction: ASCENDING }]
+          limit: "${param.hubspot_page_size}"
+          properties: [subject, content, hs_pipeline, hs_pipeline_stage, hs_ticket_priority, hs_ticket_category, hubspot_owner_id, source_type, closed_date, createdate, hs_lastmodifieddate]
+        records_path: "$.results[*]"
+        pagination: { type: RecordFieldCursor, field: updatedAt, into: body, param: /filterGroups/0/filters/1/value, agg: max, page_size: "${param.hubspot_page_size}" }
+        request_delay: 1
+        replication_method: { type: Incremental }
+        replication_key: updatedAt
+        start_replication_value: "${param.hubspot_start_date}"
+        replication_bind: { into: body, path: /filterGroups/0/filters/0/value, format: iso8601 }
+    transforms:
+      - { type: flatten, config: { separator: "__" } }
+    primary_keys: [id]
+    write: [upsert, overwrite]
+  # Archived (deleted) records, which the search API never returns: a full list
+  # per object, so a downstream model can drop them. Paged by paging.next.after.
+  - name: contacts_archived
+    source:
+      config:
+        path: /crm/objects/2026-09/contacts
+        query_params: { archived: "true", limit: "100" }
+        records_path: "$.results[*]"
+        pagination: { type: Cursor, next_token_path: "$.paging.next.after", param_name: after }
+    transforms:
+      - { type: flatten, config: { separator: "__" } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: companies_archived
+    source:
+      config:
+        path: /crm/objects/2026-09/companies
+        query_params: { archived: "true", limit: "100" }
+        records_path: "$.results[*]"
+        pagination: { type: Cursor, next_token_path: "$.paging.next.after", param_name: after }
+    transforms:
+      - { type: flatten, config: { separator: "__" } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: deals_archived
+    source:
+      config:
+        path: /crm/objects/2026-09/deals
+        query_params: { archived: "true", limit: "100" }
+        records_path: "$.results[*]"
+        pagination: { type: Cursor, next_token_path: "$.paging.next.after", param_name: after }
+    transforms:
+      - { type: flatten, config: { separator: "__" } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: tickets_archived
+    source:
+      config:
+        path: /crm/objects/2026-09/tickets
+        query_params: { archived: "true", limit: "100" }
+        records_path: "$.results[*]"
+        pagination: { type: Cursor, next_token_path: "$.paging.next.after", param_name: after }
+    transforms:
+      - { type: flatten, config: { separator: "__" } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: owners
+    source:
+      config:
+        path: /crm/owners/2026-09
+        query_params: { limit: "100" }
+        records_path: "$.results[*]"
+        pagination: { type: Cursor, next_token_path: "$.paging.next.after", param_name: after }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  # Pipelines with their stages nested, one request per object type.
+  - name: deal_pipelines
+    source: { config: { path: /crm/pipelines/2026-09/deals, records_path: "$.results[*]" } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: ticket_pipelines
+    source: { config: { path: /crm/pipelines/2026-09/tickets, records_path: "$.results[*]" } }
+    primary_keys: [id]
+    write: [overwrite, upsert]

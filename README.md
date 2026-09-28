@@ -63,7 +63,7 @@ sink.
 | Template | System | Streams | Incremental |
 |---|---|---|---|
 | [`faucet-hq/salesforce`](source-templates/faucet-hq/salesforce.md) | Salesforce (Bulk API 2.0, v62.0) | accounts, contacts, leads, opportunities, users, campaigns, tasks | all streams, `SystemModstamp` (+ soft deletes) |
-| [`faucet-hq/hubspot`](source-templates/faucet-hq/hubspot.md) | HubSpot CRM v3 | contacts, companies, deals, tickets, products, owners, deal_pipelines | — (full refresh) |
+| [`faucet-hq/hubspot`](source-templates/faucet-hq/hubspot.md) | HubSpot CRM (API 2026-09) | contacts, companies, deals, tickets (+ `_archived` for each), owners, deal_pipelines, ticket_pipelines | contacts, companies, deals, tickets (last-modified via CRM search) |
 | [`faucet-hq/stripe`](source-templates/faucet-hq/stripe.md) | Stripe (API 2026-08-26.dahlia) | customers, subscriptions, invoices, charges, refunds, payment_intents, products, prices, payouts, disputes, balance_transactions, events | balance_transactions, events (`created` windows) |
 | [`faucet-hq/jira`](source-templates/faucet-hq/jira.md) | Jira Cloud REST v3 | issues, projects, users, fields, statuses, issue_types, priorities, resolutions | — (full refresh) |
 | [`faucet-hq/zendesk`](source-templates/faucet-hq/zendesk.md) | Zendesk Support API v2 | tickets, users, organizations, groups, ticket_fields, ticket_metrics, satisfaction_ratings | tickets, users (incremental exports, deletes included) |
