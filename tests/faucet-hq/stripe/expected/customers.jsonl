@@ -1,0 +1,3 @@
+{"balance": -500, "created": 1767311940, "currency": "eur", "delinquent": false, "email": "bo@example.test", "id": "cus_Replay0002", "livemode": false, "metadata": {"tier": "gold"}, "name": "Bo Example", "object": "customer"}
+{"balance": 0, "created": 1767311880, "currency": null, "delinquent": true, "email": null, "id": "cus_Replay0003", "livemode": false, "metadata": {}, "name": null, "object": "customer"}
+{"balance": 0, "created": 1767312000, "currency": "usd", "delinquent": false, "email": "ada@example.test", "id": "cus_Replay0001", "livemode": false, "metadata": {}, "name": "Ada Example", "object": "customer"}

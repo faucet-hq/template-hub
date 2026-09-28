@@ -1,0 +1,736 @@
+# Recorded GA4 Data API exchanges for faucet-hq/google-analytics-4, built from
+# the documented runReport response schema with synthetic values. The service
+# account key is a throwaway RSA key generated for this fixture; the token
+# endpoint is served by the replay.
+#
+# Run 1 has no bookmark: one window from ga4_start_date minus the 3-day
+# lookback (2023-12-29) to now — ga4_window_days is set wide so the window
+# count does not depend on today's date — and traffic_daily pages by body
+# offset (page size 2: 2 rows, then 1). Run 2 resumes 3 days before the
+# bookmark; its start date moves with the clock, so those exchanges match on
+# the report shape and offset only. Every other stream returns a restated row
+# on run 2 (upserted over the first), traffic_daily returns no rows (GA4 then
+# omits `rows`), so its expected output is run 1's three rows.
+runs: 2
+overlay: ../../state-overlay.yaml
+params:
+  ga4_api_url: '{replay}'
+  google_token_uri: '{replay}/token'
+  ga4_property_id: '123456789'
+  google_sa_key: '{"type": "service_account", "project_id": "replay-project", "private_key_id": "0000replay", "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC1mqkRSxEFWMVx\niIJgnf1SkRIofCEfMa1oNRkbXczqNvMIGwLfc9FYbXgzcdkUF40POFJdVIVCK9Ia\n66W1CBsJ5YcKDlSFr+WVC0MlpmvLRE8v+1CXMgyC4YFz+3qhuoLbk1jbi67j6Kan\ngH+ZVfcsgojLuYLH1vqsOyHDsKlXUaPPdQnmBiLFa2KFz0Y9PPUoRm0QzJUhwS2f\ncXGoODiyNeGjm8H8O2UtxF9bHC8nG4AAOXSa/gKl4w6jc+8Xr5ghSjYyfG16pLpF\nKF5HtEXonkNg9GyPyHeqcnrLraVxrCmfu9c8V60FInlagCHlXRHILTRvSQofEXQ4\nalioJdcDAgMBAAECggEARQTkJ4XjkKgl1hnfDzBMZDJtd8SBZBUhxf6ULbHvHL7I\ni/aUF2+xiw2Dxu2IZpnyyuuJZh4mzTjRT9jqcAyGFjNNKNW8atiohQY0PV1sD2NF\nQ0Oc4/GqDp388KMNfuTfMetktH/4dnbny7ZLCHBDEgAEVIULPr8mIwoQMYr1ORFS\nq4hZ0ziW51OcTX1//J5d3OPiWSuWkE+ehnDDPGnqX+csfsa0jwORRht4PsJLYt4H\nat0l9QKB+VWCZ4RrKZRCPgzzn94hklczYKPFeBFb4H8ENRErfZzBPBHdv8RSCJ9M\nxyxfgegnH8mthDLAx6TJkNzJ4hzh3Kut6MjmLAbvQQKBgQDaf6iZE5W1j6Gs8d11\n+nIdEbrNzxzd66fDSYGwU2lIV/n0dQD1egP0PJT2kyo0qI4dyQIQKSvh+I8p9Sy9\ni9LAaiyijCPJdoXyEl+9zItSlvLEF1LuDCuSjvwlQI3YjKqp/jIfBWLK2VYT215w\nhS1OH25KWro5G6/tWMRFSc8GwwKBgQDUxfBuQcWK9fIgVbKeiittSqRmZJDGwgRw\nibGY1YNu+sq0bBID8jMUkQlwSruUneqjb58cGzFb3/+hrZNsgEpYuiFQ79zD709A\nP1TmeeMjNLJ+lSz0x84Y8kGv0wSwYPXpPkArDFeb2CMmcoM3VzKf49yAlm73ESsj\nzIdHKldqwQKBgDiYHkRgBUP8ywSvtQwM7afH4tnSDokQs+hqTrQsNrXtS6nc8H2k\nuAd39aGUZrcy/XSLjwQ+lcY3CmX0wjzqTZFXLu5/W/mfwHv99FyF8YRX4tOVsv5D\nmrmgXYEMonD3pnDXjYXpcDhYaOpFxMViSWTV0UxjCZ8nI79XYacMwhnfAoGAAdgV\nVV9Mjv/CsXUMr0MTTUcwVZLZjl9wGmmXGHQBR5z01Mt6/H3E45C+PDLpnUghGHmH\nL38s1lcCqCwQ8wfJnSs/zqvFhg006qGh4r17snpqcZ5pXVW9+4ld+GAj0kOE3hik\nBbt9puQgqdykNn6S+b/H0XV8ULfdX9oN8hfz2gECgYB1NFaCBrpUgP1uWh8gDrO+\nQs7gzokRQIW9juTq3byVL+bi8HZsbPGXTMX8YrvcG1MmSVW25cbWg3YFeVmjjDkU\n6toWsEt+AiVAz//g58xoGHHwUqTjvx578X8loE1ugBktSuVAapwE2KhpRFyUFSCV\nzh/4uECFtTZch1M22aQxrw==\n-----END
+    PRIVATE KEY-----\n", "client_email": "faucet-replay@replay-project.iam.gserviceaccount.com", "client_id": "100000000000000000001", "token_uri": "https://oauth2.googleapis.com/token"}'
+  ga4_page_size: '2'
+  ga4_window_days: '36500'
+  ga4_start_date: '2024-01-01'
+  ga4_lookback_days: '3'
+exchanges:
+- match:
+    method: POST
+    path: /token
+    form:
+      grant_type: urn:ietf:params:oauth:grant-type:jwt-bearer
+  response:
+    body:
+      access_token: ya29.replay-token
+      expires_in: 3599
+      token_type: Bearer
+- match:
+    method: POST
+    path: /v1beta/properties/123456789:runReport
+    headers:
+      authorization: Bearer ya29.replay-token
+    body:
+      dimensions: &id001
+      - name: date
+      metrics: &id002
+      - name: sessions
+      - name: totalUsers
+      - name: newUsers
+      - name: activeUsers
+      - name: engagedSessions
+      - name: screenPageViews
+      - name: eventCount
+      - name: keyEvents
+      - name: userEngagementDuration
+      - name: totalRevenue
+      dateRanges:
+      - startDate: '2023-12-29'
+      offset: 0
+      limit: 2
+  response:
+    body:
+      dimensionHeaders:
+      - name: date
+      metricHeaders:
+      - name: sessions
+        type: TYPE_INTEGER
+      - name: totalUsers
+        type: TYPE_INTEGER
+      - name: newUsers
+        type: TYPE_INTEGER
+      - name: activeUsers
+        type: TYPE_INTEGER
+      - name: engagedSessions
+        type: TYPE_INTEGER
+      - name: screenPageViews
+        type: TYPE_INTEGER
+      - name: eventCount
+        type: TYPE_INTEGER
+      - name: keyEvents
+        type: TYPE_INTEGER
+      - name: userEngagementDuration
+        type: TYPE_INTEGER
+      - name: totalRevenue
+        type: TYPE_INTEGER
+      rowCount: 3
+      metadata:
+        currencyCode: USD
+        timeZone: America/New_York
+      kind: analyticsData#runReport
+      rows:
+      - dimensionValues:
+        - value: '20260901'
+        metricValues:
+        - value: '120'
+        - value: '95'
+        - value: '40'
+        - value: '90'
+        - value: '70'
+        - value: '310'
+        - value: '1500'
+        - value: '6'
+        - value: '5400.5'
+        - value: '250.75'
+      - dimensionValues:
+        - value: '20260902'
+        metricValues:
+        - value: '130'
+        - value: '99'
+        - value: '41'
+        - value: '93'
+        - value: '75'
+        - value: '320'
+        - value: '1600'
+        - value: '7'
+        - value: '5500'
+        - value: '260'
+- match:
+    method: POST
+    path: /v1beta/properties/123456789:runReport
+    body:
+      dimensions: *id001
+      metrics: *id002
+      dateRanges:
+      - startDate: '2023-12-29'
+      offset: 2
+      limit: 2
+  response:
+    body:
+      dimensionHeaders:
+      - name: date
+      metricHeaders:
+      - name: sessions
+        type: TYPE_INTEGER
+      - name: totalUsers
+        type: TYPE_INTEGER
+      - name: newUsers
+        type: TYPE_INTEGER
+      - name: activeUsers
+        type: TYPE_INTEGER
+      - name: engagedSessions
+        type: TYPE_INTEGER
+      - name: screenPageViews
+        type: TYPE_INTEGER
+      - name: eventCount
+        type: TYPE_INTEGER
+      - name: keyEvents
+        type: TYPE_INTEGER
+      - name: userEngagementDuration
+        type: TYPE_INTEGER
+      - name: totalRevenue
+        type: TYPE_INTEGER
+      rowCount: 3
+      metadata:
+        currencyCode: USD
+        timeZone: America/New_York
+      kind: analyticsData#runReport
+      rows:
+      - dimensionValues:
+        - value: '20260903'
+        metricValues:
+        - value: '110'
+        - value: '90'
+        - value: '35'
+        - value: '85'
+        - value: '66'
+        - value: '300'
+        - value: '1400'
+        - value: '5'
+        - value: '5100.25'
+        - value: '0'
+- match:
+    method: POST
+    path: /v1beta/properties/123456789:runReport
+    body:
+      dimensions: *id001
+      metrics: *id002
+      offset: 0
+  response:
+    body:
+      dimensionHeaders:
+      - name: date
+      metricHeaders:
+      - name: sessions
+        type: TYPE_INTEGER
+      - name: totalUsers
+        type: TYPE_INTEGER
+      - name: newUsers
+        type: TYPE_INTEGER
+      - name: activeUsers
+        type: TYPE_INTEGER
+      - name: engagedSessions
+        type: TYPE_INTEGER
+      - name: screenPageViews
+        type: TYPE_INTEGER
+      - name: eventCount
+        type: TYPE_INTEGER
+      - name: keyEvents
+        type: TYPE_INTEGER
+      - name: userEngagementDuration
+        type: TYPE_INTEGER
+      - name: totalRevenue
+        type: TYPE_INTEGER
+      rowCount: 0
+      metadata:
+        currencyCode: USD
+        timeZone: America/New_York
+      kind: analyticsData#runReport
+- match:
+    method: POST
+    path: /v1beta/properties/123456789:runReport
+    body:
+      dimensions: &id003
+      - name: date
+      - name: sessionSource
+      - name: sessionMedium
+      - name: sessionCampaignName
+      - name: sessionDefaultChannelGroup
+      metrics: &id004
+      - name: sessions
+      - name: totalUsers
+      - name: newUsers
+      - name: engagedSessions
+      - name: keyEvents
+      - name: totalRevenue
+      dateRanges:
+      - startDate: '2023-12-29'
+      offset: 0
+  response:
+    body:
+      dimensionHeaders:
+      - name: date
+      - name: sessionSource
+      - name: sessionMedium
+      - name: sessionCampaignName
+      - name: sessionDefaultChannelGroup
+      metricHeaders:
+      - name: sessions
+        type: TYPE_INTEGER
+      - name: totalUsers
+        type: TYPE_INTEGER
+      - name: newUsers
+        type: TYPE_INTEGER
+      - name: engagedSessions
+        type: TYPE_INTEGER
+      - name: keyEvents
+        type: TYPE_INTEGER
+      - name: totalRevenue
+        type: TYPE_INTEGER
+      rowCount: 1
+      metadata:
+        currencyCode: USD
+        timeZone: America/New_York
+      kind: analyticsData#runReport
+      rows:
+      - dimensionValues:
+        - value: '20260901'
+        - value: google
+        - value: organic
+        - value: (organic)
+        - value: Organic Search
+        metricValues:
+        - value: '80'
+        - value: '70'
+        - value: '30'
+        - value: '50'
+        - value: '4'
+        - value: '100.5'
+- match:
+    method: POST
+    path: /v1beta/properties/123456789:runReport
+    body:
+      dimensions: *id003
+      metrics: *id004
+      offset: 0
+  response:
+    body:
+      dimensionHeaders:
+      - name: date
+      - name: sessionSource
+      - name: sessionMedium
+      - name: sessionCampaignName
+      - name: sessionDefaultChannelGroup
+      metricHeaders:
+      - name: sessions
+        type: TYPE_INTEGER
+      - name: totalUsers
+        type: TYPE_INTEGER
+      - name: newUsers
+        type: TYPE_INTEGER
+      - name: engagedSessions
+        type: TYPE_INTEGER
+      - name: keyEvents
+        type: TYPE_INTEGER
+      - name: totalRevenue
+        type: TYPE_INTEGER
+      rowCount: 1
+      metadata:
+        currencyCode: USD
+        timeZone: America/New_York
+      kind: analyticsData#runReport
+      rows:
+      - dimensionValues:
+        - value: '20260901'
+        - value: google
+        - value: organic
+        - value: (organic)
+        - value: Organic Search
+        metricValues:
+        - value: '81'
+        - value: '71'
+        - value: '31'
+        - value: '51'
+        - value: '5'
+        - value: '100.5'
+- match:
+    method: POST
+    path: /v1beta/properties/123456789:runReport
+    body:
+      dimensions: &id005
+      - name: date
+      - name: landingPagePlusQueryString
+      metrics: &id006
+      - name: sessions
+      - name: totalUsers
+      - name: newUsers
+      - name: engagedSessions
+      - name: keyEvents
+      dateRanges:
+      - startDate: '2023-12-29'
+      offset: 0
+  response:
+    body:
+      dimensionHeaders:
+      - name: date
+      - name: landingPagePlusQueryString
+      metricHeaders:
+      - name: sessions
+        type: TYPE_INTEGER
+      - name: totalUsers
+        type: TYPE_INTEGER
+      - name: newUsers
+        type: TYPE_INTEGER
+      - name: engagedSessions
+        type: TYPE_INTEGER
+      - name: keyEvents
+        type: TYPE_INTEGER
+      rowCount: 1
+      metadata:
+        currencyCode: USD
+        timeZone: America/New_York
+      kind: analyticsData#runReport
+      rows:
+      - dimensionValues:
+        - value: '20260901'
+        - value: /pricing?plan=pro
+        metricValues:
+        - value: '25'
+        - value: '22'
+        - value: '10'
+        - value: '18'
+        - value: '2'
+- match:
+    method: POST
+    path: /v1beta/properties/123456789:runReport
+    body:
+      dimensions: *id005
+      metrics: *id006
+      offset: 0
+  response:
+    body:
+      dimensionHeaders:
+      - name: date
+      - name: landingPagePlusQueryString
+      metricHeaders:
+      - name: sessions
+        type: TYPE_INTEGER
+      - name: totalUsers
+        type: TYPE_INTEGER
+      - name: newUsers
+        type: TYPE_INTEGER
+      - name: engagedSessions
+        type: TYPE_INTEGER
+      - name: keyEvents
+        type: TYPE_INTEGER
+      rowCount: 1
+      metadata:
+        currencyCode: USD
+        timeZone: America/New_York
+      kind: analyticsData#runReport
+      rows:
+      - dimensionValues:
+        - value: '20260901'
+        - value: /pricing?plan=pro
+        metricValues:
+        - value: '26'
+        - value: '23'
+        - value: '11'
+        - value: '19'
+        - value: '3'
+- match:
+    method: POST
+    path: /v1beta/properties/123456789:runReport
+    body:
+      dimensions: &id007
+      - name: date
+      - name: hostName
+      - name: pagePath
+      metrics: &id008
+      - name: screenPageViews
+      - name: activeUsers
+      - name: eventCount
+      - name: userEngagementDuration
+      dateRanges:
+      - startDate: '2023-12-29'
+      offset: 0
+  response:
+    body:
+      dimensionHeaders:
+      - name: date
+      - name: hostName
+      - name: pagePath
+      metricHeaders:
+      - name: screenPageViews
+        type: TYPE_INTEGER
+      - name: activeUsers
+        type: TYPE_INTEGER
+      - name: eventCount
+        type: TYPE_INTEGER
+      - name: userEngagementDuration
+        type: TYPE_INTEGER
+      rowCount: 1
+      metadata:
+        currencyCode: USD
+        timeZone: America/New_York
+      kind: analyticsData#runReport
+      rows:
+      - dimensionValues:
+        - value: '20260901'
+        - value: www.example.com
+        - value: /pricing
+        metricValues:
+        - value: '60'
+        - value: '40'
+        - value: '200'
+        - value: '900.5'
+- match:
+    method: POST
+    path: /v1beta/properties/123456789:runReport
+    body:
+      dimensions: *id007
+      metrics: *id008
+      offset: 0
+  response:
+    body:
+      dimensionHeaders:
+      - name: date
+      - name: hostName
+      - name: pagePath
+      metricHeaders:
+      - name: screenPageViews
+        type: TYPE_INTEGER
+      - name: activeUsers
+        type: TYPE_INTEGER
+      - name: eventCount
+        type: TYPE_INTEGER
+      - name: userEngagementDuration
+        type: TYPE_INTEGER
+      rowCount: 1
+      metadata:
+        currencyCode: USD
+        timeZone: America/New_York
+      kind: analyticsData#runReport
+      rows:
+      - dimensionValues:
+        - value: '20260901'
+        - value: www.example.com
+        - value: /pricing
+        metricValues:
+        - value: '61'
+        - value: '41'
+        - value: '201'
+        - value: '900.5'
+- match:
+    method: POST
+    path: /v1beta/properties/123456789:runReport
+    body:
+      dimensions: &id009
+      - name: date
+      - name: eventName
+      metrics: &id010
+      - name: eventCount
+      - name: totalUsers
+      - name: keyEvents
+      dateRanges:
+      - startDate: '2023-12-29'
+      offset: 0
+  response:
+    body:
+      dimensionHeaders:
+      - name: date
+      - name: eventName
+      metricHeaders:
+      - name: eventCount
+        type: TYPE_INTEGER
+      - name: totalUsers
+        type: TYPE_INTEGER
+      - name: keyEvents
+        type: TYPE_INTEGER
+      rowCount: 1
+      metadata:
+        currencyCode: USD
+        timeZone: America/New_York
+      kind: analyticsData#runReport
+      rows:
+      - dimensionValues:
+        - value: '20260901'
+        - value: page_view
+        metricValues:
+        - value: '310'
+        - value: '95'
+        - value: '0'
+- match:
+    method: POST
+    path: /v1beta/properties/123456789:runReport
+    body:
+      dimensions: *id009
+      metrics: *id010
+      offset: 0
+  response:
+    body:
+      dimensionHeaders:
+      - name: date
+      - name: eventName
+      metricHeaders:
+      - name: eventCount
+        type: TYPE_INTEGER
+      - name: totalUsers
+        type: TYPE_INTEGER
+      - name: keyEvents
+        type: TYPE_INTEGER
+      rowCount: 1
+      metadata:
+        currencyCode: USD
+        timeZone: America/New_York
+      kind: analyticsData#runReport
+      rows:
+      - dimensionValues:
+        - value: '20260901'
+        - value: page_view
+        metricValues:
+        - value: '311'
+        - value: '96'
+        - value: '1'
+- match:
+    method: POST
+    path: /v1beta/properties/123456789:runReport
+    body:
+      dimensions: &id011
+      - name: date
+      - name: deviceCategory
+      - name: operatingSystem
+      - name: browser
+      metrics: &id012
+      - name: sessions
+      - name: totalUsers
+      - name: newUsers
+      - name: engagedSessions
+      - name: screenPageViews
+      dateRanges:
+      - startDate: '2023-12-29'
+      offset: 0
+  response:
+    body:
+      dimensionHeaders:
+      - name: date
+      - name: deviceCategory
+      - name: operatingSystem
+      - name: browser
+      metricHeaders:
+      - name: sessions
+        type: TYPE_INTEGER
+      - name: totalUsers
+        type: TYPE_INTEGER
+      - name: newUsers
+        type: TYPE_INTEGER
+      - name: engagedSessions
+        type: TYPE_INTEGER
+      - name: screenPageViews
+        type: TYPE_INTEGER
+      rowCount: 1
+      metadata:
+        currencyCode: USD
+        timeZone: America/New_York
+      kind: analyticsData#runReport
+      rows:
+      - dimensionValues:
+        - value: '20260901'
+        - value: desktop
+        - value: Macintosh
+        - value: Chrome
+        metricValues:
+        - value: '70'
+        - value: '60'
+        - value: '20'
+        - value: '50'
+        - value: '180'
+- match:
+    method: POST
+    path: /v1beta/properties/123456789:runReport
+    body:
+      dimensions: *id011
+      metrics: *id012
+      offset: 0
+  response:
+    body:
+      dimensionHeaders:
+      - name: date
+      - name: deviceCategory
+      - name: operatingSystem
+      - name: browser
+      metricHeaders:
+      - name: sessions
+        type: TYPE_INTEGER
+      - name: totalUsers
+        type: TYPE_INTEGER
+      - name: newUsers
+        type: TYPE_INTEGER
+      - name: engagedSessions
+        type: TYPE_INTEGER
+      - name: screenPageViews
+        type: TYPE_INTEGER
+      rowCount: 1
+      metadata:
+        currencyCode: USD
+        timeZone: America/New_York
+      kind: analyticsData#runReport
+      rows:
+      - dimensionValues:
+        - value: '20260901'
+        - value: desktop
+        - value: Macintosh
+        - value: Chrome
+        metricValues:
+        - value: '71'
+        - value: '61'
+        - value: '21'
+        - value: '51'
+        - value: '181'
+- match:
+    method: POST
+    path: /v1beta/properties/123456789:runReport
+    body:
+      dimensions: &id013
+      - name: date
+      - name: country
+      - name: region
+      - name: city
+      metrics: &id014
+      - name: sessions
+      - name: totalUsers
+      - name: newUsers
+      - name: engagedSessions
+      dateRanges:
+      - startDate: '2023-12-29'
+      offset: 0
+  response:
+    body:
+      dimensionHeaders:
+      - name: date
+      - name: country
+      - name: region
+      - name: city
+      metricHeaders:
+      - name: sessions
+        type: TYPE_INTEGER
+      - name: totalUsers
+        type: TYPE_INTEGER
+      - name: newUsers
+        type: TYPE_INTEGER
+      - name: engagedSessions
+        type: TYPE_INTEGER
+      rowCount: 1
+      metadata:
+        currencyCode: USD
+        timeZone: America/New_York
+      kind: analyticsData#runReport
+      rows:
+      - dimensionValues:
+        - value: '20260901'
+        - value: Germany
+        - value: Berlin
+        - value: Berlin
+        metricValues:
+        - value: '30'
+        - value: '25'
+        - value: '9'
+        - value: '20'
+- match:
+    method: POST
+    path: /v1beta/properties/123456789:runReport
+    body:
+      dimensions: *id013
+      metrics: *id014
+      offset: 0
+  response:
+    body:
+      dimensionHeaders:
+      - name: date
+      - name: country
+      - name: region
+      - name: city
+      metricHeaders:
+      - name: sessions
+        type: TYPE_INTEGER
+      - name: totalUsers
+        type: TYPE_INTEGER
+      - name: newUsers
+        type: TYPE_INTEGER
+      - name: engagedSessions
+        type: TYPE_INTEGER
+      rowCount: 1
+      metadata:
+        currencyCode: USD
+        timeZone: America/New_York
+      kind: analyticsData#runReport
+      rows:
+      - dimensionValues:
+        - value: '20260901'
+        - value: Germany
+        - value: Berlin
+        - value: Berlin
+        metricValues:
+        - value: '31'
+        - value: '26'
+        - value: '10'
+        - value: '21'

@@ -1,0 +1,31 @@
+# `faucet template test` suite for faucet-hq/google-analytics-4: parameter
+# combinations compose and compile against the bigquery sink, and a raw
+# runReport row is named, typed and stamped with its property.
+version: 1
+template: source-templates/faucet-hq/google-analytics-4.yaml
+sink: sink-templates/faucet-hq/bigquery.yaml
+suite:
+  auto:
+    required_omitted: true
+  cases:
+    - name: defaults
+      params: { ga4_property_id: "123456789", google_sa_key: "{}", bq_project: analytics, bq_sa_key: "{}" }
+    - name: backfill-shape
+      params:
+        ga4_property_id: "123456789"
+        google_sa_key: "{}"
+        bq_project: analytics
+        bq_sa_key: "{}"
+        ga4_start_date: "2023-01-01"
+        ga4_window_days: 7
+        ga4_lookback_days: 7
+        ga4_page_size: 250000
+  behavioral:
+    - name: traffic-daily-row
+      params: { ga4_property_id: "123456789", google_sa_key: "{}", bq_project: analytics, bq_sa_key: "{}" }
+      input:
+        - dimensionValues: [{ value: "20260901" }]
+          metricValues: [{ value: "120" }, { value: "95" }, { value: "40" }, { value: "90" }, { value: "70" }, { value: "310" }, { value: "1500" }, { value: "6" }, { value: "5400.5" }, { value: "250.75" }]
+      expect:
+        records:
+          - { property_id: "123456789", date: "20260901", sessions: 120, total_users: 95, new_users: 40, active_users: 90, engaged_sessions: 70, screen_page_views: 310, event_count: 1500, key_events: 6.0, user_engagement_duration: 5400.5, total_revenue: 250.75 }

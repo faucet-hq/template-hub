@@ -1,0 +1,197 @@
+# Recorded GitHub REST exchanges for faucet-hq/github, built from the response
+# schemas at docs.github.com (API version 2026-03-10) with synthetic values.
+# Run twice: the second run resumes the incremental streams from the `since`
+# bookmark the first one persisted.
+runs: 2
+overlay: ../../state-overlay.yaml
+params:
+  github_api_url: "{replay}"
+  github_token: ghp_replay_token
+  github_owner: octo-org
+  github_repo: demo
+exchanges:
+  # --- repository (single object) -------------------------------------------
+  - match:
+      path: /repos/octo-org/demo
+      headers: { authorization: Bearer ghp_replay_token, x-github-api-version: "2026-03-10" }
+    response:
+      body:
+        id: 900001
+        node_id: R_kgDOAAAAAQ
+        name: demo
+        full_name: octo-org/demo
+        private: false
+        owner: { login: octo-org, id: 800001, type: Organization }
+        default_branch: main
+        topics: [etl, rust]
+        license: { key: mit, name: MIT License, spdx_id: MIT }
+        stargazers_count: 42
+        forks_count: 7
+        open_issues_count: 3
+        created_at: "2024-01-02T03:04:05Z"
+        updated_at: "2026-09-01T10:00:00Z"
+        pushed_at: "2026-09-02T11:00:00Z"
+  # --- issues: first run, two pages via the Link header ---------------------
+  - match:
+      path: /repos/octo-org/demo/issues
+      query: { state: all, sort: updated, direction: asc, per_page: "100", since: "2008-01-01T00:00:00Z" }
+      absent: [page]
+    response:
+      headers:
+        Link: '<{replay}/repos/octo-org/demo/issues?state=all&sort=updated&direction=asc&per_page=100&since=2008-01-01T00%3A00%3A00Z&page=2>; rel="next", <{replay}/repos/octo-org/demo/issues?state=all&sort=updated&direction=asc&per_page=100&since=2008-01-01T00%3A00%3A00Z&page=2>; rel="last"'
+      body:
+        - id: 1001
+          number: 1
+          title: Crash on empty page
+          state: closed
+          user: { login: alice-dev, id: 700001 }
+          labels: [{ id: 11, name: bug }]
+          assignees: []
+          comments: 2
+          created_at: "2025-03-01T08:00:00Z"
+          updated_at: "2025-03-05T09:00:00Z"
+          closed_at: "2025-03-05T09:00:00Z"
+  - match:
+      path: /repos/octo-org/demo/issues
+      query: { page: "2", since: "2008-01-01T00:00:00Z" }
+    response:
+      body:
+        - id: 1002
+          number: 2
+          title: Add a CSV sink
+          state: open
+          user: { login: bob-dev, id: 700002 }
+          labels: []
+          assignees: [{ login: alice-dev, id: 700001 }]
+          comments: 0
+          pull_request: { url: "https://api.github.com/repos/octo-org/demo/pulls/2", merged_at: null }
+          created_at: "2026-08-10T12:00:00Z"
+          updated_at: "2026-08-20T12:00:00Z"
+          closed_at: null
+  # --- issues: second run resumes from the bookmark -------------------------
+  - match:
+      path: /repos/octo-org/demo/issues
+      query: { since: "2026-08-20T12:00:00Z" }
+    response:
+      body:
+        - id: 1002
+          number: 2
+          title: Add a CSV sink
+          state: closed
+          user: { login: bob-dev, id: 700002 }
+          labels: []
+          assignees: [{ login: alice-dev, id: 700001 }]
+          comments: 1
+          pull_request: { url: "https://api.github.com/repos/octo-org/demo/pulls/2", merged_at: "2026-09-03T08:00:00Z" }
+          created_at: "2026-08-10T12:00:00Z"
+          updated_at: "2026-09-03T08:00:00Z"
+          closed_at: "2026-09-03T08:00:00Z"
+  # --- issue comments --------------------------------------------------------
+  - match:
+      path: /repos/octo-org/demo/issues/comments
+      query: { sort: updated, direction: asc, since: "2008-01-01T00:00:00Z" }
+    response:
+      body:
+        - id: 5001
+          issue_url: "https://api.github.com/repos/octo-org/demo/issues/1"
+          user: { login: bob-dev, id: 700002 }
+          body: Reproduced on main.
+          author_association: MEMBER
+          created_at: "2025-03-02T10:00:00Z"
+          updated_at: "2025-03-02T10:00:00Z"
+  - match:
+      path: /repos/octo-org/demo/issues/comments
+      query: { since: "2025-03-02T10:00:00Z" }
+    response:
+      body: []
+  # --- pull requests (full refresh) -----------------------------------------
+  - match:
+      path: /repos/octo-org/demo/pulls
+      query: { state: all, sort: created, direction: asc, per_page: "100" }
+    response:
+      body:
+        - id: 3002
+          number: 2
+          state: closed
+          title: Add a CSV sink
+          user: { login: bob-dev, id: 700002 }
+          draft: false
+          head: { ref: csv-sink, sha: "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d" }
+          base: { ref: main, sha: "553c2077f0edc3d5dc5d17262f6aa498e69d6f8e" }
+          labels: []
+          requested_reviewers: []
+          created_at: "2026-08-10T12:00:00Z"
+          updated_at: "2026-09-03T08:00:00Z"
+          merged_at: "2026-09-03T08:00:00Z"
+  # --- review comments -------------------------------------------------------
+  - match:
+      path: /repos/octo-org/demo/pulls/comments
+      query: { sort: updated, direction: asc, since: "2008-01-01T00:00:00Z" }
+    response:
+      body:
+        - id: 6001
+          pull_request_review_id: 6100
+          path: src/sink.rs
+          line: 12
+          user: { login: alice-dev, id: 700001 }
+          body: Buffer this writer.
+          created_at: "2026-08-12T09:00:00Z"
+          updated_at: "2026-08-12T09:30:00Z"
+  - match:
+      path: /repos/octo-org/demo/pulls/comments
+      query: { since: "2026-08-12T09:30:00Z" }
+    response:
+      body: []
+  # --- commits (bookmark on the nested commit.committer.date) ---------------
+  - match:
+      path: /repos/octo-org/demo/commits
+      query: { per_page: "100", since: "2008-01-01T00:00:00Z" }
+    response:
+      body:
+        - sha: "6dcb09b5b57875f334f61aebed695e2e4193db5e"
+          commit:
+            message: Add CSV sink
+            author: { name: Bob Dev, email: bob@example.com, date: "2026-09-03T07:55:00Z" }
+            committer: { name: Bob Dev, email: bob@example.com, date: "2026-09-03T08:00:00Z" }
+          author: { login: bob-dev, id: 700002 }
+          committer: { login: bob-dev, id: 700002 }
+          parents: [{ sha: "553c2077f0edc3d5dc5d17262f6aa498e69d6f8e" }]
+  - match:
+      path: /repos/octo-org/demo/commits
+      query: { since: "2026-09-03T08:00:00Z" }
+    response:
+      body: []
+  # --- releases --------------------------------------------------------------
+  - match:
+      path: /repos/octo-org/demo/releases
+    response:
+      body:
+        - id: 4001
+          tag_name: v1.0.0
+          name: v1.0.0
+          draft: false
+          prerelease: false
+          author: { login: alice-dev, id: 700001 }
+          assets: []
+          created_at: "2026-09-04T00:00:00Z"
+          published_at: "2026-09-04T00:10:00Z"
+  # --- workflow runs (envelope) ----------------------------------------------
+  - match:
+      path: /repos/octo-org/demo/actions/runs
+      query: { per_page: "100", exclude_pull_requests: "true" }
+    response:
+      body:
+        total_count: 1
+        workflow_runs:
+          - id: 7001
+            name: CI
+            workflow_id: 71
+            run_number: 88
+            event: push
+            status: completed
+            conclusion: success
+            head_branch: main
+            head_sha: "6dcb09b5b57875f334f61aebed695e2e4193db5e"
+            actor: { login: bob-dev, id: 700002 }
+            created_at: "2026-09-03T08:01:00Z"
+            updated_at: "2026-09-03T08:09:00Z"

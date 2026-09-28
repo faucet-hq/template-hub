@@ -1,0 +1,2 @@
+{"amount": -500, "created": 1767312060, "currency": "usd", "fee": 0, "id": "txn_Replay0002", "net": -500, "object": "balance_transaction", "source": "re_Replay0001", "status": "available", "type": "refund"}
+{"amount": 2000, "created": 1767312000, "currency": "usd", "fee": 88, "id": "txn_Replay0001", "net": 1912, "object": "balance_transaction", "source": "ch_Replay0001", "status": "available", "type": "charge"}

@@ -1,0 +1,15 @@
+# `faucet template test` suite for faucet-hq/jira, composed with the SQLite
+# sink: every parameter combination must materialize, expand and compile.
+version: 1
+template: source-templates/faucet-hq/jira.yaml
+sink: sink-templates/faucet-hq/sqlite.yaml
+suite:
+  auto:
+    required_omitted: true
+    defaults_baseline: true
+  cases:
+    - name: api-token
+      params: { jira_url: https://example.atlassian.net, jira_email: bot@example.test, jira_api_token: suite_token }
+    - name: missing-token-is-named
+      params: { jira_url: https://example.atlassian.net, jira_email: bot@example.test }
+      expect: { error: jira_api_token }

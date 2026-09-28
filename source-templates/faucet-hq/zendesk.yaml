@@ -1,0 +1,112 @@
+# Zendesk Support — tickets, users, organizations and support configuration over
+# the Support API v2. Design notes, doc links per stream: zendesk.md.
+#   faucet run --source faucet-hq/zendesk --sink faucet-hq/bigquery \
+#     --param zendesk_url=https://acme.zendesk.com --param zendesk_email=ops@example.com \
+#     --param zendesk_api_token="$ZENDESK_API_TOKEN" --param bq_project=… --param bq_sa_key="$BQ_SA_KEY"
+kind: source-template
+name: zendesk
+owner: faucet-hq
+description: Zendesk Support — tickets and users (incremental exports, deletes included), organizations, groups, ticket fields, ticket metrics, satisfaction ratings
+tags: [support, helpdesk, crm]
+docs: https://developer.zendesk.com/api-reference/
+params:
+  zendesk_url:
+    type: string
+    required: true
+    description: "Your account's API root, https://<subdomain>.zendesk.com"
+  zendesk_email:
+    type: string
+    required: true
+    description: "Email of the admin whose API token is used"
+  zendesk_api_token:
+    type: string
+    required: true
+    secret: true
+    description: "API token (Admin Center → Apps and integrations → Zendesk API)"
+  zendesk_start_time:
+    type: string
+    default: "946684800"
+    description: "Unix time (seconds) the first incremental export starts from (default 2000-01-01, i.e. everything)"
+source:
+  type: rest
+  config:
+    base_url: "${param.zendesk_url}"
+    auth: { type: basic, config: { username: "${param.zendesk_email}/token", password: "${param.zendesk_api_token}" } }
+    max_pages: null
+    max_retries: 10
+    retry_backoff: 5
+streams:
+  # Incremental ticket export, cursor-based: 1,000 tickets per page, the export
+  # cursor persisted as the bookmark so the next run continues where this one
+  # stopped. Deleted tickets are included with status "deleted".
+  - name: tickets
+    source:
+      config:
+        path: /api/v2/incremental/tickets/cursor
+        query_params: { start_time: "${param.zendesk_start_time}", per_page: "1000" }
+        records_path: "$.tickets[*]"
+        pagination: { type: Cursor, next_token_path: "$.after_cursor", param_name: cursor }
+        persist_cursor: true
+        request_delay: 6
+    primary_keys: [id]
+    write: [upsert, overwrite]
+  # Incremental user export, cursor-based — same mechanics; deleted users stay
+  # in the export with active: false.
+  - name: users
+    source:
+      config:
+        path: /api/v2/incremental/users/cursor
+        query_params: { start_time: "${param.zendesk_start_time}", per_page: "1000" }
+        records_path: "$.users[*]"
+        pagination: { type: Cursor, next_token_path: "$.after_cursor", param_name: cursor }
+        persist_cursor: true
+        request_delay: 6
+    primary_keys: [id]
+    write: [upsert, overwrite]
+  # List endpoints with cursor pagination (page[size] ≤ 100): the next cursor is
+  # meta.after_cursor, selected only while meta.has_more is true.
+  - name: organizations
+    source:
+      config:
+        path: /api/v2/organizations
+        query_params: { "page[size]": "100" }
+        records_path: "$.organizations[*]"
+        pagination: { type: Cursor, next_token_path: "$..[?(@.has_more == true)].after_cursor", param_name: "page[after]" }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: groups
+    source:
+      config:
+        path: /api/v2/groups
+        query_params: { "page[size]": "100" }
+        records_path: "$.groups[*]"
+        pagination: { type: Cursor, next_token_path: "$..[?(@.has_more == true)].after_cursor", param_name: "page[after]" }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: ticket_fields
+    source:
+      config:
+        path: /api/v2/ticket_fields
+        query_params: { "page[size]": "100" }
+        records_path: "$.ticket_fields[*]"
+        pagination: { type: Cursor, next_token_path: "$..[?(@.has_more == true)].after_cursor", param_name: "page[after]" }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: ticket_metrics
+    source:
+      config:
+        path: /api/v2/ticket_metrics
+        query_params: { "page[size]": "100" }
+        records_path: "$.ticket_metrics[*]"
+        pagination: { type: Cursor, next_token_path: "$..[?(@.has_more == true)].after_cursor", param_name: "page[after]" }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: satisfaction_ratings
+    source:
+      config:
+        path: /api/v2/satisfaction_ratings
+        query_params: { "page[size]": "100" }
+        records_path: "$.satisfaction_ratings[*]"
+        pagination: { type: Cursor, next_token_path: "$..[?(@.has_more == true)].after_cursor", param_name: "page[after]" }
+    primary_keys: [id]
+    write: [overwrite, upsert]

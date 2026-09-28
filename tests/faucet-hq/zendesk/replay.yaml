@@ -1,0 +1,303 @@
+# Recorded Zendesk Support API exchanges, rebuilt from the documented response
+# shapes (https://developer.zendesk.com/api-reference/) with synthetic values.
+# Two runs: the second resumes the incremental exports from the persisted cursor.
+runs: 2
+overlay: ../../state-overlay.yaml
+params:
+  zendesk_email: agent@example.test
+  zendesk_api_token: zd_replay_token
+  zendesk_url: '{replay}'
+exchanges:
+- match:
+    path: /api/v2/incremental/tickets/cursor
+    query:
+      start_time: '946684800'
+      per_page: '1000'
+    headers: &id001
+      authorization: Basic YWdlbnRAZXhhbXBsZS50ZXN0L3Rva2VuOnpkX3JlcGxheV90b2tlbg==
+    absent:
+    - cursor
+  response:
+    body:
+      tickets:
+      - id: 101
+        url: https://example.zendesk.com/api/v2/tickets/101.json
+        subject: Replay ticket 101
+        status: open
+        priority: normal
+        requester_id: 9001
+        assignee_id: 9002
+        organization_id: 7001
+        group_id: 6001
+        tags:
+        - replay
+        custom_fields:
+        - id: 5001
+          value: a
+        created_at: '2026-01-02T10:00:00Z'
+        updated_at: '2026-01-02T10:00:00Z'
+        generated_timestamp: 1767348000
+      - id: 102
+        url: https://example.zendesk.com/api/v2/tickets/102.json
+        subject: Replay ticket 102
+        status: solved
+        priority: normal
+        requester_id: 9001
+        assignee_id: 9002
+        organization_id: 7001
+        group_id: 6001
+        tags:
+        - replay
+        custom_fields:
+        - id: 5001
+          value: a
+        created_at: '2026-01-02T10:00:00Z'
+        updated_at: '2026-01-02T11:00:00Z'
+        generated_timestamp: 1767348000
+      after_cursor: TUNURV9QQUdFXzI=
+      before_cursor: null
+      end_of_stream: false
+      after_url: '{replay}/api/v2/incremental/tickets/cursor?cursor=TUNURV9QQUdFXzI='
+- match:
+    path: /api/v2/incremental/tickets/cursor
+    query:
+      start_time: '946684800'
+      per_page: '1000'
+      cursor: TUNURV9QQUdFXzI=
+    headers: *id001
+  response:
+    body:
+      tickets:
+      - id: 103
+        url: https://example.zendesk.com/api/v2/tickets/103.json
+        subject: Replay ticket 103
+        status: deleted
+        priority: normal
+        requester_id: 9001
+        assignee_id: 9002
+        organization_id: 7001
+        group_id: 6001
+        tags:
+        - replay
+        custom_fields:
+        - id: 5001
+          value: a
+        created_at: '2026-01-02T10:00:00Z'
+        updated_at: '2026-01-02T12:00:00Z'
+        generated_timestamp: 1767348000
+      after_cursor: TUNURV9FTkQ=
+      before_cursor: null
+      end_of_stream: true
+      after_url: '{replay}/api/v2/incremental/tickets/cursor?cursor=TUNURV9FTkQ='
+- match:
+    path: /api/v2/incremental/tickets/cursor
+    query:
+      start_time: '946684800'
+      per_page: '1000'
+      cursor: TUNURV9FTkQ=
+    headers: *id001
+  response:
+    body:
+      tickets: []
+      after_cursor: TUNURV9FTkQ=
+      before_cursor: null
+      end_of_stream: true
+      after_url: '{replay}/api/v2/incremental/tickets/cursor?cursor=TUNURV9FTkQ='
+- match:
+    path: /api/v2/incremental/users/cursor
+    query:
+      start_time: '946684800'
+      per_page: '1000'
+    headers: *id001
+    absent:
+    - cursor
+  response:
+    body:
+      users:
+      - id: 9001
+        name: Replay User 9001
+        email: user9001@example.test
+        role: end-user
+        active: true
+        organization_id: 7001
+        time_zone: UTC
+        created_at: '2026-01-01T09:00:00Z'
+        updated_at: '2026-01-02T09:00:00Z'
+      - id: 9002
+        name: Replay User 9002
+        email: user9002@example.test
+        role: agent
+        active: true
+        organization_id: 7001
+        time_zone: UTC
+        created_at: '2026-01-01T09:00:00Z'
+        updated_at: '2026-01-02T09:00:00Z'
+      - id: 9003
+        name: Replay User 9003
+        email: user9003@example.test
+        role: end-user
+        active: false
+        organization_id: 7001
+        time_zone: UTC
+        created_at: '2026-01-01T09:00:00Z'
+        updated_at: '2026-01-02T09:00:00Z'
+      after_cursor: VVNFUlNfRU5E
+      before_cursor: null
+      end_of_stream: true
+      after_url: '{replay}/api/v2/incremental/users/cursor?cursor=VVNFUlNfRU5E'
+- match:
+    path: /api/v2/incremental/users/cursor
+    query:
+      start_time: '946684800'
+      per_page: '1000'
+      cursor: VVNFUlNfRU5E
+    headers: *id001
+  response:
+    body:
+      users: []
+      after_cursor: VVNFUlNfRU5E
+      before_cursor: null
+      end_of_stream: true
+      after_url: '{replay}/api/v2/incremental/users/cursor?cursor=VVNFUlNfRU5E'
+- match:
+    path: /api/v2/organizations
+    query:
+      page[size]: '100'
+    headers: *id001
+    absent:
+    - page[after]
+  response:
+    body:
+      organizations:
+      - id: 7001
+        name: Replay Org A
+        domain_names:
+        - a.example.test
+        created_at: '2026-01-01T00:00:00Z'
+        updated_at: '2026-01-01T00:00:00Z'
+      meta:
+        has_more: true
+        after_cursor: T1JHXzE=
+        before_cursor: bT1JHXzE=
+      links:
+        next: '{replay}/api/v2/organizations?page%5Bsize%5D=100&page%5Bafter%5D=T1JHXzE='
+        prev: null
+- match:
+    path: /api/v2/organizations
+    query:
+      page[size]: '100'
+      page[after]: T1JHXzE=
+    headers: *id001
+  response:
+    body:
+      organizations:
+      - id: 7002
+        name: Replay Org B
+        domain_names: []
+        created_at: '2026-01-01T00:00:00Z'
+        updated_at: '2026-01-01T00:00:00Z'
+      meta:
+        has_more: false
+        after_cursor: T1JHXzI=
+        before_cursor: bT1JHXzI=
+      links:
+        next: '{replay}/api/v2/organizations?page%5Bsize%5D=100&page%5Bafter%5D=T1JHXzI='
+        prev: null
+- match:
+    path: /api/v2/groups
+    query:
+      page[size]: '100'
+    headers: *id001
+    absent:
+    - page[after]
+  response:
+    body:
+      groups:
+      - id: 6001
+        name: Tier 1
+        default: true
+        deleted: false
+        created_at: '2026-01-01T00:00:00Z'
+        updated_at: '2026-01-01T00:00:00Z'
+      meta:
+        has_more: false
+        after_cursor: R1JQ
+        before_cursor: bR1JQ
+      links:
+        next: '{replay}/api/v2/groups?page%5Bsize%5D=100&page%5Bafter%5D=R1JQ'
+        prev: null
+- match:
+    path: /api/v2/ticket_fields
+    query:
+      page[size]: '100'
+    headers: *id001
+    absent:
+    - page[after]
+  response:
+    body:
+      ticket_fields:
+      - id: 5001
+        type: tagger
+        title: Category
+        active: true
+        required: false
+        created_at: '2026-01-01T00:00:00Z'
+        updated_at: '2026-01-01T00:00:00Z'
+      meta:
+        has_more: false
+        after_cursor: VEY=
+        before_cursor: bVEY=
+      links:
+        next: '{replay}/api/v2/ticket_fields?page%5Bsize%5D=100&page%5Bafter%5D=VEY='
+        prev: null
+- match:
+    path: /api/v2/ticket_metrics
+    query:
+      page[size]: '100'
+    headers: *id001
+    absent:
+    - page[after]
+  response:
+    body:
+      ticket_metrics:
+      - id: 8101
+        ticket_id: 101
+        reopens: 0
+        replies: 1
+        reply_time_in_minutes:
+          calendar: 12
+          business: 12
+        created_at: '2026-01-02T10:00:00Z'
+        updated_at: '2026-01-02T10:12:00Z'
+      meta:
+        has_more: false
+        after_cursor: VE0=
+        before_cursor: bVE0=
+      links:
+        next: '{replay}/api/v2/ticket_metrics?page%5Bsize%5D=100&page%5Bafter%5D=VE0='
+        prev: null
+- match:
+    path: /api/v2/satisfaction_ratings
+    query:
+      page[size]: '100'
+    headers: *id001
+    absent:
+    - page[after]
+  response:
+    body:
+      satisfaction_ratings:
+      - id: 4101
+        ticket_id: 102
+        score: good
+        comment: Quick fix
+        requester_id: 9001
+        assignee_id: 9002
+        created_at: '2026-01-02T12:00:00Z'
+        updated_at: '2026-01-02T12:00:00Z'
+      meta:
+        has_more: false
+        after_cursor: U1I=
+        before_cursor: bU1I=
+      links:
+        next: '{replay}/api/v2/satisfaction_ratings?page%5Bsize%5D=100&page%5Bafter%5D=U1I='
+        prev: null

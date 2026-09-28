@@ -1,0 +1,22 @@
+# `faucet template test` suite for faucet-hq/stripe, composed with the BigQuery
+# sink: every parameter combination must materialize, expand and compile.
+version: 1
+template: source-templates/faucet-hq/stripe.yaml
+sink: sink-templates/faucet-hq/bigquery.yaml
+suite:
+  auto:
+    required_omitted: true
+    defaults_baseline: true
+  cases:
+    - name: restricted-key-default-version
+      params: { stripe_api_key: rk_test_suite, bq_project: analytics, bq_sa_key: "{}" }
+    - name: older-pinned-version-and-recent-start
+      params:
+        stripe_api_key: rk_test_suite
+        stripe_api_version: "2025-03-31.basil"
+        stripe_start_date: "2026-01-01T00:00:00Z"
+        bq_project: analytics
+        bq_sa_key: "{}"
+    - name: missing-key-names-the-param
+      params: { bq_project: analytics, bq_sa_key: "{}" }
+      expect: { error: stripe_api_key }

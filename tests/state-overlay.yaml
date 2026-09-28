@@ -1,0 +1,9 @@
+# Deployment overlay the replay harness (scripts/replay.py) applies to templates
+# with incremental streams: a file state store in a fresh directory per replay,
+# so the second run resumes from the bookmarks the first one wrote.
+kind: deployment
+name: replay-state
+description: File state for offline fixture replays
+params:
+  replay_state_dir: { type: string, required: true, description: "State directory (set by scripts/replay.py)" }
+state: { type: file, config: { path: "${param.replay_state_dir}" } }

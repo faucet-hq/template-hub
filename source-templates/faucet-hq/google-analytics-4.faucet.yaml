@@ -1,0 +1,3 @@
+# Catalog sidecar for faucet-hq/google-analytics-4: every merged version launches as stable.
+launch: true
+description: Google Analytics 4 Data API v1beta (runReport) — seven daily reports in rolling windows that re-read GA4's processing lookback

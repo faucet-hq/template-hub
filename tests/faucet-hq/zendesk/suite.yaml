@@ -1,0 +1,17 @@
+# `faucet template test` suite for faucet-hq/zendesk, composed with the Postgres
+# sink: every parameter combination must materialize, expand and compile.
+version: 1
+template: source-templates/faucet-hq/zendesk.yaml
+sink: sink-templates/faucet-hq/postgres.yaml
+suite:
+  auto:
+    required_omitted: true
+    defaults_baseline: true
+  cases:
+    - name: api-token-defaults
+      params: { zendesk_url: https://example.zendesk.com, zendesk_email: agent@example.test, zendesk_api_token: suite_token, pg_url: "postgres://u:p@db.example.test/w" }
+    - name: recent-start-time
+      params: { zendesk_url: https://example.zendesk.com, zendesk_email: agent@example.test, zendesk_api_token: suite_token, zendesk_start_time: "1767225600", pg_url: "postgres://u:p@db.example.test/w" }
+    - name: missing-url-is-named
+      params: { zendesk_email: agent@example.test, zendesk_api_token: suite_token, pg_url: "postgres://u:p@db.example.test/w" }
+      expect: { error: zendesk_url }

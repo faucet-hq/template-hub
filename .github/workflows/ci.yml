@@ -28,8 +28,11 @@ jobs:
           curl --proto '=https' --tlsv1.2 -LsSf \
             https://github.com/faucet-hq/faucet-stream/releases/latest/download/faucet-cli-installer.sh | sh
           echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
-          if ! "$HOME/.cargo/bin/faucet" hub --help >/dev/null 2>&1; then
-            echo "released faucet lacks 'hub' — building from source"
+          # The fixture suites need `faucet template test` (the `templates`
+          # feature), which the prebuilt binaries do not ship.
+          if ! "$HOME/.cargo/bin/faucet" hub --help >/dev/null 2>&1 \
+             || ! "$HOME/.cargo/bin/faucet" template test --help >/dev/null 2>&1; then
+            echo "released faucet lacks 'hub' or 'template test' — building from source"
             echo "BUILD_FROM_SOURCE=1" >> "$GITHUB_ENV"
           fi
       - name: Toolchain (source build fallback)
@@ -45,8 +48,9 @@ jobs:
         run: |
           cargo install --force --git https://github.com/faucet-hq/faucet-stream faucet-cli --locked \
             --no-default-features \
-            --features "source-rest,source-csv,source-xml,source-graphql,sink-jsonl,sink-bigquery,sink-postgres,sink-sqlite,transforms"
+            --features "source-rest,source-csv,source-xml,source-graphql,sink-jsonl,sink-bigquery,sink-postgres,sink-sqlite,transforms,templates,google-sa"
           faucet hub --help >/dev/null
+          faucet template test --help >/dev/null
 
       - name: Script tests
         run: |
@@ -55,6 +59,28 @@ jobs:
 
       - name: Lint every template
         run: faucet hub lint --hub .
+
+      # tests/<owner>/<name>/suite.yaml — `faucet template test` parameter-space
+      # suites; the exit code is the failed-case count.
+      - name: Template test suites
+        run: |
+          set -euo pipefail
+          fail=0
+          for suite in tests/*/*/suite.yaml; do
+            [ -e "$suite" ] || continue
+            echo "::group::$suite"
+            if ! faucet template test "$suite"; then
+              echo "::error file=$suite::template test suite failed"
+              fail=1
+            fi
+            echo "::endgroup::"
+          done
+          exit $fail
+
+      # tests/<owner>/<name>/replay.yaml — recorded API exchanges served
+      # locally and run through each source template (no live credentials).
+      - name: Replay recorded fixtures
+        run: python3 scripts/replay.py
 
       - name: Compose every source × sink pairing
         run: |
@@ -120,7 +146,9 @@ jobs:
           curl --proto '=https' --tlsv1.2 -LsSf \
             https://github.com/faucet-hq/faucet-stream/releases/latest/download/faucet-cli-installer.sh | sh
           echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
-          "$HOME/.cargo/bin/faucet" hub --help >/dev/null 2>&1 || echo "BUILD_FROM_SOURCE=1" >> "$GITHUB_ENV"
+          # A release older than the catalog's templates cannot read them.
+          "$HOME/.cargo/bin/faucet" hub matrix --hub . --format json >/dev/null 2>&1 \
+            || echo "BUILD_FROM_SOURCE=1" >> "$GITHUB_ENV"
       - uses: dtolnay/rust-toolchain@stable
         if: env.BUILD_FROM_SOURCE == '1'
       - uses: Swatinem/rust-cache@v2
@@ -131,7 +159,7 @@ jobs:
         run: |
           cargo install --force --git https://github.com/faucet-hq/faucet-stream faucet-cli --locked \
             --no-default-features \
-            --features "source-rest,source-csv,source-xml,source-graphql,sink-jsonl,sink-bigquery,sink-postgres,sink-sqlite,transforms"
+            --features "source-rest,source-csv,source-xml,source-graphql,sink-jsonl,sink-bigquery,sink-postgres,sink-sqlite,transforms,google-sa"
       - name: Regenerate and commit
         run: |
           pip3 install --quiet pyyaml

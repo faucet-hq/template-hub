@@ -161,6 +161,34 @@ merge (`.github/workflows/stars.yml`), and `scripts/index.py` merges them into
 template, open an issue with its `template:<id>` label; to recommend one,
 upvote its discussion.
 
+## Tests
+
+Two kinds of offline test live under `tests/<owner>/<name>/`. Both are
+required for the `faucet-hq/` namespace and encouraged everywhere else; CI runs
+every one it finds.
+
+- **`suite.yaml`** — a [`faucet template test`](https://faucet-hq.github.io/faucet-stream/cookbook/templates.html#testing-the-parameter-space)
+  suite with `template:` pointing at your file and `sink:` at a sink template.
+  Its validation cases prove every parameter combination composes, expands and
+  compiles; `behavioral:` cases feed records through your transforms.
+- **`replay.yaml`** — recorded HTTP exchanges for your streams, with the
+  records each stream should write in `expected/<stream>.jsonl`.
+  `scripts/replay.py` serves the exchanges on a local port, runs
+  `faucet run --source <you>/<name> --sink faucet-hq/jsonl` against it, and
+  fails when a request matches nothing recorded, a recorded exchange is never
+  requested, or a stream's records differ. The file's docstring documents the
+  matcher (`query`, `absent`, `headers`, `body`, `body_regex`, `form`) and
+  `runs: 2` + `overlay:` for proving an incremental stream resumes from its
+  bookmark. For this to work, every host your template calls must be a param
+  the replay can point at `{replay}` (e.g. `api_base_url` with the public API
+  as its default).
+
+Record exchanges from the API reference or a sandbox account and **replace
+every value** — ids, names, emails, tokens — with synthetic ones before
+committing; the replay's credentials are placeholders like `sk_test_replay`.
+`python3 scripts/replay.py --update <you>/<name>` writes `expected/` from a
+passing run; read the diff before committing it.
+
 ## Before you open the PR
 
 ```bash
@@ -168,6 +196,8 @@ curl -LsSf https://github.com/faucet-hq/faucet-stream/releases/latest/download/f
 faucet hub lint   --hub .
 faucet hub check  --hub . --source <your-login>/<name> --sink faucet-hq/jsonl
 faucet hub check  --hub . --source <your-login>/<name> --sink faucet-hq/bigquery
+faucet template test tests/<your-login>/<name>/suite.yaml
+python3 scripts/replay.py <your-login>/<name>
 faucet hub matrix --hub . --format json > index.json
 ```
 

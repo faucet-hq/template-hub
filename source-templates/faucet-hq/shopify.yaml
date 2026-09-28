@@ -1,0 +1,137 @@
+# Shopify GraphQL Admin API (2026-07) — one store per run. Every query,
+# argument and limit below is taken from shopify.dev/docs/api/admin-graphql;
+# the per-stream doc links are in shopify.md beside this file.
+kind: source-template
+name: shopify
+owner: faucet-hq
+description: Shopify GraphQL Admin API (2026-07) — orders, customers, products, variants, collections, locations and product deletions
+tags: [ecommerce, shopify]
+docs: https://shopify.dev/docs/api/admin-graphql
+params:
+  shopify_shop_url: { type: string, required: true, description: "The store's admin URL, https://<store>.myshopify.com" }
+  shopify_client_id: { type: string, required: true, secret: true, description: "Client id of an app from the Dev Dashboard installed on the store (same organization)" }
+  shopify_client_secret: { type: string, required: true, secret: true, description: "Client secret of that app" }
+  shopify_start_date: { type: string, default: "2006-01-01T00:00:00Z", description: "ISO 8601 timestamp the incremental streams start from on their first run" }
+auth:
+  shopify:
+    # Client credentials grant: POST /admin/oauth/access_token (form) returns a
+    # 24-hour token, sent as X-Shopify-Access-Token.
+    type: token_endpoint
+    config:
+      url: "${param.shopify_shop_url}/admin/oauth/access_token"
+      method: POST
+      encoding: form
+      body: { grant_type: client_credentials, client_id: "${param.shopify_client_id}", client_secret: "${param.shopify_client_secret}" }
+      token_path: "$.access_token"
+      expiry_path: "$.expires_in"
+      apply_as: { header: X-Shopify-Access-Token, template: "{token}" }
+source:
+  type: graphql
+  config:
+    endpoint: "${param.shopify_shop_url}/admin/api/2026-07/graphql.json"
+    auth: { ref: shopify }
+    variables: {}
+transforms:
+  - { type: flatten, config: { separator: "_" } }
+  - { type: keys_case, config: { mode: snake } }
+streams:
+  - name: orders
+    source:
+      config:
+        query: "query Orders($first: Int, $after: String, $query: String) { orders(first: $first, after: $after, query: $query, sortKey: UPDATED_AT) { nodes { id name createdAt updatedAt processedAt cancelledAt cancelReason closedAt displayFinancialStatus displayFulfillmentStatus currencyCode presentmentCurrencyCode email test confirmed tags note sourceName totalPriceSet { shopMoney { amount currencyCode } } subtotalPriceSet { shopMoney { amount currencyCode } } totalTaxSet { shopMoney { amount currencyCode } } totalDiscountsSet { shopMoney { amount currencyCode } } totalShippingPriceSet { shopMoney { amount currencyCode } } currentTotalPriceSet { shopMoney { amount currencyCode } } totalRefundedSet { shopMoney { amount currencyCode } } customer { id } billingAddress { countryCodeV2 provinceCode city zip } shippingAddress { countryCodeV2 provinceCode city zip } } pageInfo { hasNextPage endCursor } } }"
+        records_path: "$.data.orders.nodes[*]"
+        pagination: { has_next_page_path: "$.data.orders.pageInfo.hasNextPage", cursor_path: "$.data.orders.pageInfo.endCursor", cursor_variable: after, page_size_variable: first }
+        batch_size: 50
+        variables: { query: "updated_at:>'${param.shopify_start_date}'" }
+        replication_method: { type: Incremental }
+        replication_key: updatedAt
+        start_replication_value: "${param.shopify_start_date}"
+        replication_bind: { variable: query, template: "updated_at:>'${bookmark}'", format: iso8601 }
+    transforms:
+      - { type: json_encode, config: { fields: [tags] } }
+    primary_keys: [id]
+    write: [upsert, append]
+
+  - name: customers
+    source:
+      config:
+        query: "query Customers($first: Int, $after: String, $query: String) { customers(first: $first, after: $after, query: $query, sortKey: UPDATED_AT) { nodes { id firstName lastName state verifiedEmail taxExempt tags note locale createdAt updatedAt numberOfOrders amountSpent { amount currencyCode } defaultEmailAddress { emailAddress marketingState } defaultAddress { countryCodeV2 provinceCode city zip } } pageInfo { hasNextPage endCursor } } }"
+        records_path: "$.data.customers.nodes[*]"
+        pagination: { has_next_page_path: "$.data.customers.pageInfo.hasNextPage", cursor_path: "$.data.customers.pageInfo.endCursor", cursor_variable: after, page_size_variable: first }
+        batch_size: 200
+        variables: { query: "updated_at:>'${param.shopify_start_date}'" }
+        replication_method: { type: Incremental }
+        replication_key: updatedAt
+        start_replication_value: "${param.shopify_start_date}"
+        replication_bind: { variable: query, template: "updated_at:>'${bookmark}'", format: iso8601 }
+    transforms:
+      - { type: json_encode, config: { fields: [tags] } }
+    primary_keys: [id]
+    write: [upsert, append]
+
+  - name: products
+    source:
+      config:
+        query: "query Products($first: Int, $after: String, $query: String) { products(first: $first, after: $after, query: $query, sortKey: UPDATED_AT) { nodes { id title handle status vendor productType tags createdAt updatedAt publishedAt totalInventory tracksInventory priceRangeV2 { minVariantPrice { amount currencyCode } maxVariantPrice { amount currencyCode } } } pageInfo { hasNextPage endCursor } } }"
+        records_path: "$.data.products.nodes[*]"
+        pagination: { has_next_page_path: "$.data.products.pageInfo.hasNextPage", cursor_path: "$.data.products.pageInfo.endCursor", cursor_variable: after, page_size_variable: first }
+        batch_size: 150
+        variables: { query: "updated_at:>'${param.shopify_start_date}'" }
+        replication_method: { type: Incremental }
+        replication_key: updatedAt
+        start_replication_value: "${param.shopify_start_date}"
+        replication_bind: { variable: query, template: "updated_at:>'${bookmark}'", format: iso8601 }
+    transforms:
+      - { type: json_encode, config: { fields: [tags] } }
+    primary_keys: [id]
+    write: [upsert, append]
+
+  - name: product_variants
+    source:
+      config:
+        query: "query ProductVariants($first: Int, $after: String, $query: String) { productVariants(first: $first, after: $after, query: $query, sortKey: ID) { nodes { id title sku barcode price compareAtPrice inventoryQuantity taxable position createdAt updatedAt product { id } } pageInfo { hasNextPage endCursor } } }"
+        records_path: "$.data.productVariants.nodes[*]"
+        pagination: { has_next_page_path: "$.data.productVariants.pageInfo.hasNextPage", cursor_path: "$.data.productVariants.pageInfo.endCursor", cursor_variable: after, page_size_variable: first }
+        batch_size: 250
+        variables: { query: "updated_at:>'${param.shopify_start_date}'" }
+        replication_method: { type: Incremental }
+        replication_key: updatedAt
+        start_replication_value: "${param.shopify_start_date}"
+        replication_bind: { variable: query, template: "updated_at:>'${bookmark}'", format: iso8601 }
+    primary_keys: [id]
+    write: [upsert, append]
+
+  - name: collections
+    source:
+      config:
+        query: "query Collections($first: Int, $after: String) { collections(first: $first, after: $after, sortKey: UPDATED_AT) { nodes { id title handle sortOrder updatedAt ruleSet { appliedDisjunctively } } pageInfo { hasNextPage endCursor } } }"
+        records_path: "$.data.collections.nodes[*]"
+        pagination: { has_next_page_path: "$.data.collections.pageInfo.hasNextPage", cursor_path: "$.data.collections.pageInfo.endCursor", cursor_variable: after, page_size_variable: first }
+        batch_size: 250
+    primary_keys: [id]
+    write: [overwrite, upsert]
+
+  - name: locations
+    source:
+      config:
+        query: "query Locations($first: Int, $after: String) { locations(first: $first, after: $after) { nodes { id name isActive fulfillsOnlineOrders createdAt updatedAt address { countryCode provinceCode city zip } } pageInfo { hasNextPage endCursor } } }"
+        records_path: "$.data.locations.nodes[*]"
+        pagination: { has_next_page_path: "$.data.locations.pageInfo.hasNextPage", cursor_path: "$.data.locations.pageInfo.endCursor", cursor_variable: after, page_size_variable: first }
+        batch_size: 250
+    primary_keys: [id]
+    write: [overwrite, upsert]
+
+  - name: deleted_products
+    source:
+      config:
+        query: "query DeletedProducts($first: Int, $after: String, $query: String) { events(first: $first, after: $after, query: $query, sortKey: CREATED_AT) { nodes { id createdAt message ... on BasicEvent { action subjectId subjectType } } pageInfo { hasNextPage endCursor } } }"
+        records_path: "$.data.events.nodes[*]"
+        pagination: { has_next_page_path: "$.data.events.pageInfo.hasNextPage", cursor_path: "$.data.events.pageInfo.endCursor", cursor_variable: after, page_size_variable: first }
+        batch_size: 250
+        variables: { query: "action:'destroy' AND subject_type:'PRODUCT' AND created_at:>'${param.shopify_start_date}'" }
+        replication_method: { type: Incremental }
+        replication_key: createdAt
+        start_replication_value: "${param.shopify_start_date}"
+        replication_bind: { variable: query, template: "action:'destroy' AND subject_type:'PRODUCT' AND created_at:>'${bookmark}'", format: iso8601 }
+    primary_keys: [id]
+    write: [upsert, append]

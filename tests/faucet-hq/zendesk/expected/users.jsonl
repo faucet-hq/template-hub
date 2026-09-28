@@ -1,0 +1,3 @@
+{"active": false, "created_at": "2026-01-01T09:00:00Z", "email": "user9003@example.test", "id": 9003, "name": "Replay User 9003", "organization_id": 7001, "role": "end-user", "time_zone": "UTC", "updated_at": "2026-01-02T09:00:00Z"}
+{"active": true, "created_at": "2026-01-01T09:00:00Z", "email": "user9001@example.test", "id": 9001, "name": "Replay User 9001", "organization_id": 7001, "role": "end-user", "time_zone": "UTC", "updated_at": "2026-01-02T09:00:00Z"}
+{"active": true, "created_at": "2026-01-01T09:00:00Z", "email": "user9002@example.test", "id": 9002, "name": "Replay User 9002", "organization_id": 7001, "role": "agent", "time_zone": "UTC", "updated_at": "2026-01-02T09:00:00Z"}

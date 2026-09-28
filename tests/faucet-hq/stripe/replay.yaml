@@ -1,0 +1,516 @@
+# Recorded Stripe list exchanges, rebuilt from the documented response shapes
+# (https://docs.stripe.com/api) with synthetic ids and values.
+# Two runs: the second resumes the windowed streams from their bookmark.
+runs: 2
+overlay: ../../state-overlay.yaml
+params:
+  stripe_api_key: rk_test_replay
+  api_base_url: '{replay}'
+  stripe_start_date: '2026-01-01T00:00:00Z'
+exchanges:
+- match:
+    path: /v1/customers
+    query:
+      limit: '100'
+    headers: &id001
+      authorization: Bearer rk_test_replay
+      stripe-version: 2026-08-26.dahlia
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/customers
+      has_more: true
+      data:
+      - id: cus_Replay0001
+        object: customer
+        created: 1767312000
+        email: ada@example.test
+        name: Ada Example
+        currency: usd
+        balance: 0
+        delinquent: false
+        livemode: false
+        metadata: {}
+      - id: cus_Replay0002
+        object: customer
+        created: 1767311940
+        email: bo@example.test
+        name: Bo Example
+        currency: eur
+        balance: -500
+        delinquent: false
+        livemode: false
+        metadata:
+          tier: gold
+- match:
+    path: /v1/customers
+    query:
+      limit: '100'
+      starting_after: cus_Replay0002
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/customers
+      has_more: false
+      data:
+      - id: cus_Replay0003
+        object: customer
+        created: 1767311880
+        email: null
+        name: null
+        currency: null
+        balance: 0
+        delinquent: true
+        livemode: false
+        metadata: {}
+- match:
+    path: /v1/customers
+    query:
+      limit: '100'
+      starting_after: cus_Replay0003
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/customers
+      has_more: false
+      data: []
+- match:
+    path: /v1/subscriptions
+    query:
+      limit: '100'
+      status: all
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/subscriptions
+      has_more: false
+      data:
+      - id: sub_Replay0001
+        object: subscription
+        customer: cus_Replay0001
+        status: active
+        created: 1767312000
+        current_period_start: 1767312000
+        current_period_end: 1769904000
+        cancel_at_period_end: false
+        canceled_at: null
+        items:
+          object: list
+          data:
+          - id: si_Replay0001
+            price:
+              id: price_Replay0001
+            quantity: 1
+          has_more: false
+      - id: sub_Replay0002
+        object: subscription
+        customer: cus_Replay0002
+        status: canceled
+        created: 1767225600
+        current_period_start: 1767225600
+        current_period_end: 1769817600
+        cancel_at_period_end: false
+        canceled_at: 1767308400
+        items:
+          object: list
+          data: []
+          has_more: false
+- match:
+    path: /v1/subscriptions
+    query:
+      limit: '100'
+      status: all
+      starting_after: sub_Replay0002
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/subscriptions
+      has_more: false
+      data: []
+- match:
+    path: /v1/invoices
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/invoices
+      has_more: false
+      data:
+      - id: in_Replay0001
+        object: invoice
+        customer: cus_Replay0001
+        subscription: sub_Replay0001
+        status: paid
+        currency: usd
+        amount_due: 2000
+        amount_paid: 2000
+        created: 1767312000
+- match:
+    path: /v1/invoices
+    query:
+      limit: '100'
+      starting_after: in_Replay0001
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/invoices
+      has_more: false
+      data: []
+- match:
+    path: /v1/charges
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/charges
+      has_more: false
+      data:
+      - id: ch_Replay0001
+        object: charge
+        amount: 2000
+        amount_refunded: 500
+        currency: usd
+        customer: cus_Replay0001
+        paid: true
+        refunded: false
+        status: succeeded
+        created: 1767312000
+- match:
+    path: /v1/charges
+    query:
+      limit: '100'
+      starting_after: ch_Replay0001
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/charges
+      has_more: false
+      data: []
+- match:
+    path: /v1/refunds
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/refunds
+      has_more: false
+      data:
+      - id: re_Replay0001
+        object: refund
+        amount: 500
+        charge: ch_Replay0001
+        currency: usd
+        status: succeeded
+        created: 1767312060
+- match:
+    path: /v1/refunds
+    query:
+      limit: '100'
+      starting_after: re_Replay0001
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/refunds
+      has_more: false
+      data: []
+- match:
+    path: /v1/payment_intents
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/payment_intents
+      has_more: false
+      data:
+      - id: pi_Replay0001
+        object: payment_intent
+        amount: 2000
+        currency: usd
+        customer: cus_Replay0001
+        status: succeeded
+        latest_charge: ch_Replay0001
+        created: 1767312000
+- match:
+    path: /v1/payment_intents
+    query:
+      limit: '100'
+      starting_after: pi_Replay0001
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/payment_intents
+      has_more: false
+      data: []
+- match:
+    path: /v1/products
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/products
+      has_more: false
+      data:
+      - id: prod_Replay0001
+        object: product
+        active: true
+        name: Replay Plan
+        created: 1766448000
+        updated: 1767312000
+- match:
+    path: /v1/products
+    query:
+      limit: '100'
+      starting_after: prod_Replay0001
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/products
+      has_more: false
+      data: []
+- match:
+    path: /v1/prices
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/prices
+      has_more: false
+      data:
+      - id: price_Replay0001
+        object: price
+        active: true
+        currency: usd
+        product: prod_Replay0001
+        unit_amount: 2000
+        type: recurring
+        recurring:
+          interval: month
+          interval_count: 1
+        created: 1766448000
+- match:
+    path: /v1/prices
+    query:
+      limit: '100'
+      starting_after: price_Replay0001
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/prices
+      has_more: false
+      data: []
+- match:
+    path: /v1/payouts
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/payouts
+      has_more: false
+      data:
+      - id: po_Replay0001
+        object: payout
+        amount: 1500
+        currency: usd
+        arrival_date: 1767484800
+        status: paid
+        created: 1767312000
+- match:
+    path: /v1/payouts
+    query:
+      limit: '100'
+      starting_after: po_Replay0001
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/payouts
+      has_more: false
+      data: []
+- match:
+    path: /v1/disputes
+    query:
+      limit: '100'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/disputes
+      has_more: false
+      data:
+      - id: dp_Replay0001
+        object: dispute
+        amount: 2000
+        charge: ch_Replay0001
+        currency: usd
+        reason: fraudulent
+        status: needs_response
+        created: 1767315600
+- match:
+    path: /v1/disputes
+    query:
+      limit: '100'
+      starting_after: dp_Replay0001
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/disputes
+      has_more: false
+      data: []
+- match:
+    path: /v1/balance_transactions
+    query:
+      limit: '100'
+      created[gte]: '1767222000'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/balance_transactions
+      has_more: false
+      data:
+      - id: txn_Replay0001
+        object: balance_transaction
+        amount: 2000
+        fee: 88
+        net: 1912
+        currency: usd
+        type: charge
+        source: ch_Replay0001
+        status: available
+        created: 1767312000
+      - id: txn_Replay0002
+        object: balance_transaction
+        amount: -500
+        fee: 0
+        net: -500
+        currency: usd
+        type: refund
+        source: re_Replay0001
+        status: available
+        created: 1767312060
+- match:
+    path: /v1/balance_transactions
+    query:
+      limit: '100'
+      created[gte]: '1767222000'
+      starting_after: txn_Replay0002
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/balance_transactions
+      has_more: false
+      data: []
+- match:
+    path: /v1/balance_transactions
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/balance_transactions
+      has_more: false
+      data: []
+- match:
+    path: /v1/events
+    query:
+      limit: '100'
+      created[gte]: '1767222000'
+    headers: *id001
+    absent:
+    - starting_after
+  response:
+    body:
+      object: list
+      url: /v1/events
+      has_more: false
+      data:
+      - id: evt_Replay0002
+        object: event
+        api_version: 2026-08-26.dahlia
+        type: customer.deleted
+        created: 1767312120
+        data:
+          object:
+            id: cus_Replay0009
+            object: customer
+            deleted: true
+      - id: evt_Replay0001
+        object: event
+        api_version: 2026-08-26.dahlia
+        type: charge.refunded
+        created: 1767312060
+        data:
+          object:
+            id: ch_Replay0001
+            object: charge
+            refunded: false
+            amount_refunded: 500
+- match:
+    path: /v1/events
+    query:
+      limit: '100'
+      created[gte]: '1767222000'
+      starting_after: evt_Replay0001
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/events
+      has_more: false
+      data: []
+- match:
+    path: /v1/events
+    headers: *id001
+  response:
+    body:
+      object: list
+      url: /v1/events
+      has_more: false
+      data: []

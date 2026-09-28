@@ -1,0 +1,609 @@
+# Recorded Shopify GraphQL Admin API (2026-07) exchanges for faucet-hq/shopify,
+# built from the documented query responses (nodes + pageInfo, cost
+# extensions) with synthetic values. The client-credentials token exchange is
+# served by the replay. orders pages twice (endCursor → $after); the second run
+# resumes every incremental stream from its bookmark through the `query`
+# variable (orders returns an updated order, the others nothing new). The
+# page-2 exchange carries an extra constraint so it outranks page 1's (a JSON
+# subset match would otherwise accept either).
+runs: 2
+overlay: ../../state-overlay.yaml
+params:
+  shopify_shop_url: '{replay}'
+  shopify_client_id: replay-client-id
+  shopify_client_secret: replay-client-secret
+exchanges:
+- match:
+    method: POST
+    path: /admin/oauth/access_token
+    form:
+      grant_type: client_credentials
+      client_id: replay-client-id
+      client_secret: replay-client-secret
+  response:
+    body:
+      access_token: shpat_replay_token
+      scope: read_orders,read_customers,read_products,read_locations
+      expires_in: 86399
+- match:
+    method: POST
+    path: /admin/api/2026-07/graphql.json
+    headers:
+      x-shopify-access-token: shpat_replay_token
+    body:
+      query: 'query Orders($first: Int, $after: String, $query: String) { orders(first: $first, after: $after, query: $query, sortKey: UPDATED_AT) { nodes { id name createdAt updatedAt processedAt cancelledAt cancelReason closedAt displayFinancialStatus
+        displayFulfillmentStatus currencyCode presentmentCurrencyCode email test confirmed tags note sourceName totalPriceSet { shopMoney { amount currencyCode } } subtotalPriceSet { shopMoney { amount currencyCode } } totalTaxSet { shopMoney { amount
+        currencyCode } } totalDiscountsSet { shopMoney { amount currencyCode } } totalShippingPriceSet { shopMoney { amount currencyCode } } currentTotalPriceSet { shopMoney { amount currencyCode } } totalRefundedSet { shopMoney { amount currencyCode }
+        } customer { id } billingAddress { countryCodeV2 provinceCode city zip } shippingAddress { countryCodeV2 provinceCode city zip } } pageInfo { hasNextPage endCursor } } }'
+      variables:
+        first: 50
+        query: updated_at:>'2006-01-01T00:00:00Z'
+  response:
+    body:
+      data:
+        orders:
+          nodes:
+          - id: gid://shopify/Order/5001
+            name: '#1001'
+            createdAt: '2026-08-01T10:00:00Z'
+            updatedAt: '2026-08-01T10:05:00Z'
+            processedAt: '2026-08-01T10:00:00Z'
+            cancelledAt: null
+            cancelReason: null
+            closedAt: null
+            displayFinancialStatus: PAID
+            displayFulfillmentStatus: UNFULFILLED
+            currencyCode: USD
+            presentmentCurrencyCode: USD
+            email: buyer1@example.com
+            test: false
+            confirmed: true
+            tags:
+            - wholesale
+            note: null
+            sourceName: web
+            totalPriceSet:
+              shopMoney:
+                amount: '59.00'
+                currencyCode: USD
+            subtotalPriceSet:
+              shopMoney:
+                amount: '50.00'
+                currencyCode: USD
+            totalTaxSet:
+              shopMoney:
+                amount: '4.00'
+                currencyCode: USD
+            totalDiscountsSet:
+              shopMoney:
+                amount: '0.00'
+                currencyCode: USD
+            totalShippingPriceSet:
+              shopMoney:
+                amount: '5.00'
+                currencyCode: USD
+            currentTotalPriceSet:
+              shopMoney:
+                amount: '59.00'
+                currencyCode: USD
+            totalRefundedSet:
+              shopMoney:
+                amount: '0.00'
+                currencyCode: USD
+            customer:
+              id: gid://shopify/Customer/7001
+            billingAddress:
+              countryCodeV2: US
+              provinceCode: CA
+              city: Oakland
+              zip: '94607'
+            shippingAddress:
+              countryCodeV2: US
+              provinceCode: CA
+              city: Oakland
+              zip: '94607'
+          pageInfo:
+            hasNextPage: true
+            endCursor: cursor-page-2
+      extensions:
+        cost:
+          requestedQueryCost: 100
+          actualQueryCost: 12
+          throttleStatus:
+            maximumAvailable: 2000.0
+            currentlyAvailable: 1988
+            restoreRate: 100.0
+- match:
+    method: POST
+    path: /admin/api/2026-07/graphql.json
+    body:
+      query: 'query Orders($first: Int, $after: String, $query: String) { orders(first: $first, after: $after, query: $query, sortKey: UPDATED_AT) { nodes { id name createdAt updatedAt processedAt cancelledAt cancelReason closedAt displayFinancialStatus
+        displayFulfillmentStatus currencyCode presentmentCurrencyCode email test confirmed tags note sourceName totalPriceSet { shopMoney { amount currencyCode } } subtotalPriceSet { shopMoney { amount currencyCode } } totalTaxSet { shopMoney { amount
+        currencyCode } } totalDiscountsSet { shopMoney { amount currencyCode } } totalShippingPriceSet { shopMoney { amount currencyCode } } currentTotalPriceSet { shopMoney { amount currencyCode } } totalRefundedSet { shopMoney { amount currencyCode }
+        } customer { id } billingAddress { countryCodeV2 provinceCode city zip } shippingAddress { countryCodeV2 provinceCode city zip } } pageInfo { hasNextPage endCursor } } }'
+      variables:
+        after: cursor-page-2
+        query: updated_at:>'2006-01-01T00:00:00Z'
+    body_regex:
+      query: query Orders\(.*
+    headers:
+      x-shopify-access-token: shpat_replay_token
+  response:
+    body:
+      data:
+        orders:
+          nodes:
+          - id: gid://shopify/Order/5002
+            name: '#1002'
+            createdAt: '2026-08-01T10:00:00Z'
+            updatedAt: '2026-08-03T09:00:00Z'
+            processedAt: '2026-08-01T10:00:00Z'
+            cancelledAt: null
+            cancelReason: null
+            closedAt: null
+            displayFinancialStatus: PAID
+            displayFulfillmentStatus: UNFULFILLED
+            currencyCode: USD
+            presentmentCurrencyCode: USD
+            email: buyer2@example.com
+            test: false
+            confirmed: true
+            tags:
+            - wholesale
+            note: null
+            sourceName: web
+            totalPriceSet:
+              shopMoney:
+                amount: '59.00'
+                currencyCode: USD
+            subtotalPriceSet:
+              shopMoney:
+                amount: '50.00'
+                currencyCode: USD
+            totalTaxSet:
+              shopMoney:
+                amount: '4.00'
+                currencyCode: USD
+            totalDiscountsSet:
+              shopMoney:
+                amount: '0.00'
+                currencyCode: USD
+            totalShippingPriceSet:
+              shopMoney:
+                amount: '5.00'
+                currencyCode: USD
+            currentTotalPriceSet:
+              shopMoney:
+                amount: '59.00'
+                currencyCode: USD
+            totalRefundedSet:
+              shopMoney:
+                amount: '0.00'
+                currencyCode: USD
+            customer:
+              id: gid://shopify/Customer/7001
+            billingAddress:
+              countryCodeV2: US
+              provinceCode: CA
+              city: Oakland
+              zip: '94607'
+            shippingAddress:
+              countryCodeV2: US
+              provinceCode: CA
+              city: Oakland
+              zip: '94607'
+          pageInfo:
+            hasNextPage: false
+            endCursor: eyJsYXN0In0
+      extensions:
+        cost:
+          requestedQueryCost: 100
+          actualQueryCost: 12
+          throttleStatus:
+            maximumAvailable: 2000.0
+            currentlyAvailable: 1988
+            restoreRate: 100.0
+- match:
+    method: POST
+    path: /admin/api/2026-07/graphql.json
+    body:
+      query: 'query Orders($first: Int, $after: String, $query: String) { orders(first: $first, after: $after, query: $query, sortKey: UPDATED_AT) { nodes { id name createdAt updatedAt processedAt cancelledAt cancelReason closedAt displayFinancialStatus
+        displayFulfillmentStatus currencyCode presentmentCurrencyCode email test confirmed tags note sourceName totalPriceSet { shopMoney { amount currencyCode } } subtotalPriceSet { shopMoney { amount currencyCode } } totalTaxSet { shopMoney { amount
+        currencyCode } } totalDiscountsSet { shopMoney { amount currencyCode } } totalShippingPriceSet { shopMoney { amount currencyCode } } currentTotalPriceSet { shopMoney { amount currencyCode } } totalRefundedSet { shopMoney { amount currencyCode }
+        } customer { id } billingAddress { countryCodeV2 provinceCode city zip } shippingAddress { countryCodeV2 provinceCode city zip } } pageInfo { hasNextPage endCursor } } }'
+      variables:
+        query: updated_at:>'2026-08-03T09:00:00Z'
+  response:
+    body:
+      data:
+        orders:
+          nodes:
+          - id: gid://shopify/Order/5001
+            name: '#1001'
+            createdAt: '2026-08-01T10:00:00Z'
+            updatedAt: '2026-09-02T12:00:00Z'
+            processedAt: '2026-08-01T10:00:00Z'
+            cancelledAt: null
+            cancelReason: null
+            closedAt: null
+            displayFinancialStatus: REFUNDED
+            displayFulfillmentStatus: UNFULFILLED
+            currencyCode: USD
+            presentmentCurrencyCode: USD
+            email: buyer1@example.com
+            test: false
+            confirmed: true
+            tags:
+            - wholesale
+            note: null
+            sourceName: web
+            totalPriceSet:
+              shopMoney:
+                amount: '59.00'
+                currencyCode: USD
+            subtotalPriceSet:
+              shopMoney:
+                amount: '50.00'
+                currencyCode: USD
+            totalTaxSet:
+              shopMoney:
+                amount: '4.00'
+                currencyCode: USD
+            totalDiscountsSet:
+              shopMoney:
+                amount: '0.00'
+                currencyCode: USD
+            totalShippingPriceSet:
+              shopMoney:
+                amount: '5.00'
+                currencyCode: USD
+            currentTotalPriceSet:
+              shopMoney:
+                amount: '59.00'
+                currencyCode: USD
+            totalRefundedSet:
+              shopMoney:
+                amount: '0.00'
+                currencyCode: USD
+            customer:
+              id: gid://shopify/Customer/7001
+            billingAddress:
+              countryCodeV2: US
+              provinceCode: CA
+              city: Oakland
+              zip: '94607'
+            shippingAddress:
+              countryCodeV2: US
+              provinceCode: CA
+              city: Oakland
+              zip: '94607'
+          pageInfo:
+            hasNextPage: false
+            endCursor: eyJsYXN0In0
+      extensions:
+        cost:
+          requestedQueryCost: 100
+          actualQueryCost: 12
+          throttleStatus:
+            maximumAvailable: 2000.0
+            currentlyAvailable: 1988
+            restoreRate: 100.0
+- match:
+    method: POST
+    path: /admin/api/2026-07/graphql.json
+    body:
+      query: 'query Customers($first: Int, $after: String, $query: String) { customers(first: $first, after: $after, query: $query, sortKey: UPDATED_AT) { nodes { id firstName lastName state verifiedEmail taxExempt tags note locale createdAt updatedAt
+        numberOfOrders amountSpent { amount currencyCode } defaultEmailAddress { emailAddress marketingState } defaultAddress { countryCodeV2 provinceCode city zip } } pageInfo { hasNextPage endCursor } } }'
+      variables:
+        first: 200
+        query: updated_at:>'2006-01-01T00:00:00Z'
+  response:
+    body:
+      data:
+        customers:
+          nodes:
+          - id: gid://shopify/Customer/7001
+            firstName: Ada
+            lastName: Buyer
+            state: ENABLED
+            verifiedEmail: true
+            taxExempt: false
+            tags:
+            - vip
+            note: null
+            locale: en
+            createdAt: '2025-01-01T00:00:00Z'
+            updatedAt: '2026-08-01T10:05:00Z'
+            numberOfOrders: '2'
+            amountSpent:
+              amount: '118.00'
+              currencyCode: USD
+            defaultEmailAddress:
+              emailAddress: ada@example.com
+              marketingState: SUBSCRIBED
+            defaultAddress:
+              countryCodeV2: US
+              provinceCode: CA
+              city: Oakland
+              zip: '94607'
+          pageInfo:
+            hasNextPage: false
+            endCursor: eyJsYXN0In0
+      extensions:
+        cost:
+          requestedQueryCost: 100
+          actualQueryCost: 12
+          throttleStatus:
+            maximumAvailable: 2000.0
+            currentlyAvailable: 1988
+            restoreRate: 100.0
+- match:
+    method: POST
+    path: /admin/api/2026-07/graphql.json
+    body:
+      query: 'query Customers($first: Int, $after: String, $query: String) { customers(first: $first, after: $after, query: $query, sortKey: UPDATED_AT) { nodes { id firstName lastName state verifiedEmail taxExempt tags note locale createdAt updatedAt
+        numberOfOrders amountSpent { amount currencyCode } defaultEmailAddress { emailAddress marketingState } defaultAddress { countryCodeV2 provinceCode city zip } } pageInfo { hasNextPage endCursor } } }'
+      variables:
+        query: updated_at:>'2026-08-01T10:05:00Z'
+  response:
+    body:
+      data:
+        customers:
+          nodes: []
+          pageInfo:
+            hasNextPage: false
+            endCursor: eyJsYXN0In0
+      extensions:
+        cost:
+          requestedQueryCost: 100
+          actualQueryCost: 12
+          throttleStatus:
+            maximumAvailable: 2000.0
+            currentlyAvailable: 1988
+            restoreRate: 100.0
+- match:
+    method: POST
+    path: /admin/api/2026-07/graphql.json
+    body:
+      query: 'query Products($first: Int, $after: String, $query: String) { products(first: $first, after: $after, query: $query, sortKey: UPDATED_AT) { nodes { id title handle status vendor productType tags createdAt updatedAt publishedAt totalInventory
+        tracksInventory priceRangeV2 { minVariantPrice { amount currencyCode } maxVariantPrice { amount currencyCode } } } pageInfo { hasNextPage endCursor } } }'
+      variables:
+        first: 150
+        query: updated_at:>'2006-01-01T00:00:00Z'
+  response:
+    body:
+      data:
+        products:
+          nodes:
+          - id: gid://shopify/Product/8001
+            title: Canvas Tote
+            handle: canvas-tote
+            status: ACTIVE
+            vendor: Demo
+            productType: Bags
+            tags:
+            - summer
+            createdAt: '2025-02-01T00:00:00Z'
+            updatedAt: '2026-07-15T00:00:00Z'
+            publishedAt: '2025-02-02T00:00:00Z'
+            totalInventory: 40
+            tracksInventory: true
+            priceRangeV2:
+              minVariantPrice:
+                amount: '25.0'
+                currencyCode: USD
+              maxVariantPrice:
+                amount: '30.0'
+                currencyCode: USD
+          pageInfo:
+            hasNextPage: false
+            endCursor: eyJsYXN0In0
+      extensions:
+        cost:
+          requestedQueryCost: 100
+          actualQueryCost: 12
+          throttleStatus:
+            maximumAvailable: 2000.0
+            currentlyAvailable: 1988
+            restoreRate: 100.0
+- match:
+    method: POST
+    path: /admin/api/2026-07/graphql.json
+    body:
+      query: 'query Products($first: Int, $after: String, $query: String) { products(first: $first, after: $after, query: $query, sortKey: UPDATED_AT) { nodes { id title handle status vendor productType tags createdAt updatedAt publishedAt totalInventory
+        tracksInventory priceRangeV2 { minVariantPrice { amount currencyCode } maxVariantPrice { amount currencyCode } } } pageInfo { hasNextPage endCursor } } }'
+      variables:
+        query: updated_at:>'2026-07-15T00:00:00Z'
+  response:
+    body:
+      data:
+        products:
+          nodes: []
+          pageInfo:
+            hasNextPage: false
+            endCursor: eyJsYXN0In0
+      extensions:
+        cost:
+          requestedQueryCost: 100
+          actualQueryCost: 12
+          throttleStatus:
+            maximumAvailable: 2000.0
+            currentlyAvailable: 1988
+            restoreRate: 100.0
+- match:
+    method: POST
+    path: /admin/api/2026-07/graphql.json
+    body:
+      query: 'query ProductVariants($first: Int, $after: String, $query: String) { productVariants(first: $first, after: $after, query: $query, sortKey: ID) { nodes { id title sku barcode price compareAtPrice inventoryQuantity taxable position createdAt
+        updatedAt product { id } } pageInfo { hasNextPage endCursor } } }'
+      variables:
+        first: 250
+        query: updated_at:>'2006-01-01T00:00:00Z'
+  response:
+    body:
+      data:
+        productVariants:
+          nodes:
+          - id: gid://shopify/ProductVariant/9001
+            title: Natural
+            sku: TOTE-NAT
+            barcode: null
+            price: '25.00'
+            compareAtPrice: null
+            inventoryQuantity: 40
+            taxable: true
+            position: 1
+            createdAt: '2025-02-01T00:00:00Z'
+            updatedAt: '2026-07-15T00:00:00Z'
+            product:
+              id: gid://shopify/Product/8001
+          pageInfo:
+            hasNextPage: false
+            endCursor: eyJsYXN0In0
+      extensions:
+        cost:
+          requestedQueryCost: 100
+          actualQueryCost: 12
+          throttleStatus:
+            maximumAvailable: 2000.0
+            currentlyAvailable: 1988
+            restoreRate: 100.0
+- match:
+    method: POST
+    path: /admin/api/2026-07/graphql.json
+    body:
+      query: 'query ProductVariants($first: Int, $after: String, $query: String) { productVariants(first: $first, after: $after, query: $query, sortKey: ID) { nodes { id title sku barcode price compareAtPrice inventoryQuantity taxable position createdAt
+        updatedAt product { id } } pageInfo { hasNextPage endCursor } } }'
+      variables:
+        query: updated_at:>'2026-07-15T00:00:00Z'
+  response:
+    body:
+      data:
+        productVariants:
+          nodes: []
+          pageInfo:
+            hasNextPage: false
+            endCursor: eyJsYXN0In0
+      extensions:
+        cost:
+          requestedQueryCost: 100
+          actualQueryCost: 12
+          throttleStatus:
+            maximumAvailable: 2000.0
+            currentlyAvailable: 1988
+            restoreRate: 100.0
+- match:
+    method: POST
+    path: /admin/api/2026-07/graphql.json
+    body:
+      query: 'query DeletedProducts($first: Int, $after: String, $query: String) { events(first: $first, after: $after, query: $query, sortKey: CREATED_AT) { nodes { id createdAt message ... on BasicEvent { action subjectId subjectType } } pageInfo { hasNextPage
+        endCursor } } }'
+      variables:
+        first: 250
+        query: action:'destroy' AND subject_type:'PRODUCT' AND created_at:>'2006-01-01T00:00:00Z'
+  response:
+    body:
+      data:
+        events:
+          nodes:
+          - id: gid://shopify/BasicEvent/99001
+            createdAt: '2026-07-20T08:00:00Z'
+            message: Old Tote was deleted.
+            action: destroy
+            subjectId: gid://shopify/Product/8000
+            subjectType: PRODUCT
+          pageInfo:
+            hasNextPage: false
+            endCursor: eyJsYXN0In0
+      extensions:
+        cost:
+          requestedQueryCost: 100
+          actualQueryCost: 12
+          throttleStatus:
+            maximumAvailable: 2000.0
+            currentlyAvailable: 1988
+            restoreRate: 100.0
+- match:
+    method: POST
+    path: /admin/api/2026-07/graphql.json
+    body:
+      query: 'query DeletedProducts($first: Int, $after: String, $query: String) { events(first: $first, after: $after, query: $query, sortKey: CREATED_AT) { nodes { id createdAt message ... on BasicEvent { action subjectId subjectType } } pageInfo { hasNextPage
+        endCursor } } }'
+      variables:
+        query: action:'destroy' AND subject_type:'PRODUCT' AND created_at:>'2026-07-20T08:00:00Z'
+  response:
+    body:
+      data:
+        events:
+          nodes: []
+          pageInfo:
+            hasNextPage: false
+            endCursor: eyJsYXN0In0
+      extensions:
+        cost:
+          requestedQueryCost: 100
+          actualQueryCost: 12
+          throttleStatus:
+            maximumAvailable: 2000.0
+            currentlyAvailable: 1988
+            restoreRate: 100.0
+- match:
+    method: POST
+    path: /admin/api/2026-07/graphql.json
+    body:
+      query: 'query Collections($first: Int, $after: String) { collections(first: $first, after: $after, sortKey: UPDATED_AT) { nodes { id title handle sortOrder updatedAt ruleSet { appliedDisjunctively } } pageInfo { hasNextPage endCursor } } }'
+  response:
+    body:
+      data:
+        collections:
+          nodes:
+          - id: gid://shopify/Collection/6001
+            title: Summer
+            handle: summer
+            sortOrder: BEST_SELLING
+            updatedAt: '2026-06-01T00:00:00Z'
+            ruleSet: null
+          pageInfo:
+            hasNextPage: false
+            endCursor: eyJsYXN0In0
+      extensions:
+        cost:
+          requestedQueryCost: 100
+          actualQueryCost: 12
+          throttleStatus:
+            maximumAvailable: 2000.0
+            currentlyAvailable: 1988
+            restoreRate: 100.0
+- match:
+    method: POST
+    path: /admin/api/2026-07/graphql.json
+    body:
+      query: 'query Locations($first: Int, $after: String) { locations(first: $first, after: $after) { nodes { id name isActive fulfillsOnlineOrders createdAt updatedAt address { countryCode provinceCode city zip } } pageInfo { hasNextPage endCursor }
+        } }'
+  response:
+    body:
+      data:
+        locations:
+          nodes:
+          - id: gid://shopify/Location/3001
+            name: Warehouse
+            isActive: true
+            fulfillsOnlineOrders: true
+            createdAt: '2025-01-01T00:00:00Z'
+            updatedAt: '2025-01-01T00:00:00Z'
+            address:
+              countryCode: US
+              provinceCode: CA
+              city: Oakland
+              zip: '94607'
+          pageInfo:
+            hasNextPage: false
+            endCursor: eyJsYXN0In0
+      extensions:
+        cost:
+          requestedQueryCost: 100
+          actualQueryCost: 12
+          throttleStatus:
+            maximumAvailable: 2000.0
+            currentlyAvailable: 1988
+            restoreRate: 100.0
