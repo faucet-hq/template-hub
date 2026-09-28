@@ -1,5 +1,5 @@
 {
-  "commit": "8755e63fd3e27ca4b4223cf8fd6c4fd5c719b3cf",
+  "commit": "dbe5a357911b36c7b39e82cae067b59ca707ec76",
   "generated_by": "scripts/index.py",
   "matrix": [
     {
@@ -2734,11 +2734,10 @@
       "file": "source-templates/faucet-hq/github.yaml",
       "id": "faucet-hq/github",
       "live_versions": [
-        1,
-        2
+        1
       ],
       "name": "github",
-      "newest": 2,
+      "newest": 1,
       "official": true,
       "owner": "faucet-hq",
       "params": [
@@ -2784,7 +2783,7 @@
         }
       ],
       "source_type": "rest",
-      "stable": 2,
+      "stable": 1,
       "streams": [
         {
           "description": null,
@@ -2894,16 +2893,10 @@
       },
       "versions": [
         {
-          "commit": "35af7bd84aac97ad968062d073f36a58c6c9f7ad",
-          "date": "2026-09-27T16:49:39+05:30",
-          "pr": null,
+          "commit": "dbe5a357911b36c7b39e82cae067b59ca707ec76",
+          "date": "2026-09-28T20:57:45+05:30",
+          "pr": 11,
           "version": 1
-        },
-        {
-          "commit": "5816148fa5f7d39a3bca023650a22dfffbdcd1ee",
-          "date": "2026-09-28T09:12:57+05:30",
-          "pr": null,
-          "version": 2
         }
       ]
     },
@@ -2913,11 +2906,10 @@
       "file": "source-templates/faucet-hq/google-ads.yaml",
       "id": "faucet-hq/google-ads",
       "live_versions": [
-        1,
-        2
+        1
       ],
       "name": "google-ads",
-      "newest": 2,
+      "newest": 1,
       "official": true,
       "owner": "faucet-hq",
       "params": [
@@ -2995,7 +2987,7 @@
         }
       ],
       "source_type": "rest",
-      "stable": 2,
+      "stable": 1,
       "streams": [
         {
           "description": null,
@@ -3148,16 +3140,10 @@
       },
       "versions": [
         {
-          "commit": "b0a1b93daffe469434b902cd759d8118401d4f69",
-          "date": "2026-09-27T17:02:01+05:30",
-          "pr": null,
+          "commit": "dbe5a357911b36c7b39e82cae067b59ca707ec76",
+          "date": "2026-09-28T20:57:45+05:30",
+          "pr": 11,
           "version": 1
-        },
-        {
-          "commit": "da75cc0c44f2e1dde2508801b52fc8360c74c2ec",
-          "date": "2026-09-28T10:12:57+05:30",
-          "pr": null,
-          "version": 2
         }
       ]
     },
@@ -3167,11 +3153,10 @@
       "file": "source-templates/faucet-hq/google-analytics-4.yaml",
       "id": "faucet-hq/google-analytics-4",
       "live_versions": [
-        1,
-        2
+        1
       ],
       "name": "google-analytics-4",
-      "newest": 2,
+      "newest": 1,
       "official": true,
       "owner": "faucet-hq",
       "params": [
@@ -3241,7 +3226,7 @@
         }
       ],
       "source_type": "rest",
-      "stable": 2,
+      "stable": 1,
       "streams": [
         {
           "description": null,
@@ -3361,16 +3346,10 @@
       },
       "versions": [
         {
-          "commit": "ec4b4a219b7289936c98014b77a233a7be88a342",
-          "date": "2026-09-28T02:58:31+05:30",
-          "pr": null,
+          "commit": "dbe5a357911b36c7b39e82cae067b59ca707ec76",
+          "date": "2026-09-28T20:57:45+05:30",
+          "pr": 11,
           "version": 1
-        },
-        {
-          "commit": "a5362f162e4d2502a418c3a278a56bb646d7ed32",
-          "date": "2026-09-28T09:35:28+05:30",
-          "pr": null,
-          "version": 2
         }
       ]
     },
@@ -3380,11 +3359,10 @@
       "file": "source-templates/faucet-hq/hubspot.yaml",
       "id": "faucet-hq/hubspot",
       "live_versions": [
-        1,
-        2
+        1
       ],
       "name": "hubspot",
-      "newest": 2,
+      "newest": 1,
       "official": true,
       "owner": "faucet-hq",
       "params": [
@@ -3422,7 +3400,7 @@
         }
       ],
       "source_type": "rest",
-      "stable": 2,
+      "stable": 1,
       "streams": [
         {
           "description": null,
@@ -3565,16 +3543,10 @@
       },
       "versions": [
         {
-          "commit": "6711bdb3e01b044e66ad7ba383c19c886fd53672",
-          "date": "2026-09-27T16:53:11+05:30",
-          "pr": null,
+          "commit": "dbe5a357911b36c7b39e82cae067b59ca707ec76",
+          "date": "2026-09-28T20:57:45+05:30",
+          "pr": 11,
           "version": 1
-        },
-        {
-          "commit": "8a5e9bc21053e8db5fbd6cdadb176e54c8522517",
-          "date": "2026-09-28T11:41:29+05:30",
-          "pr": null,
-          "version": 2
         }
       ]
     },
@@ -3584,11 +3556,10 @@
       "file": "source-templates/faucet-hq/jira.yaml",
       "id": "faucet-hq/jira",
       "live_versions": [
-        1,
-        2
+        1
       ],
       "name": "jira",
-      "newest": 2,
+      "newest": 1,
       "official": true,
       "owner": "faucet-hq",
       "params": [
@@ -3618,7 +3589,7 @@
         }
       ],
       "source_type": "rest",
-      "stable": 2,
+      "stable": 1,
       "streams": [
         {
           "description": null,
@@ -3728,16 +3699,10 @@
       },
       "versions": [
         {
-          "commit": "64455ac5c81a10420ba13e8c8f55f234d42171ce",
-          "date": "2026-09-27T16:54:28+05:30",
-          "pr": null,
+          "commit": "dbe5a357911b36c7b39e82cae067b59ca707ec76",
+          "date": "2026-09-28T20:57:45+05:30",
+          "pr": 11,
           "version": 1
-        },
-        {
-          "commit": "595c92aa11c5c8756cd2164928ffeb76d2a0d636",
-          "date": "2026-09-28T10:19:58+05:30",
-          "pr": null,
-          "version": 2
         }
       ]
     },
@@ -3747,11 +3712,10 @@
       "file": "source-templates/faucet-hq/meta-ads.yaml",
       "id": "faucet-hq/meta-ads",
       "live_versions": [
-        1,
-        2
+        1
       ],
       "name": "meta-ads",
-      "newest": 2,
+      "newest": 1,
       "official": true,
       "owner": "faucet-hq",
       "params": [
@@ -3789,7 +3753,7 @@
         }
       ],
       "source_type": "rest",
-      "stable": 2,
+      "stable": 1,
       "streams": [
         {
           "description": null,
@@ -3932,16 +3896,10 @@
       },
       "versions": [
         {
-          "commit": "9854d622fb04af2d63e3cdb0552e29bbd3da4947",
-          "date": "2026-09-27T17:03:47+05:30",
-          "pr": null,
+          "commit": "dbe5a357911b36c7b39e82cae067b59ca707ec76",
+          "date": "2026-09-28T20:57:45+05:30",
+          "pr": 11,
           "version": 1
-        },
-        {
-          "commit": "b1519587b77ec75c10c0e502d9bc1d0a66b16406",
-          "date": "2026-09-28T10:52:52+05:30",
-          "pr": null,
-          "version": 2
         }
       ]
     },
@@ -3951,12 +3909,10 @@
       "file": "source-templates/faucet-hq/salesforce.yaml",
       "id": "faucet-hq/salesforce",
       "live_versions": [
-        1,
-        2,
-        3
+        1
       ],
       "name": "salesforce",
-      "newest": 3,
+      "newest": 1,
       "official": true,
       "owner": "faucet-hq",
       "params": [
@@ -3994,7 +3950,7 @@
         }
       ],
       "source_type": "rest",
-      "stable": 3,
+      "stable": 1,
       "streams": [
         {
           "description": null,
@@ -4137,22 +4093,10 @@
       },
       "versions": [
         {
-          "commit": "cdc9f17bb238735528dae45172fe8eccaa8e82b1",
-          "date": "2026-09-27T16:59:46+05:30",
-          "pr": null,
+          "commit": "dbe5a357911b36c7b39e82cae067b59ca707ec76",
+          "date": "2026-09-28T20:57:45+05:30",
+          "pr": 11,
           "version": 1
-        },
-        {
-          "commit": "461176eee0a957db74240e3335498d982c826b67",
-          "date": "2026-09-28T12:15:44+05:30",
-          "pr": null,
-          "version": 2
-        },
-        {
-          "commit": "442912ac41853c887bdf4d8ba07316da3fc25531",
-          "date": "2026-09-28T12:20:28+05:30",
-          "pr": null,
-          "version": 3
         }
       ]
     },
@@ -4162,11 +4106,10 @@
       "file": "source-templates/faucet-hq/shopify.yaml",
       "id": "faucet-hq/shopify",
       "live_versions": [
-        1,
-        2
+        1
       ],
       "name": "shopify",
-      "newest": 2,
+      "newest": 1,
       "official": true,
       "owner": "faucet-hq",
       "params": [
@@ -4204,7 +4147,7 @@
         }
       ],
       "source_type": "graphql",
-      "stable": 2,
+      "stable": 1,
       "streams": [
         {
           "description": null,
@@ -4302,16 +4245,10 @@
       },
       "versions": [
         {
-          "commit": "46b67b5ad0ad59cc452561b1a3688a42fcca8981",
-          "date": "2026-09-27T16:56:23+05:30",
-          "pr": null,
+          "commit": "dbe5a357911b36c7b39e82cae067b59ca707ec76",
+          "date": "2026-09-28T20:57:45+05:30",
+          "pr": 11,
           "version": 1
-        },
-        {
-          "commit": "da0be6935219b064e2fcfe89e81904a6a21a52fe",
-          "date": "2026-09-28T12:24:15+05:30",
-          "pr": null,
-          "version": 2
         }
       ]
     },
@@ -4321,12 +4258,10 @@
       "file": "source-templates/faucet-hq/stripe.yaml",
       "id": "faucet-hq/stripe",
       "live_versions": [
-        1,
-        2,
-        3
+        1
       ],
       "name": "stripe",
-      "newest": 3,
+      "newest": 1,
       "official": true,
       "owner": "faucet-hq",
       "params": [
@@ -4364,7 +4299,7 @@
         }
       ],
       "source_type": "rest",
-      "stable": 3,
+      "stable": 1,
       "streams": [
         {
           "description": null,
@@ -4518,22 +4453,10 @@
       },
       "versions": [
         {
-          "commit": "ba2c69c5cb0d6da63a229eb06febda51c21b7b10",
-          "date": "2026-09-27T16:47:33+05:30",
-          "pr": null,
+          "commit": "dbe5a357911b36c7b39e82cae067b59ca707ec76",
+          "date": "2026-09-28T20:57:45+05:30",
+          "pr": 11,
           "version": 1
-        },
-        {
-          "commit": "afc6bf2283784533d6970452040c191205d58ff2",
-          "date": "2026-09-28T08:38:14+05:30",
-          "pr": null,
-          "version": 2
-        },
-        {
-          "commit": "7cd1baaa46e15778a300e3301260db17cb4c5cbc",
-          "date": "2026-09-28T09:25:49+05:30",
-          "pr": null,
-          "version": 3
         }
       ]
     },
@@ -4543,11 +4466,10 @@
       "file": "source-templates/faucet-hq/zendesk.yaml",
       "id": "faucet-hq/zendesk",
       "live_versions": [
-        1,
-        2
+        1
       ],
       "name": "zendesk",
-      "newest": 2,
+      "newest": 1,
       "official": true,
       "owner": "faucet-hq",
       "params": [
@@ -4585,7 +4507,7 @@
         }
       ],
       "source_type": "rest",
-      "stable": 2,
+      "stable": 1,
       "streams": [
         {
           "description": null,
@@ -4684,16 +4606,10 @@
       },
       "versions": [
         {
-          "commit": "7a17701e8b071515ac888ce9a6468fee9a714d1c",
-          "date": "2026-09-27T16:51:27+05:30",
-          "pr": null,
+          "commit": "dbe5a357911b36c7b39e82cae067b59ca707ec76",
+          "date": "2026-09-28T20:57:45+05:30",
+          "pr": 11,
           "version": 1
-        },
-        {
-          "commit": "584f5545d67843f6e9b4808ba9d8c6184c6b4c22",
-          "date": "2026-09-28T09:32:52+05:30",
-          "pr": null,
-          "version": 2
         }
       ]
     }
