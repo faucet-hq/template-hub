@@ -1,0 +1,97 @@
+# Jira Cloud — issues and the reference data needed to read them, over the
+# Jira Cloud platform REST API v3. Design notes and doc links per stream: jira.md.
+#   faucet run --source faucet-hq/jira --sink faucet-hq/bigquery \
+#     --param jira_url=https://acme.atlassian.net --param jira_email=ops@example.com \
+#     --param jira_api_token="$JIRA_API_TOKEN" --param bq_project=… --param bq_sa_key="$BQ_SA_KEY"
+kind: source-template
+name: jira
+owner: faucet-hq
+description: Jira Cloud — issues (all fields), projects, users, fields, statuses, issue types, priorities, resolutions
+tags: [project-management, issue-tracking, atlassian]
+docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/
+params:
+  jira_url:
+    type: string
+    required: true
+    description: "Your site's root, https://<site>.atlassian.net"
+  jira_email:
+    type: string
+    required: true
+    description: "Atlassian account email the API token belongs to"
+  jira_api_token:
+    type: string
+    required: true
+    secret: true
+    description: "Atlassian API token (id.atlassian.com → Security → API tokens)"
+source:
+  type: rest
+  config:
+    base_url: "${param.jira_url}"
+    auth: { type: basic, config: { username: "${param.jira_email}", password: "${param.jira_api_token}" } }
+    headers: { Accept: application/json }
+    max_pages: null
+    max_retries: 8
+    retry_backoff: 2
+streams:
+  # Enhanced JQL search over every issue. Full refresh: see jira.md for why the
+  # `updated` incremental is not used yet. `created >= 0` is the documented
+  # bounded-query form (an unquoted number is epoch milliseconds).
+  - name: issues
+    source:
+      config:
+        path: /rest/api/3/search/jql
+        query_params: { jql: "created >= 0 ORDER BY created ASC, key ASC", fields: "*all", maxResults: "100" }
+        records_path: "$.issues[*]"
+        pagination: { type: Cursor, next_token_path: "$.nextPageToken", param_name: nextPageToken }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  # Paged reference data (PageBean): follow `nextPage`, absent on the last page.
+  - name: projects
+    source:
+      config:
+        path: /rest/api/3/project/search
+        query_params: { maxResults: "100", expand: "description,lead,issueTypes,insight" }
+        records_path: "$.values[*]"
+        pagination: { type: NextLinkInBody, next_link_path: "$.nextPage" }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: priorities
+    source:
+      config:
+        path: /rest/api/3/priority/search
+        query_params: { maxResults: "100" }
+        records_path: "$.values[*]"
+        pagination: { type: NextLinkInBody, next_link_path: "$.nextPage" }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: resolutions
+    source:
+      config:
+        path: /rest/api/3/resolution/search
+        query_params: { maxResults: "100" }
+        records_path: "$.values[*]"
+        pagination: { type: NextLinkInBody, next_link_path: "$.nextPage" }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  # Users: a bare JSON array, paged by startAt / maxResults until a short page.
+  - name: users
+    source:
+      config:
+        path: /rest/api/3/users/search
+        records_path: "$[*]"
+        pagination: { type: Offset, offset_param: startAt, limit_param: maxResults, limit: 100 }
+    primary_keys: [accountId]
+    write: [overwrite, upsert]
+  # Unpaged arrays — the whole list in one response.
+  - name: fields
+    source: { config: { path: /rest/api/3/field, records_path: "$[*]" } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: statuses
+    source: { config: { path: /rest/api/3/status, records_path: "$[*]" } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: issue_types
+    source: { config: { path: /rest/api/3/issuetype, records_path: "$[*]" } }
+    primary_keys: [id]
+    write: [overwrite, upsert]

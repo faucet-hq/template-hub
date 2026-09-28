@@ -65,7 +65,7 @@ sink.
 | [`faucet-hq/salesforce`](source-templates/faucet-hq/salesforce.md) | Salesforce (Bulk API 2.0, v62.0) | accounts, contacts, leads, opportunities, users, campaigns, tasks | all streams, `SystemModstamp` (+ soft deletes) |
 | [`faucet-hq/hubspot`](source-templates/faucet-hq/hubspot.md) | HubSpot CRM v3 | contacts, companies, deals, tickets, products, owners, deal_pipelines | — (full refresh) |
 | [`faucet-hq/stripe`](source-templates/faucet-hq/stripe.md) | Stripe (API 2026-08-26.dahlia) | customers, subscriptions, invoices, charges, refunds, payment_intents, products, prices, payouts, disputes, balance_transactions, events | balance_transactions, events (`created` windows) |
-| [`faucet-hq/jira`](source-templates/faucet-hq/jira.md) | Jira Cloud REST v3 | issues, projects, users, fields, statuses, issue_types | — (full refresh) |
+| [`faucet-hq/jira`](source-templates/faucet-hq/jira.md) | Jira Cloud REST v3 | issues, projects, users, fields, statuses, issue_types, priorities, resolutions | — (full refresh) |
 | [`faucet-hq/zendesk`](source-templates/faucet-hq/zendesk.md) | Zendesk Support API v2 | tickets, users, organizations, groups, ticket_fields, ticket_metrics, satisfaction_ratings | tickets, users (incremental exports, deletes included) |
 | [`faucet-hq/shopify`](source-templates/faucet-hq/shopify.md) | Shopify Admin REST 2025-07 | orders, customers, products, custom_collections, smart_collections, locations | orders, customers, products |
 | [`faucet-hq/github`](source-templates/faucet-hq/github.md) | GitHub REST (2022-11-28) | repository, issues, issue_comments, pull_requests, commits, releases, workflow_runs, contributors | issues, issue_comments |

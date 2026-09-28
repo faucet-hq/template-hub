@@ -1,0 +1,2 @@
+{"custom": false, "id": "summary", "key": "summary", "name": "Summary", "schema": {"system": "summary", "type": "string"}}
+{"custom": true, "id": "customfield_10020", "key": "customfield_10020", "name": "Sprint", "schema": {"custom": "com.pyxis.greenhopper.jira:gh-sprint", "customId": 10020, "items": "json", "type": "array"}}

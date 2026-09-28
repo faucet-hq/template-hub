@@ -1,0 +1,228 @@
+# Recorded Jira Cloud REST v3 exchanges, rebuilt from the documented response
+# schemas (https://developer.atlassian.com/cloud/jira/platform/rest/v3/) with synthetic values.
+# Every stream is a full refresh, so one run covers them.
+params:
+  jira_url: '{replay}'
+  jira_email: bot@example.test
+  jira_api_token: jira_replay_token
+exchanges:
+- match:
+    path: /rest/api/3/search/jql
+    query:
+      fields: '*all'
+      maxResults: '100'
+      jql: created >= 0 ORDER BY created ASC, key ASC
+    headers: &id001
+      authorization: Basic Ym90QGV4YW1wbGUudGVzdDpqaXJhX3JlcGxheV90b2tlbg==
+    absent:
+    - nextPageToken
+  response:
+    body:
+      isLast: false
+      nextPageToken: UlBMX1BBR0VfMg
+      issues:
+      - id: '10101'
+        key: RPL-1
+        self: https://example.atlassian.net/rest/api/3/issue/10101
+        fields:
+          summary: Replay issue RPL-1
+          status:
+            id: '3'
+            name: To Do
+          issuetype:
+            id: '10001'
+            name: Task
+          project:
+            id: '10000'
+            key: RPL
+          assignee:
+            accountId: 5b10a2844c20165700ede21g
+          created: 2026-01-01T09:00:00.000+0000
+          updated: 2026-01-02T10:00:00.000+0000
+          customfield_10020: null
+      - id: '10102'
+        key: RPL-2
+        self: https://example.atlassian.net/rest/api/3/issue/10102
+        fields:
+          summary: Replay issue RPL-2
+          status:
+            id: '3'
+            name: In Progress
+          issuetype:
+            id: '10001'
+            name: Task
+          project:
+            id: '10000'
+            key: RPL
+          assignee:
+            accountId: 5b10a2844c20165700ede21g
+          created: 2026-01-01T09:00:00.000+0000
+          updated: 2026-01-02T11:00:00.000+0000
+          customfield_10020: null
+- match:
+    path: /rest/api/3/search/jql
+    query:
+      fields: '*all'
+      maxResults: '100'
+      jql: created >= 0 ORDER BY created ASC, key ASC
+      nextPageToken: UlBMX1BBR0VfMg
+    headers: *id001
+  response:
+    body:
+      isLast: true
+      issues:
+      - id: '10103'
+        key: RPL-3
+        self: https://example.atlassian.net/rest/api/3/issue/10103
+        fields:
+          summary: Replay issue RPL-3
+          status:
+            id: '3'
+            name: Done
+          issuetype:
+            id: '10001'
+            name: Task
+          project:
+            id: '10000'
+            key: RPL
+          assignee:
+            accountId: 5b10a2844c20165700ede21g
+          created: 2026-01-01T09:00:00.000+0000
+          updated: 2026-01-02T12:00:00.000+0000
+          customfield_10020: null
+- match:
+    path: /rest/api/3/project/search
+    query:
+      maxResults: '100'
+      expand: description,lead,issueTypes,insight
+    headers: *id001
+    absent:
+    - startAt
+  response:
+    body:
+      isLast: false
+      maxResults: 1
+      startAt: 0
+      total: 2
+      nextPage: '{replay}/rest/api/3/project/search?startAt=1&maxResults=1'
+      values:
+      - id: '10000'
+        key: RPL
+        name: Replay
+        projectTypeKey: software
+        lead:
+          accountId: 5b10a2844c20165700ede21g
+- match:
+    path: /rest/api/3/project/search
+    query:
+      startAt: '1'
+      maxResults: '1'
+    headers: *id001
+  response:
+    body:
+      isLast: true
+      maxResults: 1
+      startAt: 1
+      total: 2
+      values:
+      - id: '10001'
+        key: OPS
+        name: Operations
+        projectTypeKey: business
+        lead:
+          accountId: 5b10a2844c20165700ede21h
+- match:
+    path: /rest/api/3/priority/search
+    query:
+      maxResults: '100'
+    headers: *id001
+  response:
+    body:
+      isLast: true
+      startAt: 0
+      total: 2
+      values:
+      - id: '1'
+        name: Highest
+        isDefault: false
+      - id: '3'
+        name: Medium
+        isDefault: true
+- match:
+    path: /rest/api/3/resolution/search
+    query:
+      maxResults: '100'
+    headers: *id001
+  response:
+    body:
+      isLast: true
+      startAt: 0
+      total: 1
+      values:
+      - id: '10000'
+        name: Done
+        isDefault: true
+- match:
+    path: /rest/api/3/users/search
+    query:
+      startAt: '0'
+      maxResults: '100'
+    headers: *id001
+  response:
+    body:
+    - accountId: 5b10a2844c20165700ede21g
+      accountType: atlassian
+      displayName: Replay Lead
+      active: true
+    - accountId: 5b10a2844c20165700ede21h
+      accountType: app
+      displayName: Replay Bot
+      active: true
+- match:
+    path: /rest/api/3/field
+    query: {}
+    headers: *id001
+  response:
+    body:
+    - id: summary
+      key: summary
+      name: Summary
+      custom: false
+      schema:
+        type: string
+        system: summary
+    - id: customfield_10020
+      key: customfield_10020
+      name: Sprint
+      custom: true
+      schema:
+        type: array
+        items: json
+        custom: com.pyxis.greenhopper.jira:gh-sprint
+        customId: 10020
+- match:
+    path: /rest/api/3/status
+    query: {}
+    headers: *id001
+  response:
+    body:
+    - id: '3'
+      name: In Progress
+      statusCategory:
+        id: 4
+        key: indeterminate
+    - id: '10000'
+      name: Done
+      statusCategory:
+        id: 3
+        key: done
+- match:
+    path: /rest/api/3/issuetype
+    query: {}
+    headers: *id001
+  response:
+    body:
+    - id: '10001'
+      name: Task
+      subtask: false
+      hierarchyLevel: 0
