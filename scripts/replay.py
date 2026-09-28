@@ -214,8 +214,25 @@ def keep_latest_records(produced, kept):
             shutil.copyfile(src, dst)
 
 
+def normalize(value):
+    """Sort keys inside JSON-encoded strings too: whether faucet stringifies a
+    nested object in source or sorted key order depends on its build."""
+    if isinstance(value, dict):
+        return {k: normalize(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [normalize(v) for v in value]
+    if isinstance(value, str) and value[:1] in "{[":
+        try:
+            parsed = json.loads(value)
+        except ValueError:
+            return value
+        if isinstance(parsed, (dict, list)):
+            return json.dumps(parsed, sort_keys=True, separators=(",", ":"))
+    return value
+
+
 def canonical(records):
-    return sorted(json.dumps(r, sort_keys=True) for r in records)
+    return sorted(json.dumps(normalize(r), sort_keys=True) for r in records)
 
 
 def run_one(tid, faucet="faucet", update=False):
@@ -254,7 +271,7 @@ def run_one(tid, faucet="faucet", update=False):
             for s in streams:
                 src = os.path.join(produced, f"{s}.jsonl")
                 if os.path.isfile(src):
-                    rows = [json.dumps(r, sort_keys=True) for r in read_jsonl(src)]
+                    rows = canonical(read_jsonl(src))
                     with open(os.path.join(expected_dir, f"{s}.jsonl"), "w") as f:
                         f.write("".join(r + "\n" for r in sorted(rows)))
             return []

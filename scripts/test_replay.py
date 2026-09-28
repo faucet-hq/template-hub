@@ -34,6 +34,19 @@ class KeepLatestRecords(unittest.TestCase):
             self.assertEqual(replay.read_jsonl(os.path.join(kept, "a.jsonl")), [{"id": 3}])
 
 
+class Canonical(unittest.TestCase):
+    def test_key_order_inside_json_strings_does_not_matter(self):
+        a = [{"owner": '{"login":"o","id":1}', "tags": '["x"]', "n": 1}]
+        b = [{"n": 1, "tags": '["x"]', "owner": '{"id":1,"login":"o"}'}]
+        self.assertEqual(replay.canonical(a), replay.canonical(b))
+
+    def test_other_strings_are_left_alone(self):
+        self.assertEqual(replay.normalize("{not json"), "{not json")
+        self.assertEqual(replay.normalize("[1, 2]"), "[1,2]")
+        self.assertEqual(replay.normalize("plain"), "plain")
+        self.assertNotEqual(replay.canonical([{"v": '{"a":1}'}]), replay.canonical([{"v": '{"a":2}'}]))
+
+
 class Subset(unittest.TestCase):
     def test_objects_match_by_key_and_arrays_element_wise(self):
         self.assertTrue(replay.subset({"a": 1}, {"a": 1, "b": 2}))
