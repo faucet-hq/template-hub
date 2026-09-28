@@ -1,0 +1,17 @@
+# `faucet template test` suite for faucet-hq/salesforce, composed with the
+# BigQuery sink: every parameter combination must materialize, expand and compile.
+version: 1
+template: source-templates/faucet-hq/salesforce.yaml
+sink: sink-templates/faucet-hq/bigquery.yaml
+suite:
+  auto:
+    required_omitted: true
+    defaults_baseline: true
+  cases:
+    - name: client-credentials
+      params: { salesforce_url: https://example.my.salesforce.com, salesforce_client_id: 3MVGsuite, salesforce_client_secret: suite-secret, bq_project: analytics, bq_sa_key: "{}" }
+    - name: older-api-version
+      params: { salesforce_url: https://example.my.salesforce.com, salesforce_client_id: 3MVGsuite, salesforce_client_secret: suite-secret, salesforce_api_version: "62.0", bq_project: analytics, bq_sa_key: "{}" }
+    - name: missing-secret-is-named
+      params: { salesforce_url: https://example.my.salesforce.com, salesforce_client_id: 3MVGsuite, bq_project: analytics, bq_sa_key: "{}" }
+      expect: { error: salesforce_client_secret }

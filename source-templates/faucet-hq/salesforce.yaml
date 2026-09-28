@@ -64,3 +64,45 @@ streams:
     source: { config: { async_job: { submit: { json: { query: "SELECT Id, Name, Type, ParentId, BillingStreet, BillingCity, BillingState, BillingPostalCode, BillingCountry, ShippingCity, ShippingState, ShippingCountry, Phone, Website, Industry, AnnualRevenue, NumberOfEmployees, OwnerId, AccountSource, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, IsDeleted FROM Account" } } } } }
     primary_keys: [Id]
     write: [upsert, overwrite]
+  - name: contacts
+    source: { config: { async_job: { submit: { json: { query: "SELECT Id, AccountId, FirstName, LastName, Salutation, Title, Department, Email, Phone, MobilePhone, MailingCity, MailingState, MailingCountry, LeadSource, OwnerId, ReportsToId, HasOptedOutOfEmail, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, IsDeleted FROM Contact" } } } } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
+  - name: leads
+    source: { config: { async_job: { submit: { json: { query: "SELECT Id, FirstName, LastName, Company, Title, Email, Phone, Status, LeadSource, Industry, Rating, City, State, Country, OwnerId, IsConverted, ConvertedDate, ConvertedAccountId, ConvertedContactId, ConvertedOpportunityId, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, IsDeleted FROM Lead" } } } } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
+  - name: opportunities
+    source: { config: { async_job: { submit: { json: { query: "SELECT Id, AccountId, Name, StageName, Amount, Probability, CloseDate, Type, LeadSource, ForecastCategoryName, IsClosed, IsWon, OwnerId, CampaignId, Pricebook2Id, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, IsDeleted FROM Opportunity" } } } } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
+  - name: opportunity_line_items
+    source: { config: { async_job: { submit: { json: { query: "SELECT Id, OpportunityId, Product2Id, PricebookEntryId, Name, Quantity, UnitPrice, ListPrice, TotalPrice, Discount, ServiceDate, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, IsDeleted FROM OpportunityLineItem" } } } } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
+  # User records are never deleted (users are deactivated), and User has no
+  # IsDeleted field, so this job uses plain `query`.
+  - name: users
+    source: { config: { async_job: { submit: { json: { operation: query, query: "SELECT Id, Username, FirstName, LastName, Email, Title, Department, IsActive, UserType, ProfileId, UserRoleId, ManagerId, TimeZoneSidKey, LastLoginDate, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp FROM User" } } } } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
+  - name: campaigns
+    source: { config: { async_job: { submit: { json: { query: "SELECT Id, Name, Type, Status, StartDate, EndDate, IsActive, ParentId, BudgetedCost, ActualCost, ExpectedRevenue, NumberOfLeads, NumberOfContacts, NumberOfOpportunities, OwnerId, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, IsDeleted FROM Campaign" } } } } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
+  - name: campaign_members
+    source: { config: { async_job: { submit: { json: { query: "SELECT Id, CampaignId, LeadId, ContactId, Status, HasResponded, FirstRespondedDate, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, IsDeleted FROM CampaignMember" } } } } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
+  - name: cases
+    source: { config: { async_job: { submit: { json: { query: "SELECT Id, CaseNumber, AccountId, ContactId, Subject, Status, Priority, Origin, Type, Reason, IsClosed, ClosedDate, IsEscalated, OwnerId, ParentId, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, IsDeleted FROM Case" } } } } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
+  - name: tasks
+    source: { config: { async_job: { submit: { json: { query: "SELECT Id, WhoId, WhatId, AccountId, Subject, Status, Priority, ActivityDate, TaskSubtype, Type, IsClosed, CallDurationInSeconds, CallType, OwnerId, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, IsDeleted, IsArchived FROM Task" } } } } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
+  - name: events
+    source: { config: { async_job: { submit: { json: { query: "SELECT Id, WhoId, WhatId, AccountId, Subject, StartDateTime, EndDateTime, DurationInMinutes, IsAllDayEvent, Location, Type, EventSubtype, ShowAs, OwnerId, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, IsDeleted, IsArchived FROM Event" } } } } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]

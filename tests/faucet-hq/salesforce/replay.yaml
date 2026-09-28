@@ -130,3 +130,906 @@ exchanges:
     text: 'Id,Name,Type,ParentId,BillingStreet,BillingCity,BillingState,BillingPostalCode,BillingCountry,ShippingCity,ShippingState,ShippingCountry,Phone,Website,Industry,AnnualRevenue,NumberOfEmployees,OwnerId,AccountSource,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
 
       '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Contact
+  response:
+    body:
+      id: 750xx0000000003AAA
+      operation: queryAll
+      object: Contact
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000003AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000003AAA
+      operation: queryAll
+      object: Contact
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000003AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '1'
+      Content-Type: text/csv
+    text: 'Id,AccountId,FirstName,LastName,Salutation,Title,Department,Email,Phone,MobilePhone,MailingCity,MailingState,MailingCountry,LeadSource,OwnerId,ReportsToId,HasOptedOutOfEmail,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      003xx0000000001AAA,,Replay FirstName,Replay LastName,Replay Salutation,Replay Title,Replay Department,replay@example.test,Replay Phone,Replay MobilePhone,Replay MailingCity,Replay MailingState,Replay
+      MailingCountry,Replay LeadSource,,,false,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,false
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Contact WHERE SystemModstamp > \d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ
+  response:
+    body:
+      id: 750xx0000000004AAA
+      operation: queryAll
+      object: Contact
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000004AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000004AAA
+      operation: queryAll
+      object: Contact
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000004AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '0'
+      Content-Type: text/csv
+    text: 'Id,AccountId,FirstName,LastName,Salutation,Title,Department,Email,Phone,MobilePhone,MailingCity,MailingState,MailingCountry,LeadSource,OwnerId,ReportsToId,HasOptedOutOfEmail,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Lead
+  response:
+    body:
+      id: 750xx0000000005AAA
+      operation: queryAll
+      object: Lead
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000005AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000005AAA
+      operation: queryAll
+      object: Lead
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000005AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '1'
+      Content-Type: text/csv
+    text: 'Id,FirstName,LastName,Company,Title,Email,Phone,Status,LeadSource,Industry,Rating,City,State,Country,OwnerId,IsConverted,ConvertedDate,ConvertedAccountId,ConvertedContactId,ConvertedOpportunityId,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      00Qxx0000000001AAA,Replay FirstName,Replay LastName,Replay Company,Replay Title,replay@example.test,Replay Phone,Replay Status,Replay LeadSource,Replay Industry,Replay Rating,Replay City,Replay State,Replay
+      Country,,false,2026-01-15,,,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,false
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Lead WHERE SystemModstamp > \d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ
+  response:
+    body:
+      id: 750xx0000000006AAA
+      operation: queryAll
+      object: Lead
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000006AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000006AAA
+      operation: queryAll
+      object: Lead
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000006AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '0'
+      Content-Type: text/csv
+    text: 'Id,FirstName,LastName,Company,Title,Email,Phone,Status,LeadSource,Industry,Rating,City,State,Country,OwnerId,IsConverted,ConvertedDate,ConvertedAccountId,ConvertedContactId,ConvertedOpportunityId,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Opportunity
+  response:
+    body:
+      id: 750xx0000000007AAA
+      operation: queryAll
+      object: Opportunity
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000007AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000007AAA
+      operation: queryAll
+      object: Opportunity
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000007AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '1'
+      Content-Type: text/csv
+    text: 'Id,AccountId,Name,StageName,Amount,Probability,CloseDate,Type,LeadSource,ForecastCategoryName,IsClosed,IsWon,OwnerId,CampaignId,Pricebook2Id,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      006xx0000000001AAA,,Replay Name,Replay StageName,10,10,2026-01-15,Replay Type,Replay LeadSource,Replay ForecastCategoryName,false,false,,,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,false
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Opportunity WHERE SystemModstamp > \d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ
+  response:
+    body:
+      id: 750xx0000000008AAA
+      operation: queryAll
+      object: Opportunity
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000008AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000008AAA
+      operation: queryAll
+      object: Opportunity
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000008AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '0'
+      Content-Type: text/csv
+    text: 'Id,AccountId,Name,StageName,Amount,Probability,CloseDate,Type,LeadSource,ForecastCategoryName,IsClosed,IsWon,OwnerId,CampaignId,Pricebook2Id,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM OpportunityLineItem
+  response:
+    body:
+      id: 750xx0000000009AAA
+      operation: queryAll
+      object: OpportunityLineItem
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000009AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000009AAA
+      operation: queryAll
+      object: OpportunityLineItem
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000009AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '1'
+      Content-Type: text/csv
+    text: 'Id,OpportunityId,Product2Id,PricebookEntryId,Name,Quantity,UnitPrice,ListPrice,TotalPrice,Discount,ServiceDate,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      00kxx0000000001AAA,,,,Replay Name,10,10,10,10,Replay Discount,2026-01-15,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,false
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM OpportunityLineItem WHERE SystemModstamp > \d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ
+  response:
+    body:
+      id: 750xx0000000010AAA
+      operation: queryAll
+      object: OpportunityLineItem
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000010AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000010AAA
+      operation: queryAll
+      object: OpportunityLineItem
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000010AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '0'
+      Content-Type: text/csv
+    text: 'Id,OpportunityId,Product2Id,PricebookEntryId,Name,Quantity,UnitPrice,ListPrice,TotalPrice,Discount,ServiceDate,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: query
+    body_regex:
+      query: SELECT Id, .* FROM User
+  response:
+    body:
+      id: 750xx0000000011AAA
+      operation: query
+      object: User
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000011AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000011AAA
+      operation: query
+      object: User
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000011AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '1'
+      Content-Type: text/csv
+    text: 'Id,Username,FirstName,LastName,Email,Title,Department,IsActive,UserType,ProfileId,UserRoleId,ManagerId,TimeZoneSidKey,LastLoginDate,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp
+
+      005xx0000000001AAA,Replay Username,Replay FirstName,Replay LastName,replay@example.test,Replay Title,Replay Department,false,Replay UserType,,,,Replay TimeZoneSidKey,2026-01-02T10:30:00.000+0000,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: query
+    body_regex:
+      query: SELECT Id, .* FROM User WHERE SystemModstamp > \d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ
+  response:
+    body:
+      id: 750xx0000000012AAA
+      operation: query
+      object: User
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000012AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000012AAA
+      operation: query
+      object: User
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000012AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '0'
+      Content-Type: text/csv
+    text: 'Id,Username,FirstName,LastName,Email,Title,Department,IsActive,UserType,ProfileId,UserRoleId,ManagerId,TimeZoneSidKey,LastLoginDate,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Campaign
+  response:
+    body:
+      id: 750xx0000000013AAA
+      operation: queryAll
+      object: Campaign
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000013AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000013AAA
+      operation: queryAll
+      object: Campaign
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000013AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '1'
+      Content-Type: text/csv
+    text: 'Id,Name,Type,Status,StartDate,EndDate,IsActive,ParentId,BudgetedCost,ActualCost,ExpectedRevenue,NumberOfLeads,NumberOfContacts,NumberOfOpportunities,OwnerId,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      701xx0000000001AAA,Replay Name,Replay Type,Replay Status,2026-01-15,2026-01-15,false,,Replay BudgetedCost,Replay ActualCost,Replay ExpectedRevenue,Replay NumberOfLeads,Replay NumberOfContacts,Replay
+      NumberOfOpportunities,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,false
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Campaign WHERE SystemModstamp > \d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ
+  response:
+    body:
+      id: 750xx0000000014AAA
+      operation: queryAll
+      object: Campaign
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000014AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000014AAA
+      operation: queryAll
+      object: Campaign
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000014AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '0'
+      Content-Type: text/csv
+    text: 'Id,Name,Type,Status,StartDate,EndDate,IsActive,ParentId,BudgetedCost,ActualCost,ExpectedRevenue,NumberOfLeads,NumberOfContacts,NumberOfOpportunities,OwnerId,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM CampaignMember
+  response:
+    body:
+      id: 750xx0000000015AAA
+      operation: queryAll
+      object: CampaignMember
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000015AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000015AAA
+      operation: queryAll
+      object: CampaignMember
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000015AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '1'
+      Content-Type: text/csv
+    text: 'Id,CampaignId,LeadId,ContactId,Status,HasResponded,FirstRespondedDate,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      00vxx0000000001AAA,,,,Replay Status,false,2026-01-02T10:30:00.000+0000,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,false
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM CampaignMember WHERE SystemModstamp > \d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ
+  response:
+    body:
+      id: 750xx0000000016AAA
+      operation: queryAll
+      object: CampaignMember
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000016AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000016AAA
+      operation: queryAll
+      object: CampaignMember
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000016AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '0'
+      Content-Type: text/csv
+    text: 'Id,CampaignId,LeadId,ContactId,Status,HasResponded,FirstRespondedDate,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Case
+  response:
+    body:
+      id: 750xx0000000017AAA
+      operation: queryAll
+      object: Case
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000017AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000017AAA
+      operation: queryAll
+      object: Case
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000017AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '1'
+      Content-Type: text/csv
+    text: 'Id,CaseNumber,AccountId,ContactId,Subject,Status,Priority,Origin,Type,Reason,IsClosed,ClosedDate,IsEscalated,OwnerId,ParentId,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      500xx0000000001AAA,Replay CaseNumber,,,Replay Subject,Replay Status,Replay Priority,Replay Origin,Replay Type,Replay Reason,false,2026-01-02T10:30:00.000+0000,false,,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,false
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Case WHERE SystemModstamp > \d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ
+  response:
+    body:
+      id: 750xx0000000018AAA
+      operation: queryAll
+      object: Case
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000018AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000018AAA
+      operation: queryAll
+      object: Case
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000018AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '0'
+      Content-Type: text/csv
+    text: 'Id,CaseNumber,AccountId,ContactId,Subject,Status,Priority,Origin,Type,Reason,IsClosed,ClosedDate,IsEscalated,OwnerId,ParentId,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Task
+  response:
+    body:
+      id: 750xx0000000019AAA
+      operation: queryAll
+      object: Task
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000019AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000019AAA
+      operation: queryAll
+      object: Task
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000019AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '1'
+      Content-Type: text/csv
+    text: 'Id,WhoId,WhatId,AccountId,Subject,Status,Priority,ActivityDate,TaskSubtype,Type,IsClosed,CallDurationInSeconds,CallType,OwnerId,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted,IsArchived
+
+      00Txx0000000001AAA,,,,Replay Subject,Replay Status,Replay Priority,2026-01-15,Replay TaskSubtype,Replay Type,false,10,Replay CallType,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,false,false
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Task WHERE SystemModstamp > \d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ
+  response:
+    body:
+      id: 750xx0000000020AAA
+      operation: queryAll
+      object: Task
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000020AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000020AAA
+      operation: queryAll
+      object: Task
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000020AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '0'
+      Content-Type: text/csv
+    text: 'Id,WhoId,WhatId,AccountId,Subject,Status,Priority,ActivityDate,TaskSubtype,Type,IsClosed,CallDurationInSeconds,CallType,OwnerId,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted,IsArchived
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Event
+  response:
+    body:
+      id: 750xx0000000021AAA
+      operation: queryAll
+      object: Event
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000021AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000021AAA
+      operation: queryAll
+      object: Event
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000021AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '1'
+      Content-Type: text/csv
+    text: 'Id,WhoId,WhatId,AccountId,Subject,StartDateTime,EndDateTime,DurationInMinutes,IsAllDayEvent,Location,Type,EventSubtype,ShowAs,OwnerId,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted,IsArchived
+
+      00Uxx0000000001AAA,,,,Replay Subject,2026-01-02T10:30:00.000+0000,2026-01-02T10:30:00.000+0000,10,false,Replay Location,Replay Type,Replay EventSubtype,Replay ShowAs,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,,2026-01-02T10:30:00.000+0000,false,false
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Event WHERE SystemModstamp > \d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ
+  response:
+    body:
+      id: 750xx0000000022AAA
+      operation: queryAll
+      object: Event
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000022AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000022AAA
+      operation: queryAll
+      object: Event
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000022AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '0'
+      Content-Type: text/csv
+    text: 'Id,WhoId,WhatId,AccountId,Subject,StartDateTime,EndDateTime,DurationInMinutes,IsAllDayEvent,Location,Type,EventSubtype,ShowAs,OwnerId,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted,IsArchived
+
+      '
