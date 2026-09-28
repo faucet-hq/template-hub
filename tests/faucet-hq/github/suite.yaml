@@ -1,0 +1,27 @@
+# `faucet template test` suite for faucet-hq/github: every parameter combination
+# composes, expands and compiles against the sqlite sink, and the shared record
+# shaping turns nested objects into JSON strings.
+version: 1
+template: source-templates/faucet-hq/github.yaml
+sink: sink-templates/faucet-hq/sqlite.yaml
+suite:
+  auto:
+    required_omitted: true
+  cases:
+    - name: github-com
+      params: { github_token: ghp_suite, github_owner: octo-org, github_repo: demo }
+    - name: enterprise-server
+      params:
+        github_token: ghp_suite
+        github_owner: octo-org
+        github_repo: demo
+        github_api_url: https://github.example.com/api/v3
+        github_start_date: "2025-01-01T00:00:00Z"
+  behavioral:
+    - name: repository-record-shape
+      params: { github_token: ghp_suite, github_owner: octo-org, github_repo: demo }
+      input:
+        - { id: 1, full_name: octo-org/demo, owner: { login: octo-org, id: 2 }, topics: [etl] }
+      expect:
+        records:
+          - { id: 1, full_name: octo-org/demo, owner: '{"id":2,"login":"octo-org"}', topics: '["etl"]' }

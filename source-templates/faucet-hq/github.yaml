@@ -1,0 +1,136 @@
+# GitHub REST API (version 2026-03-10) — one repository per run.
+# Every endpoint, parameter and limit below is taken from docs.github.com; the
+# per-stream doc links are in github.md beside this file.
+kind: source-template
+name: github
+owner: faucet-hq
+description: GitHub REST API (2026-03-10) — one repository's issues, pull requests, comments, commits, releases and workflow runs
+tags: [engineering, github, devtools]
+docs: https://docs.github.com/en/rest?apiVersion=2026-03-10
+params:
+  github_token:
+    type: string
+    required: true
+    secret: true
+    description: "Fine-grained personal access token or GitHub App installation token with read access to Metadata, Contents, Issues, Pull requests and Actions on the repository"
+  github_owner:     { type: string, required: true, description: "Repository owner (user or organization login)" }
+  github_repo:      { type: string, required: true, description: "Repository name" }
+  github_api_url:   { type: string, default: "https://api.github.com", description: "REST API root; https://HOST/api/v3 for GitHub Enterprise Server" }
+  github_start_date: { type: string, default: "2008-01-01T00:00:00Z", description: "ISO 8601 timestamp the incremental streams start from on their first run" }
+source:
+  type: rest
+  config:
+    base_url: "${param.github_api_url}"
+    auth: { type: bearer, config: { token: "${param.github_token}" } }
+    headers:
+      Accept: application/vnd.github+json
+      X-GitHub-Api-Version: "2026-03-10"
+    pagination: { type: LinkHeader }
+    max_pages: null
+    timeout: 60
+    max_retries: 5
+    # Primary and secondary rate limits answer 403 or 429. A 429 is retried
+    # (honouring Retry-After) by default; a 403 is throttling only when it
+    # carries `retry-after` or `x-ratelimit-remaining: 0`.
+    retry_on_response:
+      - { status: [403, 429], header: retry-after }
+      - { status: [403, 429], header: x-ratelimit-remaining, values: ["0"], backoff_secs: 60 }
+transforms:
+  - { type: keys_case, config: { mode: snake } }
+streams:
+  - name: repository
+    source:
+      config:
+        path: "/repos/${param.github_owner}/${param.github_repo}"
+        pagination: { type: None }
+    transforms:
+      - { type: json_encode, config: { fields: [owner, organization, parent, source, license, permissions, security_and_analysis, topics, custom_properties, template_repository] } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+
+  - name: issues
+    source:
+      config:
+        path: "/repos/${param.github_owner}/${param.github_repo}/issues"
+        query_params: { state: all, sort: updated, direction: asc, per_page: "100" }
+        replication_method: { type: Incremental }
+        replication_key: updated_at
+        start_replication_value: "${param.github_start_date}"
+        replication_bind: { into: query, name: since, format: iso8601 }
+    transforms:
+      - { type: json_encode, config: { fields: [user, labels, assignees, milestone, closed_by, pull_request, reactions, sub_issues_summary, issue_dependencies_summary, type, performed_via_github_app] } }
+    primary_keys: [id]
+    write: [upsert, append]
+
+  - name: issue_comments
+    source:
+      config:
+        path: "/repos/${param.github_owner}/${param.github_repo}/issues/comments"
+        query_params: { sort: updated, direction: asc, per_page: "100" }
+        replication_method: { type: Incremental }
+        replication_key: updated_at
+        start_replication_value: "${param.github_start_date}"
+        replication_bind: { into: query, name: since, format: iso8601 }
+    transforms:
+      - { type: json_encode, config: { fields: [user, reactions, performed_via_github_app] } }
+    primary_keys: [id]
+    write: [upsert, append]
+
+  - name: pull_requests
+    source:
+      config:
+        path: "/repos/${param.github_owner}/${param.github_repo}/pulls"
+        query_params: { state: all, sort: created, direction: asc, per_page: "100" }
+    transforms:
+      - { type: json_encode, config: { fields: [user, labels, assignees, requested_reviewers, requested_teams, milestone, head, base, _links, auto_merge] } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+
+  - name: review_comments
+    source:
+      config:
+        path: "/repos/${param.github_owner}/${param.github_repo}/pulls/comments"
+        query_params: { sort: updated, direction: asc, per_page: "100" }
+        replication_method: { type: Incremental }
+        replication_key: updated_at
+        start_replication_value: "${param.github_start_date}"
+        replication_bind: { into: query, name: since, format: iso8601 }
+    transforms:
+      - { type: json_encode, config: { fields: [user, reactions, _links] } }
+    primary_keys: [id]
+    write: [upsert, append]
+
+  - name: commits
+    source:
+      config:
+        path: "/repos/${param.github_owner}/${param.github_repo}/commits"
+        query_params: { per_page: "100" }
+        replication_method: { type: Incremental }
+        replication_key: commit.committer.date
+        start_replication_value: "${param.github_start_date}"
+        replication_bind: { into: query, name: since, format: iso8601 }
+    transforms:
+      - { type: json_encode, config: { fields: [commit, author, committer, parents, stats, files] } }
+    primary_keys: [sha]
+    write: [upsert, append]
+
+  - name: releases
+    source:
+      config:
+        path: "/repos/${param.github_owner}/${param.github_repo}/releases"
+        query_params: { per_page: "100" }
+    transforms:
+      - { type: json_encode, config: { fields: [author, assets, reactions] } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+
+  - name: workflow_runs
+    source:
+      config:
+        path: "/repos/${param.github_owner}/${param.github_repo}/actions/runs"
+        query_params: { per_page: "100", exclude_pull_requests: "true" }
+        records_path: "$.workflow_runs[*]"
+    transforms:
+      - { type: json_encode, config: { fields: [actor, triggering_actor, head_commit, repository, head_repository, pull_requests, referenced_workflows] } }
+    primary_keys: [id]
+    write: [overwrite, upsert]

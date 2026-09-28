@@ -1,0 +1,3 @@
+# Catalog sidecar for faucet-hq/github: every merged version launches as stable.
+launch: true
+description: GitHub REST API (2026-03-10) — issues, pull requests, comments, commits, releases and workflow runs for one repository
