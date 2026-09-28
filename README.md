@@ -67,11 +67,11 @@ sink.
 | [`faucet-hq/stripe`](source-templates/faucet-hq/stripe.md) | Stripe (API 2026-08-26.dahlia) | customers, subscriptions, invoices, charges, refunds, payment_intents, products, prices, payouts, disputes, balance_transactions, events | balance_transactions, events (`created` windows) |
 | [`faucet-hq/jira`](source-templates/faucet-hq/jira.md) | Jira Cloud REST v3 | issues, projects, users, fields, statuses, issue_types, priorities, resolutions | — (full refresh) |
 | [`faucet-hq/zendesk`](source-templates/faucet-hq/zendesk.md) | Zendesk Support API v2 | tickets, users, organizations, groups, ticket_fields, ticket_metrics, satisfaction_ratings | tickets, users (incremental exports, deletes included) |
-| [`faucet-hq/shopify`](source-templates/faucet-hq/shopify.md) | Shopify Admin REST 2025-07 | orders, customers, products, custom_collections, smart_collections, locations | orders, customers, products |
-| [`faucet-hq/github`](source-templates/faucet-hq/github.md) | GitHub REST (2022-11-28) | repository, issues, issue_comments, pull_requests, commits, releases, workflow_runs, contributors | issues, issue_comments |
-| [`faucet-hq/google-ads`](source-templates/faucet-hq/google-ads.md) | Google Ads API v22 | campaigns, ad_groups, ads, campaign/ad_group/keyword performance | rolling window (performance) |
-| [`faucet-hq/meta-ads`](source-templates/faucet-hq/meta-ads.md) | Meta Marketing API v24.0 | ad_account, campaigns, ad_sets, ads, ad_creatives, ad_insights (async) | rolling window (insights) |
-| [`faucet-hq/google-analytics-4`](source-templates/faucet-hq/google-analytics-4.md) | GA4 Data API v1beta (`runReport`) | daily_traffic, pages, events, devices, geography, acquisition | rolling window (all streams) |
+| [`faucet-hq/shopify`](source-templates/faucet-hq/shopify.md) | Shopify GraphQL Admin API 2026-07 | orders, customers, products, product_variants, collections, locations, deleted_products | orders, customers, products, product_variants, deleted_products (`updated_at` / `created_at`) |
+| [`faucet-hq/github`](source-templates/faucet-hq/github.md) | GitHub REST (2026-03-10) | repository, issues, issue_comments, pull_requests, review_comments, commits, releases, workflow_runs | issues, issue_comments, review_comments, commits (`since`) |
+| [`faucet-hq/google-ads`](source-templates/faucet-hq/google-ads.md) | Google Ads API v25 (GAQL search) | customer, campaigns, ad_groups, ads, keywords, campaign/ad_group/ad/keyword performance, search_terms | rolling window (performance streams) |
+| [`faucet-hq/meta-ads`](source-templates/faucet-hq/meta-ads.md) | Meta Marketing API v25.0 | ad_account, campaigns, ad_sets, ads, ad_creatives, campaign/ad insights + age-gender/country/platform breakdowns (async) | rolling window (insights) |
+| [`faucet-hq/google-analytics-4`](source-templates/faucet-hq/google-analytics-4.md) | GA4 Data API v1beta (`runReport`) | traffic_daily, traffic_sources, landing_pages, pages, events, devices, geography | windowed with a 3-day lookback (all streams) |
 
 Incremental streams keep their bookmark in a `state:` store — supply one with a
 deployment overlay (`--overlay`), or they re-read everything each run.
