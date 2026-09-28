@@ -97,7 +97,7 @@ streams:
           lower: { into: query, name: "created[gte]", format: epoch_s }
           upper: { into: query, name: "created[lt]", format: epoch_s }
     primary_keys: [id]
-    write: [upsert, append]
+    write: [upsert, overwrite]
   # Events are Stripe's change log (including customer.deleted, product.deleted,
   # price.deleted …) — the delete signal for the full-refresh streams above.
   # Stripe keeps them for 30 days, so run at least that often.
@@ -114,4 +114,4 @@ streams:
           lower: { into: query, name: "created[gte]", format: epoch_s }
           upper: { into: query, name: "created[lt]", format: epoch_s }
     primary_keys: [id]
-    write: [upsert, append]
+    write: [upsert, overwrite]
