@@ -1,0 +1,3 @@
+# Catalog sidecar for faucet-hq/shopify: every merged version launches as stable.
+launch: true
+description: Shopify GraphQL Admin API (2026-07) — orders, customers, products, variants, collections, locations and product deletions

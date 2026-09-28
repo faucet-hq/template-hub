@@ -1,0 +1,26 @@
+# `faucet template test` suite for faucet-hq/shopify: parameter combinations
+# compose and compile against the postgres sink, and an order node is
+# flattened into snake_case columns.
+version: 1
+template: source-templates/faucet-hq/shopify.yaml
+sink: sink-templates/faucet-hq/postgres.yaml
+suite:
+  auto:
+    required_omitted: true
+  cases:
+    - name: defaults
+      params: { shopify_shop_url: https://demo-store.myshopify.com, shopify_client_id: id, shopify_client_secret: secret, pg_url: postgres://suite@localhost:5432/suite }
+    - name: recent-start
+      params: { shopify_shop_url: https://demo-store.myshopify.com, shopify_client_id: id, shopify_client_secret: secret, pg_url: postgres://suite@localhost:5432/suite, shopify_start_date: "2026-01-01T00:00:00Z" }
+  behavioral:
+    - name: order-node-shape
+      params: { shopify_shop_url: https://demo-store.myshopify.com, shopify_client_id: id, shopify_client_secret: secret, pg_url: postgres://suite@localhost:5432/suite }
+      input:
+        - id: gid://shopify/Order/1
+          updatedAt: "2026-08-01T10:05:00Z"
+          tags: [wholesale]
+          totalPriceSet: { shopMoney: { amount: "59.00", currencyCode: USD } }
+          customer: { id: gid://shopify/Customer/7 }
+      expect:
+        records:
+          - { id: gid://shopify/Order/1, updated_at: "2026-08-01T10:05:00Z", tags: '["wholesale"]', total_price_set_shop_money_amount: "59.00", total_price_set_shop_money_currency_code: USD, customer_id: gid://shopify/Customer/7 }
