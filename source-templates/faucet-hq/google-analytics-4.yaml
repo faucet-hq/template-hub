@@ -1,0 +1,198 @@
+# Google Analytics 4 — Data API v1beta `properties.runReport`, one report per
+# stream, read in rolling date windows that re-fetch GA4's processing lookback.
+# Every request shape and limit below is taken from
+# developers.google.com/analytics/devguides/reporting/data/v1; the per-stream
+# doc links are in google-analytics-4.md beside this file.
+kind: source-template
+name: google-analytics-4
+owner: faucet-hq
+description: Google Analytics 4 Data API v1beta (runReport) — daily traffic, sources, landing pages, pages, events, devices and geography
+tags: [analytics, marketing, google]
+docs: https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/properties/runReport
+params:
+  ga4_property_id: { type: string, required: true, description: "Numeric GA4 property id (Admin → Property details)" }
+  google_sa_key:
+    type: string
+    required: true
+    secret: true
+    description: "Service-account key JSON, inline. Add the service account's email to the property as a Viewer"
+  ga4_start_date: { type: string, default: "2024-01-01", description: "First day (YYYY-MM-DD) read when no bookmark is stored" }
+  ga4_lookback_days: { type: int, default: 3, description: "Days re-read before the bookmark on every run — GA4 keeps processing a day for 24-48 hours" }
+  ga4_page_size: { type: int, default: 100000, description: "Rows per runReport page (1-250000)" }
+  ga4_window_days: { type: int, default: 30, description: "Days per runReport request window" }
+  ga4_api_url: { type: string, default: "https://analyticsdata.googleapis.com", description: "Data API root" }
+  google_token_uri: { type: string, default: "https://oauth2.googleapis.com/token", description: "OAuth 2.0 token endpoint the service-account assertion is exchanged at" }
+auth:
+  google:
+    type: google_service_account
+    config:
+      key_json: "${param.google_sa_key}"
+      token_uri: "${param.google_token_uri}"
+      scopes: ["https://www.googleapis.com/auth/analytics.readonly"]
+source:
+  type: rest
+  config:
+    base_url: "${param.ga4_api_url}"
+    path: "/v1beta/properties/${param.ga4_property_id}:runReport"
+    method: POST
+    auth: { ref: google }
+    body:
+      dateRanges: [{ startDate: "${param.ga4_start_date}", endDate: "${param.ga4_start_date}" }]
+      keepEmptyRows: false
+    records_path: "$.rows[*]"
+    # offset/limit ride the request body (the API returns at most 250,000 rows per request).
+    pagination: { type: OffsetInBody, offset_field: offset, limit_field: limit, limit: "${param.ga4_page_size}", stop_when_short: true }
+    max_pages: null
+    timeout: 120
+    replication_method: { type: Incremental }
+    replication_key: date
+    start_replication_value: "${param.ga4_start_date}T00:00:00Z"
+    window:
+      step: "${param.ga4_window_days}d"
+      lookback: "${param.ga4_lookback_days}d"
+      # dateRanges are inclusive on both ends: render the upper bound one second
+      # early so a window [D1 00:00, D2 00:00) reads D1..D1, and a partial last
+      # window [today 00:00, now) reads today..today.
+      granularity: 1s
+      lower: { into: body, path: /dateRanges/0/startDate, format: date }
+      upper: { into: body, path: /dateRanges/0/endDate, format: date }
+transforms:
+  - { type: keys_case, config: { mode: snake } }
+# Each row carries its cells positionally, in the order the request listed the
+# dimensions and metrics ("The order of the columns is consistent in the
+# request, header, and rows"), so every stream names its columns with the same
+# list it requests. Rows are paged by offset, so each row is its own record.
+streams:
+  # Property-wide daily totals.
+  - name: traffic_daily
+    source:
+      config:
+        body:
+          dimensions: [{ name: date }]
+          metrics: [{ name: sessions }, { name: totalUsers }, { name: newUsers }, { name: activeUsers }, { name: engagedSessions }, { name: screenPageViews }, { name: eventCount }, { name: keyEvents }, { name: userEngagementDuration }, { name: totalRevenue }]
+    transforms:
+      - { type: set, config: { values: { _dimensions: [date], _metrics: [sessions, total_users, new_users, active_users, engaged_sessions, screen_page_views, event_count, key_events, user_engagement_duration, total_revenue] } } }
+      - type: zip_columns
+        config:
+          rows_path: "$"
+          groups:
+            - { from: dimension_values, header: "$._dimensions[*]", value: value }
+            - { from: metric_values, header: "$._metrics[*]", value: value }
+      - { type: cast, config: { fields: { sessions: int, total_users: int, new_users: int, active_users: int, engaged_sessions: int, screen_page_views: int, event_count: int, key_events: float, user_engagement_duration: float, total_revenue: float }, on_error: error } }
+      - { type: set, config: { values: { property_id: "${param.ga4_property_id}" } } }
+    primary_keys: [property_id, date]
+    write: [upsert, append]
+  # Session source / medium / campaign / default channel group by day.
+  - name: traffic_sources
+    source:
+      config:
+        body:
+          dimensions: [{ name: date }, { name: sessionSource }, { name: sessionMedium }, { name: sessionCampaignName }, { name: sessionDefaultChannelGroup }]
+          metrics: [{ name: sessions }, { name: totalUsers }, { name: newUsers }, { name: engagedSessions }, { name: keyEvents }, { name: totalRevenue }]
+    transforms:
+      - { type: set, config: { values: { _dimensions: [date, session_source, session_medium, session_campaign_name, session_default_channel_group], _metrics: [sessions, total_users, new_users, engaged_sessions, key_events, total_revenue] } } }
+      - type: zip_columns
+        config:
+          rows_path: "$"
+          groups:
+            - { from: dimension_values, header: "$._dimensions[*]", value: value }
+            - { from: metric_values, header: "$._metrics[*]", value: value }
+      - { type: cast, config: { fields: { sessions: int, total_users: int, new_users: int, engaged_sessions: int, key_events: float, total_revenue: float }, on_error: error } }
+      - { type: set, config: { values: { property_id: "${param.ga4_property_id}" } } }
+    primary_keys: [property_id, date, session_source, session_medium, session_campaign_name, session_default_channel_group]
+    write: [upsert, append]
+  # Landing page (path + query string) by day.
+  - name: landing_pages
+    source:
+      config:
+        body:
+          dimensions: [{ name: date }, { name: landingPagePlusQueryString }]
+          metrics: [{ name: sessions }, { name: totalUsers }, { name: newUsers }, { name: engagedSessions }, { name: keyEvents }]
+    transforms:
+      - { type: set, config: { values: { _dimensions: [date, landing_page], _metrics: [sessions, total_users, new_users, engaged_sessions, key_events] } } }
+      - type: zip_columns
+        config:
+          rows_path: "$"
+          groups:
+            - { from: dimension_values, header: "$._dimensions[*]", value: value }
+            - { from: metric_values, header: "$._metrics[*]", value: value }
+      - { type: cast, config: { fields: { sessions: int, total_users: int, new_users: int, engaged_sessions: int, key_events: float }, on_error: error } }
+      - { type: set, config: { values: { property_id: "${param.ga4_property_id}" } } }
+    primary_keys: [property_id, date, landing_page]
+    write: [upsert, append]
+  # Host + page path by day.
+  - name: pages
+    source:
+      config:
+        body:
+          dimensions: [{ name: date }, { name: hostName }, { name: pagePath }]
+          metrics: [{ name: screenPageViews }, { name: activeUsers }, { name: eventCount }, { name: userEngagementDuration }]
+    transforms:
+      - { type: set, config: { values: { _dimensions: [date, host_name, page_path], _metrics: [screen_page_views, active_users, event_count, user_engagement_duration] } } }
+      - type: zip_columns
+        config:
+          rows_path: "$"
+          groups:
+            - { from: dimension_values, header: "$._dimensions[*]", value: value }
+            - { from: metric_values, header: "$._metrics[*]", value: value }
+      - { type: cast, config: { fields: { screen_page_views: int, active_users: int, event_count: int, user_engagement_duration: float }, on_error: error } }
+      - { type: set, config: { values: { property_id: "${param.ga4_property_id}" } } }
+    primary_keys: [property_id, date, host_name, page_path]
+    write: [upsert, append]
+  # Event name by day.
+  - name: events
+    source:
+      config:
+        body:
+          dimensions: [{ name: date }, { name: eventName }]
+          metrics: [{ name: eventCount }, { name: totalUsers }, { name: keyEvents }]
+    transforms:
+      - { type: set, config: { values: { _dimensions: [date, event_name], _metrics: [event_count, total_users, key_events] } } }
+      - type: zip_columns
+        config:
+          rows_path: "$"
+          groups:
+            - { from: dimension_values, header: "$._dimensions[*]", value: value }
+            - { from: metric_values, header: "$._metrics[*]", value: value }
+      - { type: cast, config: { fields: { event_count: int, total_users: int, key_events: float }, on_error: error } }
+      - { type: set, config: { values: { property_id: "${param.ga4_property_id}" } } }
+    primary_keys: [property_id, date, event_name]
+    write: [upsert, append]
+  # Device category / operating system / browser by day.
+  - name: devices
+    source:
+      config:
+        body:
+          dimensions: [{ name: date }, { name: deviceCategory }, { name: operatingSystem }, { name: browser }]
+          metrics: [{ name: sessions }, { name: totalUsers }, { name: newUsers }, { name: engagedSessions }, { name: screenPageViews }]
+    transforms:
+      - { type: set, config: { values: { _dimensions: [date, device_category, operating_system, browser], _metrics: [sessions, total_users, new_users, engaged_sessions, screen_page_views] } } }
+      - type: zip_columns
+        config:
+          rows_path: "$"
+          groups:
+            - { from: dimension_values, header: "$._dimensions[*]", value: value }
+            - { from: metric_values, header: "$._metrics[*]", value: value }
+      - { type: cast, config: { fields: { sessions: int, total_users: int, new_users: int, engaged_sessions: int, screen_page_views: int }, on_error: error } }
+      - { type: set, config: { values: { property_id: "${param.ga4_property_id}" } } }
+    primary_keys: [property_id, date, device_category, operating_system, browser]
+    write: [upsert, append]
+  # Country / region / city by day.
+  - name: geography
+    source:
+      config:
+        body:
+          dimensions: [{ name: date }, { name: country }, { name: region }, { name: city }]
+          metrics: [{ name: sessions }, { name: totalUsers }, { name: newUsers }, { name: engagedSessions }]
+    transforms:
+      - { type: set, config: { values: { _dimensions: [date, country, region, city], _metrics: [sessions, total_users, new_users, engaged_sessions] } } }
+      - type: zip_columns
+        config:
+          rows_path: "$"
+          groups:
+            - { from: dimension_values, header: "$._dimensions[*]", value: value }
+            - { from: metric_values, header: "$._metrics[*]", value: value }
+      - { type: cast, config: { fields: { sessions: int, total_users: int, new_users: int, engaged_sessions: int }, on_error: error } }
+      - { type: set, config: { values: { property_id: "${param.ga4_property_id}" } } }
+    primary_keys: [property_id, date, country, region, city]
+    write: [upsert, append]
