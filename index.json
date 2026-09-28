@@ -1,5 +1,5 @@
 {
-  "commit": "ec4b4a219b7289936c98014b77a233a7be88a342",
+  "commit": "e3de26beb8f734e784fb6e94e0fdd4dfadbd4f81",
   "generated_by": "scripts/index.py",
   "matrix": [
     {
@@ -183,8 +183,13 @@
         },
         {
           "satisfies": null,
+          "stream": "review_comments",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
           "stream": "commits",
-          "write_mode": "overwrite"
+          "write_mode": "upsert"
         },
         {
           "satisfies": null,
@@ -194,11 +199,6 @@
         {
           "satisfies": null,
           "stream": "workflow_runs",
-          "write_mode": "overwrite"
-        },
-        {
-          "satisfies": null,
-          "stream": "contributors",
           "write_mode": "overwrite"
         }
       ]
@@ -216,12 +216,12 @@
           "write_mode": "append"
         },
         {
-          "satisfies": "overwrite",
+          "satisfies": null,
           "stream": "issues",
           "write_mode": "append"
         },
         {
-          "satisfies": "overwrite",
+          "satisfies": null,
           "stream": "issue_comments",
           "write_mode": "append"
         },
@@ -231,7 +231,12 @@
           "write_mode": "append"
         },
         {
-          "satisfies": "overwrite",
+          "satisfies": null,
+          "stream": "review_comments",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": null,
           "stream": "commits",
           "write_mode": "append"
         },
@@ -243,11 +248,6 @@
         {
           "satisfies": "overwrite",
           "stream": "workflow_runs",
-          "write_mode": "append"
-        },
-        {
-          "satisfies": "overwrite",
-          "stream": "contributors",
           "write_mode": "append"
         }
       ]
@@ -281,8 +281,13 @@
         },
         {
           "satisfies": null,
+          "stream": "review_comments",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
           "stream": "commits",
-          "write_mode": "overwrite"
+          "write_mode": "upsert"
         },
         {
           "satisfies": null,
@@ -292,11 +297,6 @@
         {
           "satisfies": null,
           "stream": "workflow_runs",
-          "write_mode": "overwrite"
-        },
-        {
-          "satisfies": null,
-          "stream": "contributors",
           "write_mode": "overwrite"
         }
       ]
@@ -330,8 +330,13 @@
         },
         {
           "satisfies": null,
+          "stream": "review_comments",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
           "stream": "commits",
-          "write_mode": "overwrite"
+          "write_mode": "upsert"
         },
         {
           "satisfies": null,
@@ -342,16 +347,11 @@
           "satisfies": null,
           "stream": "workflow_runs",
           "write_mode": "overwrite"
-        },
-        {
-          "satisfies": null,
-          "stream": "contributors",
-          "write_mode": "overwrite"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/google-ads --sink faucet-hq/bigquery \\\n  --param google_ads_customer_id=<google_ads_customer_id> \\\n  --param google_ads_developer_token=\"$GOOGLE_ADS_DEVELOPER_TOKEN\" \\\n  --param google_ads_login_customer_id=<google_ads_login_customer_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\" \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "command": "faucet run --source faucet-hq/google-ads --sink faucet-hq/bigquery \\\n  --param google_ads_customer_id=<google_ads_customer_id> \\\n  --param google_ads_developer_token=\"$GOOGLE_ADS_DEVELOPER_TOKEN\" \\\n  --param google_ads_login_customer_id=<google_ads_login_customer_id> \\\n  --param google_client_id=\"$GOOGLE_CLIENT_ID\" \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\" \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/bigquery",
@@ -359,6 +359,11 @@
       "streams": [
         {
           "satisfies": null,
+          "stream": "customer",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
           "stream": "campaigns",
           "write_mode": "overwrite"
         },
@@ -374,6 +379,11 @@
         },
         {
           "satisfies": null,
+          "stream": "keywords",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
           "stream": "campaign_performance",
           "write_mode": "upsert"
         },
@@ -384,13 +394,23 @@
         },
         {
           "satisfies": null,
+          "stream": "ad_performance",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
           "stream": "keyword_performance",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "search_terms",
           "write_mode": "upsert"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/google-ads --sink faucet-hq/jsonl \\\n  --param google_ads_customer_id=<google_ads_customer_id> \\\n  --param google_ads_developer_token=\"$GOOGLE_ADS_DEVELOPER_TOKEN\" \\\n  --param google_ads_login_customer_id=<google_ads_login_customer_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\"",
+      "command": "faucet run --source faucet-hq/google-ads --sink faucet-hq/jsonl \\\n  --param google_ads_customer_id=<google_ads_customer_id> \\\n  --param google_ads_developer_token=\"$GOOGLE_ADS_DEVELOPER_TOKEN\" \\\n  --param google_ads_login_customer_id=<google_ads_login_customer_id> \\\n  --param google_client_id=\"$GOOGLE_CLIENT_ID\" \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/jsonl",
@@ -398,6 +418,11 @@
       "streams": [
         {
           "satisfies": "overwrite",
+          "stream": "customer",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
           "stream": "campaigns",
           "write_mode": "append"
         },
@@ -413,23 +438,38 @@
         },
         {
           "satisfies": "overwrite",
+          "stream": "keywords",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": null,
           "stream": "campaign_performance",
           "write_mode": "append"
         },
         {
-          "satisfies": "overwrite",
+          "satisfies": null,
           "stream": "ad_group_performance",
           "write_mode": "append"
         },
         {
-          "satisfies": "overwrite",
+          "satisfies": null,
+          "stream": "ad_performance",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": null,
           "stream": "keyword_performance",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": null,
+          "stream": "search_terms",
           "write_mode": "append"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/google-ads --sink faucet-hq/postgres \\\n  --param google_ads_customer_id=<google_ads_customer_id> \\\n  --param google_ads_developer_token=\"$GOOGLE_ADS_DEVELOPER_TOKEN\" \\\n  --param google_ads_login_customer_id=<google_ads_login_customer_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\" \\\n  --param pg_url=\"$PG_URL\"",
+      "command": "faucet run --source faucet-hq/google-ads --sink faucet-hq/postgres \\\n  --param google_ads_customer_id=<google_ads_customer_id> \\\n  --param google_ads_developer_token=\"$GOOGLE_ADS_DEVELOPER_TOKEN\" \\\n  --param google_ads_login_customer_id=<google_ads_login_customer_id> \\\n  --param google_client_id=\"$GOOGLE_CLIENT_ID\" \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\" \\\n  --param pg_url=\"$PG_URL\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/postgres",
@@ -437,6 +477,11 @@
       "streams": [
         {
           "satisfies": null,
+          "stream": "customer",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
           "stream": "campaigns",
           "write_mode": "overwrite"
         },
@@ -452,6 +497,11 @@
         },
         {
           "satisfies": null,
+          "stream": "keywords",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
           "stream": "campaign_performance",
           "write_mode": "upsert"
         },
@@ -462,13 +512,23 @@
         },
         {
           "satisfies": null,
+          "stream": "ad_performance",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
           "stream": "keyword_performance",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "search_terms",
           "write_mode": "upsert"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/google-ads --sink faucet-hq/sqlite \\\n  --param google_ads_customer_id=<google_ads_customer_id> \\\n  --param google_ads_developer_token=\"$GOOGLE_ADS_DEVELOPER_TOKEN\" \\\n  --param google_ads_login_customer_id=<google_ads_login_customer_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\"",
+      "command": "faucet run --source faucet-hq/google-ads --sink faucet-hq/sqlite \\\n  --param google_ads_customer_id=<google_ads_customer_id> \\\n  --param google_ads_developer_token=\"$GOOGLE_ADS_DEVELOPER_TOKEN\" \\\n  --param google_ads_login_customer_id=<google_ads_login_customer_id> \\\n  --param google_client_id=\"$GOOGLE_CLIENT_ID\" \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/sqlite",
@@ -476,6 +536,11 @@
       "streams": [
         {
           "satisfies": null,
+          "stream": "customer",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
           "stream": "campaigns",
           "write_mode": "overwrite"
         },
@@ -491,6 +556,11 @@
         },
         {
           "satisfies": null,
+          "stream": "keywords",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
           "stream": "campaign_performance",
           "write_mode": "upsert"
         },
@@ -501,13 +571,23 @@
         },
         {
           "satisfies": null,
+          "stream": "ad_performance",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
           "stream": "keyword_performance",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "search_terms",
           "write_mode": "upsert"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/google-analytics-4 --sink faucet-hq/bigquery \\\n  --param ga4_property_id=<ga4_property_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\" \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "command": "faucet run --source faucet-hq/google-analytics-4 --sink faucet-hq/bigquery \\\n  --param ga4_property_id=<ga4_property_id> \\\n  --param google_sa_key=\"$GOOGLE_SA_KEY\" \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/bigquery",
@@ -515,7 +595,17 @@
       "streams": [
         {
           "satisfies": null,
-          "stream": "daily_traffic",
+          "stream": "traffic_daily",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "traffic_sources",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "landing_pages",
           "write_mode": "upsert"
         },
         {
@@ -537,55 +627,55 @@
           "satisfies": null,
           "stream": "geography",
           "write_mode": "upsert"
-        },
-        {
-          "satisfies": null,
-          "stream": "acquisition",
-          "write_mode": "upsert"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/google-analytics-4 --sink faucet-hq/jsonl \\\n  --param ga4_property_id=<ga4_property_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\"",
+      "command": "faucet run --source faucet-hq/google-analytics-4 --sink faucet-hq/jsonl \\\n  --param ga4_property_id=<ga4_property_id> \\\n  --param google_sa_key=\"$GOOGLE_SA_KEY\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/jsonl",
       "source": "faucet-hq/google-analytics-4",
       "streams": [
         {
-          "satisfies": "overwrite",
-          "stream": "daily_traffic",
+          "satisfies": null,
+          "stream": "traffic_daily",
           "write_mode": "append"
         },
         {
-          "satisfies": "overwrite",
+          "satisfies": null,
+          "stream": "traffic_sources",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": null,
+          "stream": "landing_pages",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": null,
           "stream": "pages",
           "write_mode": "append"
         },
         {
-          "satisfies": "overwrite",
+          "satisfies": null,
           "stream": "events",
           "write_mode": "append"
         },
         {
-          "satisfies": "overwrite",
+          "satisfies": null,
           "stream": "devices",
           "write_mode": "append"
         },
         {
-          "satisfies": "overwrite",
+          "satisfies": null,
           "stream": "geography",
-          "write_mode": "append"
-        },
-        {
-          "satisfies": "overwrite",
-          "stream": "acquisition",
           "write_mode": "append"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/google-analytics-4 --sink faucet-hq/postgres \\\n  --param ga4_property_id=<ga4_property_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\" \\\n  --param pg_url=\"$PG_URL\"",
+      "command": "faucet run --source faucet-hq/google-analytics-4 --sink faucet-hq/postgres \\\n  --param ga4_property_id=<ga4_property_id> \\\n  --param google_sa_key=\"$GOOGLE_SA_KEY\" \\\n  --param pg_url=\"$PG_URL\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/postgres",
@@ -593,7 +683,17 @@
       "streams": [
         {
           "satisfies": null,
-          "stream": "daily_traffic",
+          "stream": "traffic_daily",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "traffic_sources",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "landing_pages",
           "write_mode": "upsert"
         },
         {
@@ -615,16 +715,11 @@
           "satisfies": null,
           "stream": "geography",
           "write_mode": "upsert"
-        },
-        {
-          "satisfies": null,
-          "stream": "acquisition",
-          "write_mode": "upsert"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/google-analytics-4 --sink faucet-hq/sqlite \\\n  --param ga4_property_id=<ga4_property_id> \\\n  --param google_client_id=<google_client_id> \\\n  --param google_client_secret=\"$GOOGLE_CLIENT_SECRET\" \\\n  --param google_refresh_token=\"$GOOGLE_REFRESH_TOKEN\"",
+      "command": "faucet run --source faucet-hq/google-analytics-4 --sink faucet-hq/sqlite \\\n  --param ga4_property_id=<ga4_property_id> \\\n  --param google_sa_key=\"$GOOGLE_SA_KEY\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/sqlite",
@@ -632,7 +727,17 @@
       "streams": [
         {
           "satisfies": null,
-          "stream": "daily_traffic",
+          "stream": "traffic_daily",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "traffic_sources",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "landing_pages",
           "write_mode": "upsert"
         },
         {
@@ -654,16 +759,11 @@
           "satisfies": null,
           "stream": "geography",
           "write_mode": "upsert"
-        },
-        {
-          "satisfies": null,
-          "stream": "acquisition",
-          "write_mode": "upsert"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/hubspot --sink faucet-hq/bigquery \\\n  --param hubspot_token=\"$HUBSPOT_TOKEN\" \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "command": "faucet run --source faucet-hq/hubspot --sink faucet-hq/bigquery \\\n  --param hubspot_access_token=\"$HUBSPOT_ACCESS_TOKEN\" \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/bigquery",
@@ -672,26 +772,41 @@
         {
           "satisfies": null,
           "stream": "contacts",
-          "write_mode": "overwrite"
+          "write_mode": "upsert"
         },
         {
           "satisfies": null,
           "stream": "companies",
-          "write_mode": "overwrite"
+          "write_mode": "upsert"
         },
         {
           "satisfies": null,
           "stream": "deals",
-          "write_mode": "overwrite"
+          "write_mode": "upsert"
         },
         {
           "satisfies": null,
           "stream": "tickets",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "contacts_archived",
           "write_mode": "overwrite"
         },
         {
           "satisfies": null,
-          "stream": "products",
+          "stream": "companies_archived",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "deals_archived",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "tickets_archived",
           "write_mode": "overwrite"
         },
         {
@@ -703,11 +818,16 @@
           "satisfies": null,
           "stream": "deal_pipelines",
           "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ticket_pipelines",
+          "write_mode": "overwrite"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/hubspot --sink faucet-hq/jsonl \\\n  --param hubspot_token=\"$HUBSPOT_TOKEN\"",
+      "command": "faucet run --source faucet-hq/hubspot --sink faucet-hq/jsonl \\\n  --param hubspot_access_token=\"$HUBSPOT_ACCESS_TOKEN\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/jsonl",
@@ -735,7 +855,22 @@
         },
         {
           "satisfies": "overwrite",
-          "stream": "products",
+          "stream": "contacts_archived",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "companies_archived",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "deals_archived",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "tickets_archived",
           "write_mode": "append"
         },
         {
@@ -747,11 +882,16 @@
           "satisfies": "overwrite",
           "stream": "deal_pipelines",
           "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "ticket_pipelines",
+          "write_mode": "append"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/hubspot --sink faucet-hq/postgres \\\n  --param hubspot_token=\"$HUBSPOT_TOKEN\" \\\n  --param pg_url=\"$PG_URL\"",
+      "command": "faucet run --source faucet-hq/hubspot --sink faucet-hq/postgres \\\n  --param hubspot_access_token=\"$HUBSPOT_ACCESS_TOKEN\" \\\n  --param pg_url=\"$PG_URL\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/postgres",
@@ -760,26 +900,41 @@
         {
           "satisfies": null,
           "stream": "contacts",
-          "write_mode": "overwrite"
+          "write_mode": "upsert"
         },
         {
           "satisfies": null,
           "stream": "companies",
-          "write_mode": "overwrite"
+          "write_mode": "upsert"
         },
         {
           "satisfies": null,
           "stream": "deals",
-          "write_mode": "overwrite"
+          "write_mode": "upsert"
         },
         {
           "satisfies": null,
           "stream": "tickets",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "contacts_archived",
           "write_mode": "overwrite"
         },
         {
           "satisfies": null,
-          "stream": "products",
+          "stream": "companies_archived",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "deals_archived",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "tickets_archived",
           "write_mode": "overwrite"
         },
         {
@@ -791,11 +946,16 @@
           "satisfies": null,
           "stream": "deal_pipelines",
           "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ticket_pipelines",
+          "write_mode": "overwrite"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/hubspot --sink faucet-hq/sqlite \\\n  --param hubspot_token=\"$HUBSPOT_TOKEN\"",
+      "command": "faucet run --source faucet-hq/hubspot --sink faucet-hq/sqlite \\\n  --param hubspot_access_token=\"$HUBSPOT_ACCESS_TOKEN\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/sqlite",
@@ -804,26 +964,41 @@
         {
           "satisfies": null,
           "stream": "contacts",
-          "write_mode": "overwrite"
+          "write_mode": "upsert"
         },
         {
           "satisfies": null,
           "stream": "companies",
-          "write_mode": "overwrite"
+          "write_mode": "upsert"
         },
         {
           "satisfies": null,
           "stream": "deals",
-          "write_mode": "overwrite"
+          "write_mode": "upsert"
         },
         {
           "satisfies": null,
           "stream": "tickets",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "contacts_archived",
           "write_mode": "overwrite"
         },
         {
           "satisfies": null,
-          "stream": "products",
+          "stream": "companies_archived",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "deals_archived",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "tickets_archived",
           "write_mode": "overwrite"
         },
         {
@@ -834,6 +1009,11 @@
         {
           "satisfies": null,
           "stream": "deal_pipelines",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ticket_pipelines",
           "write_mode": "overwrite"
         }
       ]
@@ -853,6 +1033,16 @@
         {
           "satisfies": null,
           "stream": "projects",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "priorities",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "resolutions",
           "write_mode": "overwrite"
         },
         {
@@ -896,6 +1086,16 @@
         },
         {
           "satisfies": "overwrite",
+          "stream": "priorities",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "resolutions",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
           "stream": "users",
           "write_mode": "append"
         },
@@ -935,6 +1135,16 @@
         },
         {
           "satisfies": null,
+          "stream": "priorities",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "resolutions",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
           "stream": "users",
           "write_mode": "overwrite"
         },
@@ -970,6 +1180,16 @@
         {
           "satisfies": null,
           "stream": "projects",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "priorities",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "resolutions",
           "write_mode": "overwrite"
         },
         {
@@ -1028,7 +1248,27 @@
         },
         {
           "satisfies": null,
+          "stream": "campaign_insights",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
           "stream": "ad_insights",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_insights_age_gender",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_insights_country",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_insights_platform",
           "write_mode": "upsert"
         }
       ]
@@ -1066,8 +1306,28 @@
           "write_mode": "append"
         },
         {
-          "satisfies": "overwrite",
+          "satisfies": null,
+          "stream": "campaign_insights",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": null,
           "stream": "ad_insights",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_insights_age_gender",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_insights_country",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_insights_platform",
           "write_mode": "append"
         }
       ]
@@ -1106,7 +1366,27 @@
         },
         {
           "satisfies": null,
+          "stream": "campaign_insights",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
           "stream": "ad_insights",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_insights_age_gender",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_insights_country",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_insights_platform",
           "write_mode": "upsert"
         }
       ]
@@ -1145,13 +1425,33 @@
         },
         {
           "satisfies": null,
+          "stream": "campaign_insights",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
           "stream": "ad_insights",
           "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_insights_age_gender",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_insights_country",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "ad_insights_platform",
+          "write_mode": "upsert"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/salesforce --sink faucet-hq/bigquery \\\n  --param salesforce_client_id=<salesforce_client_id> \\\n  --param salesforce_client_secret=\"$SALESFORCE_CLIENT_SECRET\" \\\n  --param salesforce_instance_url=<salesforce_instance_url> \\\n  --param salesforce_refresh_token=\"$SALESFORCE_REFRESH_TOKEN\" \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "command": "faucet run --source faucet-hq/salesforce --sink faucet-hq/bigquery \\\n  --param salesforce_client_id=<salesforce_client_id> \\\n  --param salesforce_client_secret=\"$SALESFORCE_CLIENT_SECRET\" \\\n  --param salesforce_url=<salesforce_url> \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/bigquery",
@@ -1179,6 +1479,11 @@
         },
         {
           "satisfies": null,
+          "stream": "opportunity_line_items",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
           "stream": "users",
           "write_mode": "upsert"
         },
@@ -1189,13 +1494,28 @@
         },
         {
           "satisfies": null,
+          "stream": "campaign_members",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "cases",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
           "stream": "tasks",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "events",
           "write_mode": "upsert"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/salesforce --sink faucet-hq/jsonl \\\n  --param salesforce_client_id=<salesforce_client_id> \\\n  --param salesforce_client_secret=\"$SALESFORCE_CLIENT_SECRET\" \\\n  --param salesforce_instance_url=<salesforce_instance_url> \\\n  --param salesforce_refresh_token=\"$SALESFORCE_REFRESH_TOKEN\"",
+      "command": "faucet run --source faucet-hq/salesforce --sink faucet-hq/jsonl \\\n  --param salesforce_client_id=<salesforce_client_id> \\\n  --param salesforce_client_secret=\"$SALESFORCE_CLIENT_SECRET\" \\\n  --param salesforce_url=<salesforce_url>",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/jsonl",
@@ -1223,6 +1543,11 @@
         },
         {
           "satisfies": "overwrite",
+          "stream": "opportunity_line_items",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
           "stream": "users",
           "write_mode": "append"
         },
@@ -1233,13 +1558,28 @@
         },
         {
           "satisfies": "overwrite",
+          "stream": "campaign_members",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "cases",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
           "stream": "tasks",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
+          "stream": "events",
           "write_mode": "append"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/salesforce --sink faucet-hq/postgres \\\n  --param salesforce_client_id=<salesforce_client_id> \\\n  --param salesforce_client_secret=\"$SALESFORCE_CLIENT_SECRET\" \\\n  --param salesforce_instance_url=<salesforce_instance_url> \\\n  --param salesforce_refresh_token=\"$SALESFORCE_REFRESH_TOKEN\" \\\n  --param pg_url=\"$PG_URL\"",
+      "command": "faucet run --source faucet-hq/salesforce --sink faucet-hq/postgres \\\n  --param salesforce_client_id=<salesforce_client_id> \\\n  --param salesforce_client_secret=\"$SALESFORCE_CLIENT_SECRET\" \\\n  --param salesforce_url=<salesforce_url> \\\n  --param pg_url=\"$PG_URL\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/postgres",
@@ -1267,6 +1607,11 @@
         },
         {
           "satisfies": null,
+          "stream": "opportunity_line_items",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
           "stream": "users",
           "write_mode": "upsert"
         },
@@ -1277,13 +1622,28 @@
         },
         {
           "satisfies": null,
+          "stream": "campaign_members",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "cases",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
           "stream": "tasks",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "events",
           "write_mode": "upsert"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/salesforce --sink faucet-hq/sqlite \\\n  --param salesforce_client_id=<salesforce_client_id> \\\n  --param salesforce_client_secret=\"$SALESFORCE_CLIENT_SECRET\" \\\n  --param salesforce_instance_url=<salesforce_instance_url> \\\n  --param salesforce_refresh_token=\"$SALESFORCE_REFRESH_TOKEN\"",
+      "command": "faucet run --source faucet-hq/salesforce --sink faucet-hq/sqlite \\\n  --param salesforce_client_id=<salesforce_client_id> \\\n  --param salesforce_client_secret=\"$SALESFORCE_CLIENT_SECRET\" \\\n  --param salesforce_url=<salesforce_url>",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/sqlite",
@@ -1311,6 +1671,11 @@
         },
         {
           "satisfies": null,
+          "stream": "opportunity_line_items",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
           "stream": "users",
           "write_mode": "upsert"
         },
@@ -1321,13 +1686,28 @@
         },
         {
           "satisfies": null,
+          "stream": "campaign_members",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "cases",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
           "stream": "tasks",
+          "write_mode": "upsert"
+        },
+        {
+          "satisfies": null,
+          "stream": "events",
           "write_mode": "upsert"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/shopify --sink faucet-hq/bigquery \\\n  --param shopify_access_token=\"$SHOPIFY_ACCESS_TOKEN\" \\\n  --param shopify_store_url=<shopify_store_url> \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
+      "command": "faucet run --source faucet-hq/shopify --sink faucet-hq/bigquery \\\n  --param shopify_client_id=\"$SHOPIFY_CLIENT_ID\" \\\n  --param shopify_client_secret=\"$SHOPIFY_CLIENT_SECRET\" \\\n  --param shopify_shop_url=<shopify_shop_url> \\\n  --param bq_project=<bq_project> \\\n  --param bq_sa_key=\"$BQ_SA_KEY\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/bigquery",
@@ -1350,62 +1730,72 @@
         },
         {
           "satisfies": null,
-          "stream": "custom_collections",
-          "write_mode": "overwrite"
+          "stream": "product_variants",
+          "write_mode": "upsert"
         },
         {
           "satisfies": null,
-          "stream": "smart_collections",
+          "stream": "collections",
           "write_mode": "overwrite"
         },
         {
           "satisfies": null,
           "stream": "locations",
           "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "deleted_products",
+          "write_mode": "upsert"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/shopify --sink faucet-hq/jsonl \\\n  --param shopify_access_token=\"$SHOPIFY_ACCESS_TOKEN\" \\\n  --param shopify_store_url=<shopify_store_url>",
+      "command": "faucet run --source faucet-hq/shopify --sink faucet-hq/jsonl \\\n  --param shopify_client_id=\"$SHOPIFY_CLIENT_ID\" \\\n  --param shopify_client_secret=\"$SHOPIFY_CLIENT_SECRET\" \\\n  --param shopify_shop_url=<shopify_shop_url>",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/jsonl",
       "source": "faucet-hq/shopify",
       "streams": [
         {
-          "satisfies": "overwrite",
+          "satisfies": null,
           "stream": "orders",
           "write_mode": "append"
         },
         {
-          "satisfies": "overwrite",
+          "satisfies": null,
           "stream": "customers",
           "write_mode": "append"
         },
         {
-          "satisfies": "overwrite",
+          "satisfies": null,
           "stream": "products",
           "write_mode": "append"
         },
         {
-          "satisfies": "overwrite",
-          "stream": "custom_collections",
+          "satisfies": null,
+          "stream": "product_variants",
           "write_mode": "append"
         },
         {
           "satisfies": "overwrite",
-          "stream": "smart_collections",
+          "stream": "collections",
           "write_mode": "append"
         },
         {
           "satisfies": "overwrite",
           "stream": "locations",
           "write_mode": "append"
+        },
+        {
+          "satisfies": null,
+          "stream": "deleted_products",
+          "write_mode": "append"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/shopify --sink faucet-hq/postgres \\\n  --param shopify_access_token=\"$SHOPIFY_ACCESS_TOKEN\" \\\n  --param shopify_store_url=<shopify_store_url> \\\n  --param pg_url=\"$PG_URL\"",
+      "command": "faucet run --source faucet-hq/shopify --sink faucet-hq/postgres \\\n  --param shopify_client_id=\"$SHOPIFY_CLIENT_ID\" \\\n  --param shopify_client_secret=\"$SHOPIFY_CLIENT_SECRET\" \\\n  --param shopify_shop_url=<shopify_shop_url> \\\n  --param pg_url=\"$PG_URL\"",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/postgres",
@@ -1428,23 +1818,28 @@
         },
         {
           "satisfies": null,
-          "stream": "custom_collections",
-          "write_mode": "overwrite"
+          "stream": "product_variants",
+          "write_mode": "upsert"
         },
         {
           "satisfies": null,
-          "stream": "smart_collections",
+          "stream": "collections",
           "write_mode": "overwrite"
         },
         {
           "satisfies": null,
           "stream": "locations",
           "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "deleted_products",
+          "write_mode": "upsert"
         }
       ]
     },
     {
-      "command": "faucet run --source faucet-hq/shopify --sink faucet-hq/sqlite \\\n  --param shopify_access_token=\"$SHOPIFY_ACCESS_TOKEN\" \\\n  --param shopify_store_url=<shopify_store_url>",
+      "command": "faucet run --source faucet-hq/shopify --sink faucet-hq/sqlite \\\n  --param shopify_client_id=\"$SHOPIFY_CLIENT_ID\" \\\n  --param shopify_client_secret=\"$SHOPIFY_CLIENT_SECRET\" \\\n  --param shopify_shop_url=<shopify_shop_url>",
       "compatible": true,
       "incompatible": [],
       "sink": "faucet-hq/sqlite",
@@ -1467,18 +1862,23 @@
         },
         {
           "satisfies": null,
-          "stream": "custom_collections",
-          "write_mode": "overwrite"
+          "stream": "product_variants",
+          "write_mode": "upsert"
         },
         {
           "satisfies": null,
-          "stream": "smart_collections",
+          "stream": "collections",
           "write_mode": "overwrite"
         },
         {
           "satisfies": null,
           "stream": "locations",
           "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "deleted_products",
+          "write_mode": "upsert"
         }
       ]
     },
@@ -1532,6 +1932,11 @@
         {
           "satisfies": null,
           "stream": "payouts",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "disputes",
           "write_mode": "overwrite"
         },
         {
@@ -1600,6 +2005,11 @@
         },
         {
           "satisfies": "overwrite",
+          "stream": "disputes",
+          "write_mode": "append"
+        },
+        {
+          "satisfies": "overwrite",
           "stream": "balance_transactions",
           "write_mode": "append"
         },
@@ -1660,6 +2070,11 @@
         {
           "satisfies": null,
           "stream": "payouts",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "disputes",
           "write_mode": "overwrite"
         },
         {
@@ -1728,6 +2143,11 @@
         },
         {
           "satisfies": null,
+          "stream": "disputes",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
           "stream": "balance_transactions",
           "write_mode": "upsert"
         },
@@ -1758,16 +2178,16 @@
         {
           "satisfies": null,
           "stream": "organizations",
-          "write_mode": "upsert"
-        },
-        {
-          "satisfies": null,
-          "stream": "satisfaction_ratings",
-          "write_mode": "upsert"
+          "write_mode": "overwrite"
         },
         {
           "satisfies": null,
           "stream": "groups",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ticket_fields",
           "write_mode": "overwrite"
         },
         {
@@ -1777,7 +2197,7 @@
         },
         {
           "satisfies": null,
-          "stream": "ticket_fields",
+          "stream": "satisfaction_ratings",
           "write_mode": "overwrite"
         }
       ]
@@ -1806,12 +2226,12 @@
         },
         {
           "satisfies": "overwrite",
-          "stream": "satisfaction_ratings",
+          "stream": "groups",
           "write_mode": "append"
         },
         {
           "satisfies": "overwrite",
-          "stream": "groups",
+          "stream": "ticket_fields",
           "write_mode": "append"
         },
         {
@@ -1821,7 +2241,7 @@
         },
         {
           "satisfies": "overwrite",
-          "stream": "ticket_fields",
+          "stream": "satisfaction_ratings",
           "write_mode": "append"
         }
       ]
@@ -1846,16 +2266,16 @@
         {
           "satisfies": null,
           "stream": "organizations",
-          "write_mode": "upsert"
-        },
-        {
-          "satisfies": null,
-          "stream": "satisfaction_ratings",
-          "write_mode": "upsert"
+          "write_mode": "overwrite"
         },
         {
           "satisfies": null,
           "stream": "groups",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ticket_fields",
           "write_mode": "overwrite"
         },
         {
@@ -1865,7 +2285,7 @@
         },
         {
           "satisfies": null,
-          "stream": "ticket_fields",
+          "stream": "satisfaction_ratings",
           "write_mode": "overwrite"
         }
       ]
@@ -1890,16 +2310,16 @@
         {
           "satisfies": null,
           "stream": "organizations",
-          "write_mode": "upsert"
-        },
-        {
-          "satisfies": null,
-          "stream": "satisfaction_ratings",
-          "write_mode": "upsert"
+          "write_mode": "overwrite"
         },
         {
           "satisfies": null,
           "stream": "groups",
+          "write_mode": "overwrite"
+        },
+        {
+          "satisfies": null,
+          "stream": "ticket_fields",
           "write_mode": "overwrite"
         },
         {
@@ -1909,7 +2329,7 @@
         },
         {
           "satisfies": null,
-          "stream": "ticket_fields",
+          "stream": "satisfaction_ratings",
           "write_mode": "overwrite"
         }
       ]
@@ -2309,29 +2729,30 @@
       ]
     },
     {
-      "description": "GitHub — a repository's issues, issue comments, pull requests, commits, releases, Actions workflow runs, contributors and metadata",
-      "docs": "https://docs.github.com/en/rest",
+      "description": "GitHub REST API (2026-03-10) — one repository's issues, pull requests, comments, commits, releases and workflow runs",
+      "docs": "https://docs.github.com/en/rest?apiVersion=2026-03-10",
       "file": "source-templates/faucet-hq/github.yaml",
       "id": "faucet-hq/github",
       "live_versions": [
-        1
+        1,
+        2
       ],
       "name": "github",
-      "newest": 1,
+      "newest": 2,
       "official": true,
       "owner": "faucet-hq",
       "params": [
         {
           "default": "https://api.github.com",
-          "description": "API root — https://<host>/api/v3 for GitHub Enterprise Server",
-          "name": "api_base_url",
+          "description": "REST API root; https://HOST/api/v3 for GitHub Enterprise Server",
+          "name": "github_api_url",
           "required": false,
           "secret": false,
           "type": "string"
         },
         {
           "default": null,
-          "description": "Repository owner — a user or organization login",
+          "description": "Repository owner (user or organization login)",
           "name": "github_owner",
           "required": true,
           "secret": false,
@@ -2346,8 +2767,16 @@
           "type": "string"
         },
         {
+          "default": "2008-01-01T00:00:00Z",
+          "description": "ISO 8601 timestamp the incremental streams start from on their first run",
+          "name": "github_start_date",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
           "default": null,
-          "description": "Fine-grained personal access token (or GitHub App installation token) with read access to the repository",
+          "description": "Fine-grained personal access token or GitHub App installation token with read access to Metadata, Contents, Issues, Pull requests and Actions on the repository",
           "name": "github_token",
           "required": true,
           "secret": true,
@@ -2355,7 +2784,7 @@
         }
       ],
       "source_type": "rest",
-      "stable": 1,
+      "stable": 2,
       "streams": [
         {
           "description": null,
@@ -2376,7 +2805,7 @@
           ],
           "write": [
             "upsert",
-            "overwrite"
+            "append"
           ]
         },
         {
@@ -2387,7 +2816,7 @@
           ],
           "write": [
             "upsert",
-            "overwrite"
+            "append"
           ]
         },
         {
@@ -2403,13 +2832,24 @@
         },
         {
           "description": null,
+          "name": "review_comments",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "upsert",
+            "append"
+          ]
+        },
+        {
+          "description": null,
           "name": "commits",
           "primary_keys": [
             "sha"
           ],
           "write": [
-            "overwrite",
-            "upsert"
+            "upsert",
+            "append"
           ]
         },
         {
@@ -2433,31 +2873,20 @@
             "overwrite",
             "upsert"
           ]
-        },
-        {
-          "description": null,
-          "name": "contributors",
-          "primary_keys": [
-            "id"
-          ],
-          "write": [
-            "overwrite",
-            "upsert"
-          ]
         }
       ],
       "tags": [
         "engineering",
-        "developer-tools",
-        "saas"
+        "github",
+        "devtools"
       ],
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
           "templates": 16
         },
-        "stable_since": "2026-09-27",
-        "updated": "2026-09-27"
+        "stable_since": "2026-09-28",
+        "updated": "2026-09-28"
       },
       "versions": [
         {
@@ -2465,41 +2894,56 @@
           "date": "2026-09-27T16:49:39+05:30",
           "pr": null,
           "version": 1
+        },
+        {
+          "commit": "5816148fa5f7d39a3bca023650a22dfffbdcd1ee",
+          "date": "2026-09-28T09:12:57+05:30",
+          "pr": null,
+          "version": 2
         }
       ]
     },
     {
-      "description": "Google Ads — campaigns, ad groups, ads, and daily campaign / ad group / keyword performance over a rolling window (Google Ads API v22, GAQL)",
+      "description": "Google Ads API v25 (GAQL search) — account, campaigns, ad groups, ads, keywords and daily performance reports",
       "docs": "https://developers.google.com/google-ads/api/docs/start",
       "file": "source-templates/faucet-hq/google-ads.yaml",
       "id": "faucet-hq/google-ads",
       "live_versions": [
-        1
+        1,
+        2
       ],
       "name": "google-ads",
-      "newest": 1,
+      "newest": 2,
       "official": true,
       "owner": "faucet-hq",
       "params": [
         {
           "default": "https://googleads.googleapis.com",
-          "description": "API root — override only to replay recorded fixtures",
-          "name": "api_base_url",
+          "description": "Google Ads API root",
+          "name": "google_ads_api_url",
           "required": false,
           "secret": false,
           "type": "string"
         },
         {
           "default": null,
-          "description": "Account to read, 10 digits without dashes",
+          "description": "Customer id of the account to read, digits only (1234567890)",
           "name": "google_ads_customer_id",
           "required": true,
           "secret": false,
           "type": "string"
         },
         {
+          "default": "DURING LAST_30_DAYS",
+          "description": "GAQL condition on segments.date for the performance streams — a rolling window (`DURING LAST_30_DAYS`) or a backfill range (`BETWEEN '2025-01-01' AND '2025-12-31'`)",
+          "name": "google_ads_date_filter",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
           "default": null,
-          "description": "Google Ads API developer token (API Center of a manager account)",
+          "description": "Developer token from the manager account's API Center",
           "name": "google_ads_developer_token",
           "required": true,
           "secret": true,
@@ -2507,7 +2951,7 @@
         },
         {
           "default": null,
-          "description": "Manager account the credentials act through, 10 digits without dashes — the customer id itself for direct access",
+          "description": "Customer id of the manager account you authenticate through, digits only; the account's own id when you have direct access",
           "name": "google_ads_login_customer_id",
           "required": true,
           "secret": false,
@@ -2515,15 +2959,15 @@
         },
         {
           "default": null,
-          "description": "OAuth client id (Google Cloud console)",
+          "description": "OAuth 2.0 client id (Google Cloud project)",
           "name": "google_client_id",
           "required": true,
-          "secret": false,
+          "secret": true,
           "type": "string"
         },
         {
           "default": null,
-          "description": "OAuth client secret",
+          "description": "OAuth 2.0 client secret",
           "name": "google_client_secret",
           "required": true,
           "secret": true,
@@ -2531,7 +2975,7 @@
         },
         {
           "default": null,
-          "description": "OAuth refresh token with the https://www.googleapis.com/auth/adwords scope",
+          "description": "OAuth 2.0 refresh token for a user with access to the account (scope https://www.googleapis.com/auth/adwords)",
           "name": "google_refresh_token",
           "required": true,
           "secret": true,
@@ -2539,28 +2983,32 @@
         },
         {
           "default": "https://oauth2.googleapis.com/token",
-          "description": "OAuth token endpoint — override only to replay recorded fixtures",
-          "name": "google_token_url",
-          "required": false,
-          "secret": false,
-          "type": "string"
-        },
-        {
-          "default": "LAST_30_DAYS",
-          "description": "Rolling window the performance streams re-read each run (conversions settle for days)",
-          "name": "performance_window",
+          "description": "OAuth 2.0 token endpoint",
+          "name": "google_token_uri",
           "required": false,
           "secret": false,
           "type": "string"
         }
       ],
       "source_type": "rest",
-      "stable": 1,
+      "stable": 2,
       "streams": [
+        {
+          "description": null,
+          "name": "customer",
+          "primary_keys": [
+            "customer_id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
         {
           "description": null,
           "name": "campaigns",
           "primary_keys": [
+            "customer_id",
             "campaign_id"
           ],
           "write": [
@@ -2572,6 +3020,7 @@
           "description": null,
           "name": "ad_groups",
           "primary_keys": [
+            "customer_id",
             "ad_group_id"
           ],
           "write": [
@@ -2583,6 +3032,7 @@
           "description": null,
           "name": "ads",
           "primary_keys": [
+            "customer_id",
             "ad_group_id",
             "ad_group_ad_ad_id"
           ],
@@ -2593,54 +3043,100 @@
         },
         {
           "description": null,
+          "name": "keywords",
+          "primary_keys": [
+            "customer_id",
+            "ad_group_id",
+            "ad_group_criterion_criterion_id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
           "name": "campaign_performance",
           "primary_keys": [
-            "segments_date",
+            "customer_id",
+            "date",
             "campaign_id"
           ],
           "write": [
             "upsert",
-            "overwrite"
+            "append"
           ]
         },
         {
           "description": null,
           "name": "ad_group_performance",
           "primary_keys": [
-            "segments_date",
+            "customer_id",
+            "date",
             "ad_group_id"
           ],
           "write": [
             "upsert",
-            "overwrite"
+            "append"
+          ]
+        },
+        {
+          "description": null,
+          "name": "ad_performance",
+          "primary_keys": [
+            "customer_id",
+            "date",
+            "ad_group_id",
+            "ad_group_ad_ad_id"
+          ],
+          "write": [
+            "upsert",
+            "append"
           ]
         },
         {
           "description": null,
           "name": "keyword_performance",
           "primary_keys": [
-            "segments_date",
+            "customer_id",
+            "date",
             "ad_group_id",
             "ad_group_criterion_criterion_id"
           ],
           "write": [
             "upsert",
-            "overwrite"
+            "append"
+          ]
+        },
+        {
+          "description": null,
+          "name": "search_terms",
+          "primary_keys": [
+            "customer_id",
+            "date",
+            "ad_group_id",
+            "search_term_view_search_term",
+            "keyword_info_text",
+            "keyword_info_match_type"
+          ],
+          "write": [
+            "upsert",
+            "append"
           ]
         }
       ],
       "tags": [
-        "advertising",
         "marketing",
-        "saas"
+        "advertising",
+        "google"
       ],
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
           "templates": 16
         },
-        "stable_since": "2026-09-27",
-        "updated": "2026-09-27"
+        "stable_since": "2026-09-28",
+        "updated": "2026-09-28"
       },
       "versions": [
         {
@@ -2648,144 +3144,185 @@
           "date": "2026-09-27T17:02:01+05:30",
           "pr": null,
           "version": 1
+        },
+        {
+          "commit": "da75cc0c44f2e1dde2508801b52fc8360c74c2ec",
+          "date": "2026-09-28T10:12:57+05:30",
+          "pr": null,
+          "version": 2
         }
       ]
     },
     {
-      "description": "Google Analytics 4 — daily traffic, pages, events, devices, geography and acquisition reports over a rolling window (GA4 Data API v1beta)",
-      "docs": "https://developers.google.com/analytics/devguides/reporting/data/v1",
+      "description": "Google Analytics 4 Data API v1beta (runReport) — daily traffic, sources, landing pages, pages, events, devices and geography",
+      "docs": "https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/properties/runReport",
       "file": "source-templates/faucet-hq/google-analytics-4.yaml",
       "id": "faucet-hq/google-analytics-4",
       "live_versions": [
-        1
+        1,
+        2
       ],
       "name": "google-analytics-4",
-      "newest": 1,
+      "newest": 2,
       "official": true,
       "owner": "faucet-hq",
       "params": [
         {
           "default": "https://analyticsdata.googleapis.com",
-          "description": "API root — override only to replay recorded fixtures",
-          "name": "api_base_url",
+          "description": "Data API root",
+          "name": "ga4_api_url",
           "required": false,
           "secret": false,
           "type": "string"
         },
         {
+          "default": 3,
+          "description": "Days re-read before the bookmark on every run — GA4 keeps processing a day for 24-48 hours",
+          "name": "ga4_lookback_days",
+          "required": false,
+          "secret": false,
+          "type": "int"
+        },
+        {
+          "default": 100000,
+          "description": "Rows per runReport page (1-250000)",
+          "name": "ga4_page_size",
+          "required": false,
+          "secret": false,
+          "type": "int"
+        },
+        {
           "default": null,
-          "description": "Numeric GA4 property id (Admin → Property settings), not the G- measurement id",
+          "description": "Numeric GA4 property id (Admin → Property details)",
           "name": "ga4_property_id",
           "required": true,
           "secret": false,
           "type": "string"
         },
         {
-          "default": null,
-          "description": "OAuth client id (Google Cloud console)",
-          "name": "google_client_id",
-          "required": true,
+          "default": "2024-01-01",
+          "description": "First day (YYYY-MM-DD) read when no bookmark is stored",
+          "name": "ga4_start_date",
+          "required": false,
           "secret": false,
           "type": "string"
         },
         {
-          "default": null,
-          "description": "OAuth client secret",
-          "name": "google_client_secret",
-          "required": true,
-          "secret": true,
-          "type": "string"
+          "default": 30,
+          "description": "Days per runReport request window",
+          "name": "ga4_window_days",
+          "required": false,
+          "secret": false,
+          "type": "int"
         },
         {
           "default": null,
-          "description": "OAuth refresh token with the https://www.googleapis.com/auth/analytics.readonly scope",
-          "name": "google_refresh_token",
+          "description": "Service-account key JSON, inline. Add the service account's email to the property as a Viewer",
+          "name": "google_sa_key",
           "required": true,
           "secret": true,
           "type": "string"
         },
         {
           "default": "https://oauth2.googleapis.com/token",
-          "description": "OAuth token endpoint — override only to replay recorded fixtures",
-          "name": "google_token_url",
-          "required": false,
-          "secret": false,
-          "type": "string"
-        },
-        {
-          "default": 100000,
-          "description": "Rows per runReport request (GA4 allows up to 250000)",
-          "name": "report_page_size",
-          "required": false,
-          "secret": false,
-          "type": "int"
-        },
-        {
-          "default": "30daysAgo",
-          "description": "Start of the rolling window every stream re-reads each run (GA4 keeps processing data for up to 72 hours)",
-          "name": "report_window",
+          "description": "OAuth 2.0 token endpoint the service-account assertion is exchanged at",
+          "name": "google_token_uri",
           "required": false,
           "secret": false,
           "type": "string"
         }
       ],
       "source_type": "rest",
-      "stable": 1,
+      "stable": 2,
       "streams": [
         {
           "description": null,
-          "name": "daily_traffic",
+          "name": "traffic_daily",
           "primary_keys": [
+            "property_id",
+            "date"
+          ],
+          "write": [
+            "upsert",
+            "append"
+          ]
+        },
+        {
+          "description": null,
+          "name": "traffic_sources",
+          "primary_keys": [
+            "property_id",
             "date",
+            "session_source",
+            "session_medium",
+            "session_campaign_name",
             "session_default_channel_group"
           ],
           "write": [
             "upsert",
-            "overwrite"
+            "append"
+          ]
+        },
+        {
+          "description": null,
+          "name": "landing_pages",
+          "primary_keys": [
+            "property_id",
+            "date",
+            "landing_page"
+          ],
+          "write": [
+            "upsert",
+            "append"
           ]
         },
         {
           "description": null,
           "name": "pages",
           "primary_keys": [
+            "property_id",
             "date",
             "host_name",
             "page_path"
           ],
           "write": [
             "upsert",
-            "overwrite"
+            "append"
           ]
         },
         {
           "description": null,
           "name": "events",
           "primary_keys": [
+            "property_id",
             "date",
             "event_name"
           ],
           "write": [
             "upsert",
-            "overwrite"
+            "append"
           ]
         },
         {
           "description": null,
           "name": "devices",
           "primary_keys": [
+            "property_id",
             "date",
             "device_category",
-            "operating_system"
+            "operating_system",
+            "browser"
           ],
           "write": [
             "upsert",
-            "overwrite"
+            "append"
           ]
         },
         {
           "description": null,
           "name": "geography",
           "primary_keys": [
+            "property_id",
             "date",
             "country",
             "region",
@@ -2793,28 +3330,14 @@
           ],
           "write": [
             "upsert",
-            "overwrite"
-          ]
-        },
-        {
-          "description": null,
-          "name": "acquisition",
-          "primary_keys": [
-            "date",
-            "session_source",
-            "session_medium",
-            "session_campaign_name"
-          ],
-          "write": [
-            "upsert",
-            "overwrite"
+            "append"
           ]
         }
       ],
       "tags": [
         "analytics",
         "marketing",
-        "saas"
+        "google"
       ],
       "trust": {
         "compatible_sinks": 4,
@@ -2830,81 +3353,64 @@
           "date": "2026-09-28T02:58:31+05:30",
           "pr": null,
           "version": 1
+        },
+        {
+          "commit": "a5362f162e4d2502a418c3a278a56bb646d7ed32",
+          "date": "2026-09-28T09:35:28+05:30",
+          "pr": null,
+          "version": 2
         }
       ]
     },
     {
-      "description": "HubSpot CRM — contacts, companies, deals, tickets, products, owners and deal pipelines (CRM v3), properties lifted to columns",
-      "docs": "https://developers.hubspot.com/docs/api/crm/understanding-the-crm",
+      "description": "HubSpot CRM — contacts, companies, deals, tickets (incremental on last-modified, archived records as delete markers), owners, deal and ticket pipelines",
+      "docs": "https://developers.hubspot.com/docs/api-reference/latest/crm",
       "file": "source-templates/faucet-hq/hubspot.yaml",
       "id": "faucet-hq/hubspot",
       "live_versions": [
-        1
+        1,
+        2
       ],
       "name": "hubspot",
-      "newest": 1,
+      "newest": 2,
       "official": true,
       "owner": "faucet-hq",
       "params": [
         {
           "default": "https://api.hubapi.com",
-          "description": "API root — override only to replay recorded fixtures",
+          "description": "API root; override only for replay tests",
           "name": "api_base_url",
           "required": false,
           "secret": false,
           "type": "string"
         },
         {
-          "default": "name,domain,industry,city,state,country,numberofemployees,annualrevenue,lifecyclestage,hubspot_owner_id,createdate,hs_lastmodifieddate",
-          "description": "Comma-separated company properties to read",
-          "name": "company_properties",
-          "required": false,
-          "secret": false,
-          "type": "string"
-        },
-        {
-          "default": "email,firstname,lastname,phone,company,jobtitle,lifecyclestage,hs_lead_status,hubspot_owner_id,createdate,lastmodifieddate",
-          "description": "Comma-separated contact properties to read",
-          "name": "contact_properties",
-          "required": false,
-          "secret": false,
-          "type": "string"
-        },
-        {
-          "default": "dealname,amount,dealstage,pipeline,closedate,dealtype,hubspot_owner_id,hs_is_closed_won,createdate,hs_lastmodifieddate",
-          "description": "Comma-separated deal properties to read",
-          "name": "deal_properties",
-          "required": false,
-          "secret": false,
-          "type": "string"
-        },
-        {
           "default": null,
-          "description": "Private app access token (Settings → Integrations → Private Apps)",
-          "name": "hubspot_token",
+          "description": "Access token of a private app (or app static token) holding the read scopes listed in hubspot.md",
+          "name": "hubspot_access_token",
           "required": true,
           "secret": true,
           "type": "string"
         },
         {
-          "default": "name,description,price,hs_sku,hs_recurring_billing_period,createdate,hs_lastmodifieddate",
-          "description": "Comma-separated product properties to read",
-          "name": "product_properties",
+          "default": 200,
+          "description": "Records per search request (the search API's maximum is 200)",
+          "name": "hubspot_page_size",
           "required": false,
           "secret": false,
-          "type": "string"
+          "type": "int"
         },
         {
-          "default": "subject,content,hs_pipeline,hs_pipeline_stage,hs_ticket_priority,hs_ticket_category,hubspot_owner_id,closed_date,createdate,hs_lastmodifieddate",
-          "description": "Comma-separated ticket properties to read",
-          "name": "ticket_properties",
+          "default": "1970-01-01T00:00:00Z",
+          "description": "RFC 3339 lower bound on last-modified for the first run (default: every record)",
+          "name": "hubspot_start_date",
           "required": false,
           "secret": false,
           "type": "string"
         }
       ],
       "source_type": "rest",
-      "stable": 1,
+      "stable": 2,
       "streams": [
         {
           "description": null,
@@ -2913,8 +3419,8 @@
             "id"
           ],
           "write": [
-            "overwrite",
-            "upsert"
+            "upsert",
+            "overwrite"
           ]
         },
         {
@@ -2924,8 +3430,8 @@
             "id"
           ],
           "write": [
-            "overwrite",
-            "upsert"
+            "upsert",
+            "overwrite"
           ]
         },
         {
@@ -2935,13 +3441,24 @@
             "id"
           ],
           "write": [
-            "overwrite",
-            "upsert"
+            "upsert",
+            "overwrite"
           ]
         },
         {
           "description": null,
           "name": "tickets",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "contacts_archived",
           "primary_keys": [
             "id"
           ],
@@ -2952,7 +3469,29 @@
         },
         {
           "description": null,
-          "name": "products",
+          "name": "companies_archived",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "deals_archived",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "tickets_archived",
           "primary_keys": [
             "id"
           ],
@@ -2982,21 +3521,31 @@
             "overwrite",
             "upsert"
           ]
+        },
+        {
+          "description": null,
+          "name": "ticket_pipelines",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
         }
       ],
       "tags": [
         "crm",
         "marketing",
-        "sales",
-        "saas"
+        "sales"
       ],
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
           "templates": 16
         },
-        "stable_since": "2026-09-27",
-        "updated": "2026-09-27"
+        "stable_since": "2026-09-28",
+        "updated": "2026-09-28"
       },
       "versions": [
         {
@@ -3004,38 +3553,29 @@
           "date": "2026-09-27T16:53:11+05:30",
           "pr": null,
           "version": 1
+        },
+        {
+          "commit": "8a5e9bc21053e8db5fbd6cdadb176e54c8522517",
+          "date": "2026-09-28T11:41:29+05:30",
+          "pr": null,
+          "version": 2
         }
       ]
     },
     {
-      "description": "Jira Cloud — issues (JQL enhanced search), projects, users, fields, statuses and issue types (REST API v3)",
+      "description": "Jira Cloud — issues (all fields), projects, users, fields, statuses, issue types, priorities, resolutions",
       "docs": "https://developer.atlassian.com/cloud/jira/platform/rest/v3/",
       "file": "source-templates/faucet-hq/jira.yaml",
       "id": "faucet-hq/jira",
       "live_versions": [
-        1
+        1,
+        2
       ],
       "name": "jira",
-      "newest": 1,
+      "newest": 2,
       "official": true,
       "owner": "faucet-hq",
       "params": [
-        {
-          "default": "*navigable",
-          "description": "Comma-separated issue fields to return (`*navigable`, `*all`, or a list)",
-          "name": "issue_fields",
-          "required": false,
-          "secret": false,
-          "type": "string"
-        },
-        {
-          "default": "updated >= \"2000-01-01\" ORDER BY updated ASC",
-          "description": "JQL selecting the issues to sync (must be bounded — the enhanced search rejects an unrestricted query)",
-          "name": "issues_jql",
-          "required": false,
-          "secret": false,
-          "type": "string"
-        },
         {
           "default": null,
           "description": "Atlassian API token (id.atlassian.com → Security → API tokens)",
@@ -3054,7 +3594,7 @@
         },
         {
           "default": null,
-          "description": "Your Jira Cloud site, e.g. https://acme.atlassian.net",
+          "description": "Your site's root, https://<site>.atlassian.net",
           "name": "jira_url",
           "required": true,
           "secret": false,
@@ -3062,7 +3602,7 @@
         }
       ],
       "source_type": "rest",
-      "stable": 1,
+      "stable": 2,
       "streams": [
         {
           "description": null,
@@ -3088,9 +3628,31 @@
         },
         {
           "description": null,
+          "name": "priorities",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "resolutions",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
           "name": "users",
           "primary_keys": [
-            "account_id"
+            "accountId"
           ],
           "write": [
             "overwrite",
@@ -3132,17 +3694,17 @@
         }
       ],
       "tags": [
-        "engineering",
         "project-management",
-        "saas"
+        "issue-tracking",
+        "atlassian"
       ],
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
           "templates": 16
         },
-        "stable_since": "2026-09-27",
-        "updated": "2026-09-27"
+        "stable_since": "2026-09-28",
+        "updated": "2026-09-28"
       },
       "versions": [
         {
@@ -3150,41 +3712,32 @@
           "date": "2026-09-27T16:54:28+05:30",
           "pr": null,
           "version": 1
+        },
+        {
+          "commit": "595c92aa11c5c8756cd2164928ffeb76d2a0d636",
+          "date": "2026-09-28T10:19:58+05:30",
+          "pr": null,
+          "version": 2
         }
       ]
     },
     {
-      "description": "Meta Ads — ad account, campaigns, ad sets, ads, creatives and daily ad-level insights via async report runs (Marketing API v24.0)",
+      "description": "Meta Marketing API v25.0 — ad account, campaigns, ad sets, ads, creatives and daily Insights (async report runs)",
       "docs": "https://developers.facebook.com/docs/marketing-api",
       "file": "source-templates/faucet-hq/meta-ads.yaml",
       "id": "faucet-hq/meta-ads",
       "live_versions": [
-        1
+        1,
+        2
       ],
       "name": "meta-ads",
-      "newest": 1,
+      "newest": 2,
       "official": true,
       "owner": "faucet-hq",
       "params": [
         {
-          "default": "https://graph.facebook.com",
-          "description": "API root — override only to replay recorded fixtures",
-          "name": "api_base_url",
-          "required": false,
-          "secret": false,
-          "type": "string"
-        },
-        {
-          "default": "last_28d",
-          "description": "Rolling date preset the insights stream re-reads each run (attribution settles for up to 28 days)",
-          "name": "insights_window",
-          "required": false,
-          "secret": false,
-          "type": "string"
-        },
-        {
           "default": null,
-          "description": "System-user (or long-lived user) access token with ads_read",
+          "description": "System-user (or user) access token with the ads_read permission on the ad account",
           "name": "meta_access_token",
           "required": true,
           "secret": true,
@@ -3192,15 +3745,31 @@
         },
         {
           "default": null,
-          "description": "Ad account id, digits only (without the act_ prefix)",
+          "description": "Ad account id, digits only (the part after act_)",
           "name": "meta_ad_account_id",
           "required": true,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": "https://graph.facebook.com",
+          "description": "Graph API root",
+          "name": "meta_graph_url",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": "last_28d",
+          "description": "Insights window re-read every run; Insights stop changing 28 days after they are reported, so last_28d re-reads every day that can still move",
+          "name": "meta_insights_date_preset",
+          "required": false,
           "secret": false,
           "type": "string"
         }
       ],
       "source_type": "rest",
-      "stable": 1,
+      "stable": 2,
       "streams": [
         {
           "description": null,
@@ -3259,6 +3828,18 @@
         },
         {
           "description": null,
+          "name": "campaign_insights",
+          "primary_keys": [
+            "campaign_id",
+            "date_start"
+          ],
+          "write": [
+            "upsert",
+            "append"
+          ]
+        },
+        {
+          "description": null,
           "name": "ad_insights",
           "primary_keys": [
             "ad_id",
@@ -3266,23 +3847,64 @@
           ],
           "write": [
             "upsert",
-            "overwrite"
+            "append"
+          ]
+        },
+        {
+          "description": null,
+          "name": "ad_insights_age_gender",
+          "primary_keys": [
+            "ad_id",
+            "date_start",
+            "age",
+            "gender"
+          ],
+          "write": [
+            "upsert",
+            "append"
+          ]
+        },
+        {
+          "description": null,
+          "name": "ad_insights_country",
+          "primary_keys": [
+            "ad_id",
+            "date_start",
+            "country"
+          ],
+          "write": [
+            "upsert",
+            "append"
+          ]
+        },
+        {
+          "description": null,
+          "name": "ad_insights_platform",
+          "primary_keys": [
+            "ad_id",
+            "date_start",
+            "publisher_platform",
+            "platform_position"
+          ],
+          "write": [
+            "upsert",
+            "append"
           ]
         }
       ],
       "tags": [
-        "advertising",
         "marketing",
-        "social",
-        "saas"
+        "advertising",
+        "meta",
+        "facebook"
       ],
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
           "templates": 16
         },
-        "stable_since": "2026-09-27",
-        "updated": "2026-09-27"
+        "stable_since": "2026-09-28",
+        "updated": "2026-09-28"
       },
       "versions": [
         {
@@ -3290,25 +3912,41 @@
           "date": "2026-09-27T17:03:47+05:30",
           "pr": null,
           "version": 1
+        },
+        {
+          "commit": "b1519587b77ec75c10c0e502d9bc1d0a66b16406",
+          "date": "2026-09-28T10:52:52+05:30",
+          "pr": null,
+          "version": 2
         }
       ]
     },
     {
-      "description": "Salesforce — accounts, contacts, leads, opportunities, users, campaigns and tasks via Bulk API 2.0 (v62.0), incremental on SystemModstamp, soft deletes included",
+      "description": "Salesforce — accounts, contacts, leads, opportunities, line items, users, campaigns, campaign members, cases, tasks and events via Bulk API 2.0, incremental on SystemModstamp with soft deletes",
       "docs": "https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/queries.htm",
       "file": "source-templates/faucet-hq/salesforce.yaml",
       "id": "faucet-hq/salesforce",
       "live_versions": [
-        1
+        1,
+        2,
+        3
       ],
       "name": "salesforce",
-      "newest": 1,
+      "newest": 3,
       "official": true,
       "owner": "faucet-hq",
       "params": [
         {
+          "default": "67.0",
+          "description": "REST API version the jobs are created with",
+          "name": "salesforce_api_version",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
           "default": null,
-          "description": "Connected app consumer key",
+          "description": "Consumer key of an external client app (or connected app) with the client credentials flow enabled",
           "name": "salesforce_client_id",
           "required": true,
           "secret": false,
@@ -3316,7 +3954,7 @@
         },
         {
           "default": null,
-          "description": "Connected app consumer secret",
+          "description": "Consumer secret of that app",
           "name": "salesforce_client_secret",
           "required": true,
           "secret": true,
@@ -3324,31 +3962,15 @@
         },
         {
           "default": null,
-          "description": "Your org's My Domain URL, e.g. https://acme.my.salesforce.com",
-          "name": "salesforce_instance_url",
+          "description": "Your org's My Domain URL, https://<mydomain>.my.salesforce.com",
+          "name": "salesforce_url",
           "required": true,
           "secret": false,
-          "type": "string"
-        },
-        {
-          "default": "https://login.salesforce.com",
-          "description": "OAuth host — https://test.salesforce.com for a sandbox",
-          "name": "salesforce_login_url",
-          "required": false,
-          "secret": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "OAuth refresh token for the integration user (scopes: api, refresh_token)",
-          "name": "salesforce_refresh_token",
-          "required": true,
-          "secret": true,
           "type": "string"
         }
       ],
       "source_type": "rest",
-      "stable": 1,
+      "stable": 3,
       "streams": [
         {
           "description": null,
@@ -3396,6 +4018,17 @@
         },
         {
           "description": null,
+          "name": "opportunity_line_items",
+          "primary_keys": [
+            "Id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
           "name": "users",
           "primary_keys": [
             "Id"
@@ -3418,7 +4051,40 @@
         },
         {
           "description": null,
+          "name": "campaign_members",
+          "primary_keys": [
+            "Id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "cases",
+          "primary_keys": [
+            "Id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
           "name": "tasks",
+          "primary_keys": [
+            "Id"
+          ],
+          "write": [
+            "upsert",
+            "overwrite"
+          ]
+        },
+        {
+          "description": null,
+          "name": "events",
           "primary_keys": [
             "Id"
           ],
@@ -3431,15 +4097,15 @@
       "tags": [
         "crm",
         "sales",
-        "saas"
+        "service"
       ],
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
           "templates": 16
         },
-        "stable_since": "2026-09-27",
-        "updated": "2026-09-27"
+        "stable_since": "2026-09-28",
+        "updated": "2026-09-28"
       },
       "versions": [
         {
@@ -3447,49 +4113,70 @@
           "date": "2026-09-27T16:59:46+05:30",
           "pr": null,
           "version": 1
+        },
+        {
+          "commit": "461176eee0a957db74240e3335498d982c826b67",
+          "date": "2026-09-28T12:15:44+05:30",
+          "pr": null,
+          "version": 2
+        },
+        {
+          "commit": "442912ac41853c887bdf4d8ba07316da3fc25531",
+          "date": "2026-09-28T12:20:28+05:30",
+          "pr": null,
+          "version": 3
         }
       ]
     },
     {
-      "description": "Shopify — orders, customers, products (incremental on updated_at), custom and smart collections and locations (Admin REST API 2025-07)",
-      "docs": "https://shopify.dev/docs/api/admin-rest",
+      "description": "Shopify GraphQL Admin API (2026-07) — orders, customers, products, variants, collections, locations and product deletions",
+      "docs": "https://shopify.dev/docs/api/admin-graphql",
       "file": "source-templates/faucet-hq/shopify.yaml",
       "id": "faucet-hq/shopify",
       "live_versions": [
-        1
+        1,
+        2
       ],
       "name": "shopify",
-      "newest": 1,
+      "newest": 2,
       "official": true,
       "owner": "faucet-hq",
       "params": [
         {
           "default": null,
-          "description": "Custom app Admin API access token (shpat_…)",
-          "name": "shopify_access_token",
+          "description": "Client id of an app from the Dev Dashboard installed on the store (same organization)",
+          "name": "shopify_client_id",
           "required": true,
           "secret": true,
           "type": "string"
         },
         {
           "default": null,
-          "description": "Store admin root, e.g. https://acme.myshopify.com",
-          "name": "shopify_store_url",
+          "description": "Client secret of that app",
+          "name": "shopify_client_secret",
+          "required": true,
+          "secret": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The store's admin URL, https://<store>.myshopify.com",
+          "name": "shopify_shop_url",
           "required": true,
           "secret": false,
           "type": "string"
         },
         {
-          "default": "2000-01-01T00:00:00Z",
-          "description": "Earliest update to read on the first run (RFC 3339)",
-          "name": "start_date",
+          "default": "2006-01-01T00:00:00Z",
+          "description": "ISO 8601 timestamp the incremental streams start from on their first run",
+          "name": "shopify_start_date",
           "required": false,
           "secret": false,
           "type": "string"
         }
       ],
-      "source_type": "rest",
-      "stable": 1,
+      "source_type": "graphql",
+      "stable": 2,
       "streams": [
         {
           "description": null,
@@ -3499,7 +4186,7 @@
           ],
           "write": [
             "upsert",
-            "overwrite"
+            "append"
           ]
         },
         {
@@ -3510,7 +4197,7 @@
           ],
           "write": [
             "upsert",
-            "overwrite"
+            "append"
           ]
         },
         {
@@ -3521,23 +4208,23 @@
           ],
           "write": [
             "upsert",
-            "overwrite"
+            "append"
           ]
         },
         {
           "description": null,
-          "name": "custom_collections",
+          "name": "product_variants",
           "primary_keys": [
             "id"
           ],
           "write": [
-            "overwrite",
-            "upsert"
+            "upsert",
+            "append"
           ]
         },
         {
           "description": null,
-          "name": "smart_collections",
+          "name": "collections",
           "primary_keys": [
             "id"
           ],
@@ -3556,20 +4243,30 @@
             "overwrite",
             "upsert"
           ]
+        },
+        {
+          "description": null,
+          "name": "deleted_products",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "upsert",
+            "append"
+          ]
         }
       ],
       "tags": [
         "ecommerce",
-        "retail",
-        "saas"
+        "shopify"
       ],
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
           "templates": 16
         },
-        "stable_since": "2026-09-27",
-        "updated": "2026-09-27"
+        "stable_since": "2026-09-28",
+        "updated": "2026-09-28"
       },
       "versions": [
         {
@@ -3577,25 +4274,33 @@
           "date": "2026-09-27T16:56:23+05:30",
           "pr": null,
           "version": 1
+        },
+        {
+          "commit": "da0be6935219b064e2fcfe89e81904a6a21a52fe",
+          "date": "2026-09-28T12:24:15+05:30",
+          "pr": null,
+          "version": 2
         }
       ]
     },
     {
-      "description": "Stripe — customers, subscriptions, invoices, charges, refunds, payment intents, products, prices, payouts, balance transactions and events",
+      "description": "Stripe — customers, subscriptions, invoices, charges, refunds, payment intents, products, prices, payouts, disputes, balance transactions and events",
       "docs": "https://docs.stripe.com/api",
       "file": "source-templates/faucet-hq/stripe.yaml",
       "id": "faucet-hq/stripe",
       "live_versions": [
-        1
+        1,
+        2,
+        3
       ],
       "name": "stripe",
-      "newest": 1,
+      "newest": 3,
       "official": true,
       "owner": "faucet-hq",
       "params": [
         {
           "default": "https://api.stripe.com",
-          "description": "API root — override only to replay recorded fixtures",
+          "description": "API root; override only for replay tests",
           "name": "api_base_url",
           "required": false,
           "secret": false,
@@ -3603,15 +4308,31 @@
         },
         {
           "default": null,
-          "description": "Secret or restricted API key (read-only restricted key recommended)",
+          "description": "Restricted API key (rk_live_…) with Read access to the resources below, or a secret key (sk_live_…)",
           "name": "stripe_api_key",
           "required": true,
           "secret": true,
           "type": "string"
+        },
+        {
+          "default": "2026-08-26.dahlia",
+          "description": "Stripe-Version header pinning the response shape (https://docs.stripe.com/api/versioning)",
+          "name": "stripe_api_version",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
+          "default": "2011-01-01T00:00:00Z",
+          "description": "RFC 3339 lower bound for the first run of the created-windowed streams (balance_transactions, events)",
+          "name": "stripe_start_date",
+          "required": false,
+          "secret": false,
+          "type": "string"
         }
       ],
       "source_type": "rest",
-      "stable": 1,
+      "stable": 3,
       "streams": [
         {
           "description": null,
@@ -3714,6 +4435,17 @@
         },
         {
           "description": null,
+          "name": "disputes",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
           "name": "balance_transactions",
           "primary_keys": [
             "id"
@@ -3738,16 +4470,15 @@
       "tags": [
         "payments",
         "billing",
-        "finance",
-        "saas"
+        "finance"
       ],
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
           "templates": 16
         },
-        "stable_since": "2026-09-27",
-        "updated": "2026-09-27"
+        "stable_since": "2026-09-28",
+        "updated": "2026-09-28"
       },
       "versions": [
         {
@@ -3755,33 +4486,38 @@
           "date": "2026-09-27T16:47:33+05:30",
           "pr": null,
           "version": 1
+        },
+        {
+          "commit": "afc6bf2283784533d6970452040c191205d58ff2",
+          "date": "2026-09-28T08:38:14+05:30",
+          "pr": null,
+          "version": 2
+        },
+        {
+          "commit": "7cd1baaa46e15778a300e3301260db17cb4c5cbc",
+          "date": "2026-09-28T09:25:49+05:30",
+          "pr": null,
+          "version": 3
         }
       ]
     },
     {
-      "description": "Zendesk Support — tickets, users, organizations (incremental exports), groups, ticket metrics, satisfaction ratings and ticket fields",
+      "description": "Zendesk Support — tickets and users (incremental exports, deletes included), organizations, groups, ticket fields, ticket metrics, satisfaction ratings",
       "docs": "https://developer.zendesk.com/api-reference/",
       "file": "source-templates/faucet-hq/zendesk.yaml",
       "id": "faucet-hq/zendesk",
       "live_versions": [
-        1
+        1,
+        2
       ],
       "name": "zendesk",
-      "newest": 1,
+      "newest": 2,
       "official": true,
       "owner": "faucet-hq",
       "params": [
         {
-          "default": "2010-01-01T00:00:00Z",
-          "description": "Earliest update to export on the first run (RFC 3339)",
-          "name": "start_date",
-          "required": false,
-          "secret": false,
-          "type": "string"
-        },
-        {
           "default": null,
-          "description": "Zendesk API token (Admin Center → Apps and integrations → Zendesk API)",
+          "description": "API token (Admin Center → Apps and integrations → Zendesk API)",
           "name": "zendesk_api_token",
           "required": true,
           "secret": true,
@@ -3789,15 +4525,23 @@
         },
         {
           "default": null,
-          "description": "Email of the agent/admin the API token belongs to",
+          "description": "Email of the admin whose API token is used",
           "name": "zendesk_email",
           "required": true,
           "secret": false,
           "type": "string"
         },
         {
+          "default": "946684800",
+          "description": "Unix time (seconds) the first incremental export starts from (default 2000-01-01, i.e. everything)",
+          "name": "zendesk_start_time",
+          "required": false,
+          "secret": false,
+          "type": "string"
+        },
+        {
           "default": null,
-          "description": "Your Zendesk root, e.g. https://acme.zendesk.com",
+          "description": "Your account's API root, https://<subdomain>.zendesk.com",
           "name": "zendesk_url",
           "required": true,
           "secret": false,
@@ -3805,7 +4549,7 @@
         }
       ],
       "source_type": "rest",
-      "stable": 1,
+      "stable": 2,
       "streams": [
         {
           "description": null,
@@ -3836,24 +4580,24 @@
             "id"
           ],
           "write": [
-            "upsert",
-            "overwrite"
-          ]
-        },
-        {
-          "description": null,
-          "name": "satisfaction_ratings",
-          "primary_keys": [
-            "id"
-          ],
-          "write": [
-            "upsert",
-            "overwrite"
+            "overwrite",
+            "upsert"
           ]
         },
         {
           "description": null,
           "name": "groups",
+          "primary_keys": [
+            "id"
+          ],
+          "write": [
+            "overwrite",
+            "upsert"
+          ]
+        },
+        {
+          "description": null,
+          "name": "ticket_fields",
           "primary_keys": [
             "id"
           ],
@@ -3875,7 +4619,7 @@
         },
         {
           "description": null,
-          "name": "ticket_fields",
+          "name": "satisfaction_ratings",
           "primary_keys": [
             "id"
           ],
@@ -3887,16 +4631,16 @@
       ],
       "tags": [
         "support",
-        "customer-service",
-        "saas"
+        "helpdesk",
+        "crm"
       ],
       "trust": {
         "compatible_sinks": 4,
         "publisher": {
           "templates": 16
         },
-        "stable_since": "2026-09-27",
-        "updated": "2026-09-27"
+        "stable_since": "2026-09-28",
+        "updated": "2026-09-28"
       },
       "versions": [
         {
@@ -3904,6 +4648,12 @@
           "date": "2026-09-27T16:51:27+05:30",
           "pr": null,
           "version": 1
+        },
+        {
+          "commit": "584f5545d67843f6e9b4808ba9d8c6184c6b4c22",
+          "date": "2026-09-28T09:32:52+05:30",
+          "pr": null,
+          "version": 2
         }
       ]
     }
