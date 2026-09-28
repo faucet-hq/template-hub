@@ -1,0 +1,132 @@
+# Recorded Salesforce Bulk API 2.0 exchanges, rebuilt from the documented request and
+# response shapes (https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/)
+# with synthetic values. Run 1 exports everything; run 2 resumes with WHERE SystemModstamp > <bookmark>.
+runs: 2
+overlay: ../../state-overlay.yaml
+params:
+  salesforce_url: '{replay}'
+  salesforce_client_id: 3MVGreplay
+  salesforce_client_secret: replay-secret
+exchanges:
+- match:
+    method: POST
+    path: /services/oauth2/token
+    form:
+      grant_type: client_credentials
+  response:
+    body:
+      access_token: 00Dreplay!token
+      instance_url: '{replay}'
+      id: '{replay}/id/00Dxx0000000001/005xx0000000001'
+      token_type: Bearer
+      issued_at: '1767340800000'
+      signature: cmVwbGF5
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: &id001
+      authorization: Bearer 00Dreplay!token
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Account
+  response:
+    body:
+      id: 750xx0000000001AAA
+      operation: queryAll
+      object: Account
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000001AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000001AAA
+      operation: queryAll
+      object: Account
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000001AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: LOC1
+      Sforce-NumberOfRecords: '2'
+      Content-Type: text/csv
+    text: 'Id,Name,Type,ParentId,BillingStreet,BillingCity,BillingState,BillingPostalCode,BillingCountry,ShippingCity,ShippingState,ShippingCountry,Phone,Website,Industry,AnnualRevenue,NumberOfEmployees,OwnerId,AccountSource,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      001xx0000000001AAA,"Replay One",Customer - Direct,,1 Replay Way,Springfield,IL,62701,United States,,,,555-0100,https://replay.example.test,Technology,1250000,42,005xx0000000001AAA,Web,2026-01-01T09:00:00.000+0000,005xx0000000001AAA,2026-01-02T10:00:00.000+0000,005xx0000000001AAA,2026-01-02T10:00:00.000+0000,false
+
+      001xx0000000002AAA,"Replay, Two",Customer - Direct,,1 Replay Way,Springfield,IL,62701,United States,,,,555-0100,https://replay.example.test,Technology,1250000,42,005xx0000000001AAA,Web,2026-01-01T09:00:00.000+0000,005xx0000000001AAA,2026-01-02T11:00:00.000+0000,005xx0000000001AAA,2026-01-02T11:00:00.000+0000,false
+
+      '
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000001AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+      locator: LOC1
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '1'
+      Content-Type: text/csv
+    text: 'Id,Name,Type,ParentId,BillingStreet,BillingCity,BillingState,BillingPostalCode,BillingCountry,ShippingCity,ShippingState,ShippingCountry,Phone,Website,Industry,AnnualRevenue,NumberOfEmployees,OwnerId,AccountSource,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      001xx0000000003AAA,"Replay Three",Customer - Direct,,1 Replay Way,Springfield,IL,62701,United States,,,,555-0100,https://replay.example.test,Technology,1250000,42,005xx0000000001AAA,Web,2026-01-01T09:00:00.000+0000,005xx0000000001AAA,2026-01-02T12:00:00.000+0000,005xx0000000001AAA,2026-01-02T12:00:00.000+0000,true
+
+      '
+- match:
+    method: POST
+    path: /services/data/v67.0/jobs/query
+    headers: *id001
+    body:
+      operation: queryAll
+    body_regex:
+      query: SELECT Id, .* FROM Account WHERE SystemModstamp > \d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ
+  response:
+    body:
+      id: 750xx0000000002AAA
+      operation: queryAll
+      object: Account
+      state: UploadComplete
+      contentType: CSV
+      apiVersion: 67.0
+      lineEnding: LF
+      columnDelimiter: COMMA
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000002AAA
+    headers: *id001
+  response:
+    body:
+      id: 750xx0000000002AAA
+      operation: queryAll
+      object: Account
+      state: JobComplete
+      numberRecordsProcessed: 0
+      retries: 0
+- match:
+    path: /services/data/v67.0/jobs/query/750xx0000000002AAA/results
+    headers: *id001
+    query:
+      maxRecords: '100000'
+    absent:
+    - locator
+  response:
+    headers:
+      Sforce-Locator: 'null'
+      Sforce-NumberOfRecords: '0'
+      Content-Type: text/csv
+    text: 'Id,Name,Type,ParentId,BillingStreet,BillingCity,BillingState,BillingPostalCode,BillingCountry,ShippingCity,ShippingState,ShippingCountry,Phone,Website,Industry,AnnualRevenue,NumberOfEmployees,OwnerId,AccountSource,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,SystemModstamp,IsDeleted
+
+      '

@@ -1,0 +1,66 @@
+# Salesforce — core Sales and Service Cloud objects through Bulk API 2.0 query
+# jobs, incremental on SystemModstamp, deletes via queryAll + IsDeleted.
+# Design notes and doc links per stream: salesforce.md.
+#   faucet run --source faucet-hq/salesforce --sink faucet-hq/bigquery \
+#     --param salesforce_url=https://acme.my.salesforce.com \
+#     --param salesforce_client_id=… --param salesforce_client_secret="$SF_SECRET" \
+#     --param bq_project=… --param bq_sa_key="$BQ_SA_KEY"
+kind: source-template
+name: salesforce
+owner: faucet-hq
+description: Salesforce — accounts, contacts, leads, opportunities, line items, users, campaigns, campaign members, cases, tasks and events via Bulk API 2.0, incremental on SystemModstamp with soft deletes
+tags: [crm, sales, service]
+docs: https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/queries.htm
+params:
+  salesforce_url:
+    type: string
+    required: true
+    description: "Your org's My Domain URL, https://<mydomain>.my.salesforce.com"
+  salesforce_client_id:
+    type: string
+    required: true
+    description: "Consumer key of an external client app (or connected app) with the client credentials flow enabled"
+  salesforce_client_secret:
+    type: string
+    required: true
+    secret: true
+    description: "Consumer secret of that app"
+  salesforce_api_version:
+    type: string
+    default: "67.0"
+    description: "REST API version the jobs are created with"
+source:
+  type: rest
+  config:
+    base_url: "${param.salesforce_url}/services/data/v${param.salesforce_api_version}"
+    auth:
+      type: oauth2
+      config:
+        token_url: "${param.salesforce_url}/services/oauth2/token"
+        client_id: "${param.salesforce_client_id}"
+        client_secret: "${param.salesforce_client_secret}"
+        scopes: []
+    pagination: { type: None }
+    max_retries: 6
+    retry_backoff: 5
+    replication_method: { type: Incremental }
+    replication_key: SystemModstamp
+    csv_null_values: [""]
+    async_job:
+      submit: { method: POST, url: /jobs/query, json: { operation: queryAll, query: "" } }
+      job_id: "$.id"
+      poll: { url: "/jobs/query/${job_id}", interval_secs: 10, timeout_secs: 7200 }
+      status: { path: "$.state", success: [JobComplete], failure: [Failed, Aborted] }
+      fetch:
+        url: "/jobs/query/${job_id}/results"
+        query: { maxRecords: "100000" }
+        locator_header: Sforce-Locator
+        locator_param: locator
+      lookback: 15m
+    decode:
+      - parse: { format: csv }
+streams:
+  - name: accounts
+    source: { config: { async_job: { submit: { json: { query: "SELECT Id, Name, Type, ParentId, BillingStreet, BillingCity, BillingState, BillingPostalCode, BillingCountry, ShippingCity, ShippingState, ShippingCountry, Phone, Website, Industry, AnnualRevenue, NumberOfEmployees, OwnerId, AccountSource, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, IsDeleted FROM Account" } } } } }
+    primary_keys: [Id]
+    write: [upsert, overwrite]
