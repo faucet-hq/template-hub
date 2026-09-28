@@ -96,7 +96,8 @@ wc -l out/hubspot/*.jsonl
   template). Copy the template to add custom properties.
 - If more than 200 records share one `updatedAt` millisecond, the keyset
   cannot advance past them and the pass stops there (logged as a pagination
-  loop); the next run continues from the bookmark.
+  loop), and later runs stop at the same place. Bulk imports that stamp one
+  timestamp on many records are the case to watch for.
 - The search bookmark is rendered at second precision, so each run re-reads
   the records of the bookmark's second (deduplicated by the upsert).
 
