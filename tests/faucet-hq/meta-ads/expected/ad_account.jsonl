@@ -1,1 +1,0 @@
-{"account_id": "1234567890", "account_status": 1, "amount_spent": "1234567", "balance": "0", "business": {"id": "10150", "name": "Acme"}, "created_time": "2020-01-01T00:00:00-0800", "currency": "USD", "id": "act_1234567890", "name": "Acme Ads", "spend_cap": "0", "timezone_name": "America/Los_Angeles"}

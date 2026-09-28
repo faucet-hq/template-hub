@@ -1,2 +1,0 @@
-{"created_at": "2020-01-01T00:00:00Z", "default": false, "deleted": false, "description": "Escalations", "id": 98739, "name": "Tier 2", "updated_at": "2023-01-01T00:00:00Z"}
-{"created_at": "2020-01-01T00:00:00Z", "default": true, "deleted": false, "description": "First line", "id": 98738, "name": "Tier 1", "updated_at": "2023-01-01T00:00:00Z"}

@@ -1,4 +1,0 @@
-# Version metadata for faucet-hq/hubspot — read by scripts/index.py and by
-# `faucet template sync`. Each merged change becomes stable (launch: true).
-launch: true
-description: "v1 — CRM API v3; 7 streams, full refresh, properties lifted to columns"
