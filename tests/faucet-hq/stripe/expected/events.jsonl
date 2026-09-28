@@ -1,0 +1,2 @@
+{"api_version": "2026-08-26.dahlia", "created": 1767312060, "data": {"object": {"amount_refunded": 500, "id": "ch_Replay0001", "object": "charge", "refunded": false}}, "id": "evt_Replay0001", "object": "event", "type": "charge.refunded"}
+{"api_version": "2026-08-26.dahlia", "created": 1767312120, "data": {"object": {"deleted": true, "id": "cus_Replay0009", "object": "customer"}}, "id": "evt_Replay0002", "object": "event", "type": "customer.deleted"}

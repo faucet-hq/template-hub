@@ -1,0 +1,117 @@
+# Stripe — core billing and payments objects over the v1 REST API.
+# Every design decision is documented, with the doc URL per stream, in stripe.md.
+#   faucet run --source faucet-hq/stripe --sink faucet-hq/bigquery \
+#     --param stripe_api_key="$STRIPE_KEY" --param bq_project=… --param bq_sa_key="$BQ_SA_KEY"
+kind: source-template
+name: stripe
+owner: faucet-hq
+description: Stripe — customers, subscriptions, invoices, charges, refunds, payment intents, products, prices, payouts, disputes, balance transactions and events
+tags: [payments, billing, finance]
+docs: https://docs.stripe.com/api
+params:
+  stripe_api_key:
+    type: string
+    required: true
+    secret: true
+    description: "Restricted API key (rk_live_…) with Read access to the resources below, or a secret key (sk_live_…)"
+  stripe_api_version:
+    type: string
+    default: "2026-08-26.dahlia"
+    description: "Stripe-Version header pinning the response shape (https://docs.stripe.com/api/versioning)"
+  stripe_start_date:
+    type: string
+    default: "2011-01-01T00:00:00Z"
+    description: "RFC 3339 lower bound for the first run of the created-windowed streams (balance_transactions, events)"
+  api_base_url:
+    type: string
+    default: https://api.stripe.com
+    description: "API root; override only for replay tests"
+source:
+  type: rest
+  config:
+    base_url: "${param.api_base_url}"
+    auth: { type: bearer, config: { token: "${param.stripe_api_key}" } }
+    headers:
+      Stripe-Version: "${param.stripe_api_version}"
+    query_params: { limit: "100" }
+    records_path: "$.data[*]"
+    # Stripe lists page with starting_after=<id of the last object on the page>.
+    pagination: { type: Cursor, next_token_path: "$.data[-1:].id", param_name: starting_after }
+    max_pages: null
+    max_retries: 6
+    retry_backoff: 2
+streams:
+  - name: customers
+    source: { config: { path: /v1/customers } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: subscriptions
+    source: { config: { path: /v1/subscriptions, query_params: { limit: "100", status: all } } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: invoices
+    source: { config: { path: /v1/invoices } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: charges
+    source: { config: { path: /v1/charges } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: refunds
+    source: { config: { path: /v1/refunds } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: payment_intents
+    source: { config: { path: /v1/payment_intents } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: products
+    source: { config: { path: /v1/products } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: prices
+    source: { config: { path: /v1/prices } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: payouts
+    source: { config: { path: /v1/payouts } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  - name: disputes
+    source: { config: { path: /v1/disputes } }
+    primary_keys: [id]
+    write: [overwrite, upsert]
+  # Balance transactions are immutable ledger entries, so a created-time window
+  # captures every one exactly; the lookback re-reads late-visible rows and the
+  # upsert on id absorbs the overlap.
+  - name: balance_transactions
+    source:
+      config:
+        path: /v1/balance_transactions
+        replication_method: { type: Incremental }
+        replication_key: created
+        start_replication_value: "${param.stripe_start_date}"
+        window:
+          step: 365d
+          lookback: 1h
+          lower: { into: query, name: "created[gte]", format: epoch_s }
+          upper: { into: query, name: "created[lt]", format: epoch_s }
+    primary_keys: [id]
+    write: [upsert, append]
+  # Events are Stripe's change log (including customer.deleted, product.deleted,
+  # price.deleted …) — the delete signal for the full-refresh streams above.
+  # Stripe keeps them for 30 days, so run at least that often.
+  - name: events
+    source:
+      config:
+        path: /v1/events
+        replication_method: { type: Incremental }
+        replication_key: created
+        start_replication_value: "${param.stripe_start_date}"
+        window:
+          step: 365d
+          lookback: 1h
+          lower: { into: query, name: "created[gte]", format: epoch_s }
+          upper: { into: query, name: "created[lt]", format: epoch_s }
+    primary_keys: [id]
+    write: [upsert, append]
