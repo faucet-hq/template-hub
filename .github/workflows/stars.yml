@@ -53,3 +53,9 @@ jobs:
           git commit -m "chore: refresh template stars and trust signals"
           git pull --rebase origin main
           git push
+      - name: Purge the CDN copy
+        # The hub website falls back to jsDelivr, which caches a branch for up to 12 hours.
+        run: |
+          for f in index.json stars.json; do
+            curl -fsS --retry 3 "https://purge.jsdelivr.net/gh/faucet-hq/template-hub@main/$f" >/dev/null || echo "::warning::jsDelivr purge failed for $f"
+          done

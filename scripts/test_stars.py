@@ -56,6 +56,22 @@ class Pure(unittest.TestCase):
         self.assertEqual(stars.stars_from({"upvotes": None}), 0)
         self.assertEqual(stars.stars_from({}), 0)
 
+    def test_stars_add_thumbs_up_reactions_to_upvotes(self):
+        self.assertEqual(stars.stars_from({"upvotes": 3, "thumbs_up": 2}), 5)
+        self.assertEqual(stars.stars_from({"upvotes": None, "thumbs_up": 4}), 4)
+        self.assertEqual(stars.stars_from({"upvotes": 1, "thumbs_up": None}), 1)
+
+    def test_thumbs_up_is_read_from_reaction_groups_only(self):
+        groups = [
+            {"content": "HEART", "reactors": {"totalCount": 7}},
+            {"content": "THUMBS_UP", "reactors": {"totalCount": 2}},
+            {"content": "THUMBS_DOWN", "reactors": {"totalCount": 9}},
+        ]
+        self.assertEqual(stars.thumbs_up_from(groups), 2)
+        self.assertEqual(stars.thumbs_up_from([{"content": "THUMBS_DOWN", "reactors": {"totalCount": 9}}]), 0)
+        self.assertEqual(stars.thumbs_up_from(None), 0)
+        self.assertEqual(stars.thumbs_up_from([{"content": "THUMBS_UP"}]), 0)
+
     def test_labels_respect_githubs_length_limit(self):
         self.assertEqual(stars.label_for("acme/hr"), "template:acme/hr")
         self.assertIsNone(stars.label_for("a" * 39 + "/" + "b" * 20))
@@ -69,7 +85,7 @@ class Pure(unittest.TestCase):
         body = stars.discussion_body(INDEX["sources"][0], "source")
         self.assertEqual(stars.marker_id(body), "faucet-hq/example-csv")
         self.assertIn("Upvote", body)
-        self.assertNotIn("👍", body)
+        self.assertIn("👍", body)
         self.assertIn("template:faucet-hq/example-csv", body)
         self.assertIn("a sink template", stars.discussion_body({"id": "a/b"}, "sink"))
 
