@@ -5,11 +5,11 @@
     python3 scripts/stars.py --fixture F     # offline: read a recorded API snapshot
     python3 scripts/stars.py --dry-run       # print, don't write, never create anything
 
-A star is a 👍 reaction on the template's discussion, the vote the website's
-in-page giscus widget casts; upvotes (↑) are not counted. Each template gets one
+A star is an account that reacted 👍, ❤️ or 🚀 on the template's discussion
+(the website's giscus widget casts reactions); each account counts once however
+many of the three it uses, and upvotes (↑) are not counted. Each template gets one
 discussion (opened by this script, marked with `<!-- faucet-template: <id> -->`
-so the link survives title edits). GitHub allows one 👍 per account and reports
-the total, which is the star count. Alongside stars this records open issues
+so the link survives title edits). Alongside stars this records open issues
 labelled `template:<id>` and each publisher's GitHub account age.
 
 The output, stars.json, is merged into index.json by scripts/index.py.
@@ -30,6 +30,7 @@ REPO_OWNER, REPO_NAME = os.environ.get("GITHUB_REPOSITORY", "faucet-hq/template-
 CATEGORY = os.environ.get("STAR_CATEGORY", "Templates")
 MARKER = re.compile(r"<!--\s*faucet-template:\s*([A-Za-z0-9_./-]+)\s*-->")
 LABEL_PREFIX = "template:"
+STAR_REACTIONS = {"THUMBS_UP", "HEART", "ROCKET"}
 LABEL_MAX = 50  # GitHub's label-name limit
 
 
@@ -47,16 +48,18 @@ def days_between(earlier_iso, now):
 
 
 def stars_from(discussion):
-    """A template's stars are its discussion's 👍 reactions, one per account;
-    the bot that opens the thread does not react."""
-    return max(0, discussion.get("thumbs_up") or 0)
+    """A template's stars are the accounts that reacted 👍, ❤️ or 🚀 on its
+    discussion, each counted once; the bot that opens the thread does not react."""
+    return max(0, discussion.get("voters") or 0)
 
 
-def thumbs_up_from(reaction_groups):
-    for g in reaction_groups or []:
-        if g.get("content") == "THUMBS_UP":
-            return (g.get("reactors") or {}).get("totalCount") or 0
-    return 0
+def voters_from(reactions):
+    """Distinct accounts behind the star reactions in a list of reaction nodes."""
+    return len({
+        (r.get("user") or {}).get("login")
+        for r in reactions or []
+        if r.get("content") in STAR_REACTIONS and (r.get("user") or {}).get("login")
+    })
 
 
 def namespace(template_id):
@@ -77,7 +80,7 @@ def discussion_body(entry, kind):
     tid = entry["id"]
     return (
         f"**{tid}**: {entry.get('description') or 'a ' + kind + ' template'}\n\n"
-        f"React 👍 to this discussion to star the template. Stars help people choose between "
+        f"React 👍, ❤️ or 🚀 to this discussion to star the template. Stars help people choose between "
         f"templates for the same system, and appear on the hub page and in `faucet hub list`.\n\n"
         f"Questions and feedback welcome below. Bugs: open an issue labelled `{LABEL_PREFIX}{tid}`.\n\n"
         f"Source: [`{entry.get('file', '')}`](../blob/main/{entry.get('file', '')})\n\n"
@@ -89,7 +92,7 @@ def collect(index, snapshot, now):
     """Build stars.json from index.json + an API snapshot (live or recorded).
 
     snapshot = {
-      "discussions": {id: {"url": str, "upvotes": int, "thumbs_up": int}},
+      "discussions": {id: {"url": str, "voters": int}},
       "open_issues": {id: int},
       "accounts": {login: createdAt},
     }
@@ -169,13 +172,14 @@ def repo_meta():
 
 
 def all_discussions():
-    """{template id: {id, url, body, upvotes, thumbs_up}} for every marked discussion."""
+    """{template id: {id, url, body, voters}} for every marked discussion."""
     found, after = {}, None
     while True:
         d = gql(
             """query($o:String!,$n:String!,$a:String){repository(owner:$o,name:$n){
                  discussions(first:50,after:$a){pageInfo{hasNextPage endCursor}
-                   nodes{id url title body upvoteCount reactionGroups{content reactors{totalCount}}}}}}""",
+                   nodes{id url title body
+                     reactions(first:100){pageInfo{hasNextPage endCursor} nodes{content user{login}}}}}}}""",
             o=REPO_OWNER, n=REPO_NAME, a=after,
         )["repository"]["discussions"]
         for node in d["nodes"]:
@@ -186,12 +190,25 @@ def all_discussions():
                     "url": node["url"],
                     "title": node["title"],
                     "body": node["body"],
-                    "upvotes": node["upvoteCount"],
-                    "thumbs_up": thumbs_up_from(node.get("reactionGroups")),
+                    "voters": voters_from(all_reactions(node)),
                 }
         if not d["pageInfo"]["hasNextPage"]:
             return found
         after = d["pageInfo"]["endCursor"]
+
+
+def all_reactions(node):
+    """The discussion's reaction nodes, paging past the first 100 when needed."""
+    page = node["reactions"]
+    out = list(page["nodes"])
+    while page["pageInfo"]["hasNextPage"]:
+        page = gql(
+            """query($id:ID!,$a:String){node(id:$id){... on Discussion{
+                 reactions(first:100,after:$a){pageInfo{hasNextPage endCursor} nodes{content user{login}}}}}}""",
+            id=node["id"], a=page["pageInfo"]["endCursor"],
+        )["node"]["reactions"]
+        out.extend(page["nodes"])
+    return out
 
 
 def create_discussion(repo_id, category_id, entry, kind):
@@ -200,7 +217,7 @@ def create_discussion(repo_id, category_id, entry, kind):
              repositoryId:$r,categoryId:$c,title:$t,body:$b}){discussion{url}}}""",
         r=repo_id, c=category_id, t=discussion_title(entry), b=discussion_body(entry, kind),
     )
-    return {"url": d["createDiscussion"]["discussion"]["url"], "upvotes": 0, "thumbs_up": 0}
+    return {"url": d["createDiscussion"]["discussion"]["url"], "voters": 0}
 
 
 def update_discussion(discussion_id, title, body):
