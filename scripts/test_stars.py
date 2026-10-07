@@ -35,8 +35,8 @@ INDEX = {
 
 SNAPSHOT = {
     "discussions": {
-        "faucet-hq/example-csv": {"url": "https://github.com/x/discussions/1", "upvotes": 3},
-        "octo/netsuite": {"url": "https://github.com/x/discussions/2", "upvotes": 0},
+        "faucet-hq/example-csv": {"url": "https://github.com/x/discussions/1", "voters": 3},
+        "octo/netsuite": {"url": "https://github.com/x/discussions/2", "voters": 0},
     },
     "open_issues": {"faucet-hq/example-csv": 2},
     "accounts": {"faucet-hq": "2024-09-24T00:00:00Z", "octo": OLD},
@@ -50,27 +50,24 @@ class Pure(unittest.TestCase):
         self.assertIsNone(stars.marker_id("no marker"))
         self.assertIsNone(stars.marker_id(None))
 
-    def test_stars_are_the_discussions_upvotes(self):
-        self.assertEqual(stars.stars_from({"upvotes": 4}), 4)
-        self.assertEqual(stars.stars_from({"upvotes": 0}), 0)
-        self.assertEqual(stars.stars_from({"upvotes": None}), 0)
+    def test_stars_are_the_counted_voters(self):
+        self.assertEqual(stars.stars_from({"voters": 2}), 2)
+        self.assertEqual(stars.stars_from({"voters": None}), 0)
         self.assertEqual(stars.stars_from({}), 0)
 
-    def test_stars_add_thumbs_up_reactions_to_upvotes(self):
-        self.assertEqual(stars.stars_from({"upvotes": 3, "thumbs_up": 2}), 5)
-        self.assertEqual(stars.stars_from({"upvotes": None, "thumbs_up": 4}), 4)
-        self.assertEqual(stars.stars_from({"upvotes": 1, "thumbs_up": None}), 1)
-
-    def test_thumbs_up_is_read_from_reaction_groups_only(self):
-        groups = [
-            {"content": "HEART", "reactors": {"totalCount": 7}},
-            {"content": "THUMBS_UP", "reactors": {"totalCount": 2}},
-            {"content": "THUMBS_DOWN", "reactors": {"totalCount": 9}},
+    def test_voters_count_each_account_once_across_star_reactions(self):
+        reactions = [
+            {"content": "THUMBS_UP", "user": {"login": "ann"}},
+            {"content": "HEART", "user": {"login": "ann"}},
+            {"content": "ROCKET", "user": {"login": "ann"}},
+            {"content": "ROCKET", "user": {"login": "bob"}},
+            {"content": "THUMBS_DOWN", "user": {"login": "cat"}},
+            {"content": "EYES", "user": {"login": "dan"}},
+            {"content": "HEART", "user": None},
         ]
-        self.assertEqual(stars.thumbs_up_from(groups), 2)
-        self.assertEqual(stars.thumbs_up_from([{"content": "THUMBS_DOWN", "reactors": {"totalCount": 9}}]), 0)
-        self.assertEqual(stars.thumbs_up_from(None), 0)
-        self.assertEqual(stars.thumbs_up_from([{"content": "THUMBS_UP"}]), 0)
+        self.assertEqual(stars.voters_from(reactions), 2)
+        self.assertEqual(stars.voters_from([]), 0)
+        self.assertEqual(stars.voters_from(None), 0)
 
     def test_labels_respect_githubs_length_limit(self):
         self.assertEqual(stars.label_for("acme/hr"), "template:acme/hr")
@@ -84,7 +81,7 @@ class Pure(unittest.TestCase):
     def test_discussion_body_carries_the_marker(self):
         body = stars.discussion_body(INDEX["sources"][0], "source")
         self.assertEqual(stars.marker_id(body), "faucet-hq/example-csv")
-        self.assertIn("Upvote", body)
+        self.assertNotIn("Upvote", body)
         self.assertIn("👍", body)
         self.assertIn("template:faucet-hq/example-csv", body)
         self.assertIn("a sink template", stars.discussion_body({"id": "a/b"}, "sink"))
