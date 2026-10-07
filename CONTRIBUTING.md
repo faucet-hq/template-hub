@@ -149,7 +149,7 @@ gives each entry a `trust` block so people can choose between them:
 
 | Field | Where it comes from |
 |---|---|
-| `stars` / `star_url` | upvotes (↑) plus 👍 reactions on the template's discussion, opened automatically in the **Templates** category. GitHub allows one of each per account; the hub website's vote widget adds 👍. |
+| `stars` / `star_url` | 👍 reactions on the template's discussion, opened automatically in the **Templates** category. GitHub allows one per account; upvotes (↑) are not counted. |
 | `updated` / `stable_since` | dates of the newest and the stable version, from git history |
 | `compatible_sinks` | sink templates the source composes with in full |
 | `open_issues` | open issues labelled `template:<id>` (the label is created for you) |
@@ -159,7 +159,7 @@ gives each entry a `trust` block so people can choose between them:
 merge (`.github/workflows/stars.yml`), and `scripts/index.py` merges them into
 `index.json`. You never edit either file by hand. To report a problem with a
 template, open an issue with its `template:<id>` label; to recommend one,
-upvote or 👍 its discussion, here or from its page on the hub website.
+react 👍 to its discussion, here or from its page on the hub website.
 
 ## Tests
 

@@ -35,7 +35,7 @@ INDEX = {
 
 SNAPSHOT = {
     "discussions": {
-        "faucet-hq/example-csv": {"url": "https://github.com/x/discussions/1", "upvotes": 3},
+        "faucet-hq/example-csv": {"url": "https://github.com/x/discussions/1", "upvotes": 1, "thumbs_up": 3},
         "octo/netsuite": {"url": "https://github.com/x/discussions/2", "upvotes": 0},
     },
     "open_issues": {"faucet-hq/example-csv": 2},
@@ -50,16 +50,11 @@ class Pure(unittest.TestCase):
         self.assertIsNone(stars.marker_id("no marker"))
         self.assertIsNone(stars.marker_id(None))
 
-    def test_stars_are_the_discussions_upvotes(self):
-        self.assertEqual(stars.stars_from({"upvotes": 4}), 4)
-        self.assertEqual(stars.stars_from({"upvotes": 0}), 0)
-        self.assertEqual(stars.stars_from({"upvotes": None}), 0)
+    def test_stars_are_thumbs_up_reactions_only(self):
+        self.assertEqual(stars.stars_from({"upvotes": 3, "thumbs_up": 2}), 2)
+        self.assertEqual(stars.stars_from({"upvotes": 4}), 0)
+        self.assertEqual(stars.stars_from({"thumbs_up": None}), 0)
         self.assertEqual(stars.stars_from({}), 0)
-
-    def test_stars_add_thumbs_up_reactions_to_upvotes(self):
-        self.assertEqual(stars.stars_from({"upvotes": 3, "thumbs_up": 2}), 5)
-        self.assertEqual(stars.stars_from({"upvotes": None, "thumbs_up": 4}), 4)
-        self.assertEqual(stars.stars_from({"upvotes": 1, "thumbs_up": None}), 1)
 
     def test_thumbs_up_is_read_from_reaction_groups_only(self):
         groups = [
@@ -84,7 +79,7 @@ class Pure(unittest.TestCase):
     def test_discussion_body_carries_the_marker(self):
         body = stars.discussion_body(INDEX["sources"][0], "source")
         self.assertEqual(stars.marker_id(body), "faucet-hq/example-csv")
-        self.assertIn("Upvote", body)
+        self.assertNotIn("Upvote", body)
         self.assertIn("👍", body)
         self.assertIn("template:faucet-hq/example-csv", body)
         self.assertIn("a sink template", stars.discussion_body({"id": "a/b"}, "sink"))

@@ -5,11 +5,11 @@
     python3 scripts/stars.py --fixture F     # offline: read a recorded API snapshot
     python3 scripts/stars.py --dry-run       # print, don't write, never create anything
 
-A star is an upvote (↑) or a 👍 reaction on the template's discussion; the
-website's in-page widget can only add reactions. Each template gets one
+A star is a 👍 reaction on the template's discussion, the vote the website's
+in-page giscus widget casts; upvotes (↑) are not counted. Each template gets one
 discussion (opened by this script, marked with `<!-- faucet-template: <id> -->`
-so the link survives title edits). GitHub counts one upvote and one 👍 per
-account and reports only the totals, which add up to the star count. Alongside stars this records open issues
+so the link survives title edits). GitHub allows one 👍 per account and reports
+the total, which is the star count. Alongside stars this records open issues
 labelled `template:<id>` and each publisher's GitHub account age.
 
 The output, stars.json, is merged into index.json by scripts/index.py.
@@ -47,10 +47,9 @@ def days_between(earlier_iso, now):
 
 
 def stars_from(discussion):
-    """A template's stars are its discussion's upvotes plus 👍 reactions. GitHub
-    allows one of each per account and reports only the totals, so an account
-    that does both counts twice; the bot that opens the thread does neither."""
-    return max(0, discussion.get("upvotes") or 0) + max(0, discussion.get("thumbs_up") or 0)
+    """A template's stars are its discussion's 👍 reactions, one per account;
+    the bot that opens the thread does not react."""
+    return max(0, discussion.get("thumbs_up") or 0)
 
 
 def thumbs_up_from(reaction_groups):
@@ -78,7 +77,7 @@ def discussion_body(entry, kind):
     tid = entry["id"]
     return (
         f"**{tid}**: {entry.get('description') or 'a ' + kind + ' template'}\n\n"
-        f"**Upvote** (↑) or react 👍 to this discussion to star the template. Stars help people choose between "
+        f"React 👍 to this discussion to star the template. Stars help people choose between "
         f"templates for the same system, and appear on the hub page and in `faucet hub list`.\n\n"
         f"Questions and feedback welcome below. Bugs: open an issue labelled `{LABEL_PREFIX}{tid}`.\n\n"
         f"Source: [`{entry.get('file', '')}`](../blob/main/{entry.get('file', '')})\n\n"
