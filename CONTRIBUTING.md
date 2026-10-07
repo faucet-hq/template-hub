@@ -96,7 +96,7 @@ streams:
     primary_keys: [id]
     write: [overwrite, upsert]
   - name: payments
-    source: { config: { path: /payments, replication_method: { type: Incremental, replication_key: updated_at } } }
+    source: { config: { path: /payments, replication_method: { type: Incremental }, replication_key: updated_at } }
     primary_keys: [id]
     write: [upsert, append]
 ```
