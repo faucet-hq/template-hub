@@ -40,6 +40,8 @@ source:
       dateRanges: [{ startDate: "${param.ga4_start_date}", endDate: "${param.ga4_start_date}" }]
       keepEmptyRows: false
     records_path: "$.rows[*]"
+    # A report with no data omits `rows` entirely; that is an empty page, not an error.
+    allow_missing_records_path: true
     # offset/limit ride the request body (the API returns at most 250,000 rows per request).
     pagination: { type: OffsetInBody, offset_field: offset, limit_field: limit, limit: "${param.ga4_page_size}", stop_when_short: true }
     max_pages: null

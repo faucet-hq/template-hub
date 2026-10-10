@@ -1,5 +1,5 @@
 {
-  "commit": "dbe5a357911b36c7b39e82cae067b59ca707ec76",
+  "commit": "0d46b1e90f65bd67c80342bdf2293c097067de16",
   "generated_by": "scripts/index.py",
   "matrix": [
     {
@@ -2340,6 +2340,7 @@
       "description": "Google BigQuery — one table per stream, atomic overwrite or keyed MERGE upsert",
       "docs": "https://faucet-hq.github.io/faucet-stream/reference/connectors.html",
       "file": "sink-templates/faucet-hq/bigquery.yaml",
+      "has_tests": false,
       "id": "faucet-hq/bigquery",
       "live_versions": [
         1
@@ -2376,10 +2377,12 @@
       ],
       "sink_type": "bigquery",
       "stable": 1,
+      "stable_has_tests": false,
       "tags": [
         "warehouse",
         "gcp"
       ],
+      "test_cases": 0,
       "trust": {
         "open_issues": 0,
         "publisher": {
@@ -2410,6 +2413,7 @@
       "description": "Local JSON Lines files, one per stream — the local validation destination",
       "docs": null,
       "file": "sink-templates/faucet-hq/jsonl.yaml",
+      "has_tests": false,
       "id": "faucet-hq/jsonl",
       "live_versions": [
         1
@@ -2430,10 +2434,12 @@
       ],
       "sink_type": "jsonl",
       "stable": 1,
+      "stable_has_tests": false,
       "tags": [
         "file",
         "local"
       ],
+      "test_cases": 0,
       "trust": {
         "open_issues": 0,
         "publisher": {
@@ -2461,6 +2467,7 @@
       "description": "PostgreSQL — one auto-mapped table per stream, transactional overwrite or ON CONFLICT upsert",
       "docs": null,
       "file": "sink-templates/faucet-hq/postgres.yaml",
+      "has_tests": false,
       "id": "faucet-hq/postgres",
       "live_versions": [
         1
@@ -2489,9 +2496,11 @@
       ],
       "sink_type": "postgres",
       "stable": 1,
+      "stable_has_tests": false,
       "tags": [
         "database"
       ],
+      "test_cases": 0,
       "trust": {
         "open_issues": 0,
         "publisher": {
@@ -2522,6 +2531,7 @@
       "description": "Local SQLite database — one auto-mapped table per stream, real overwrite/upsert semantics without infrastructure",
       "docs": null,
       "file": "sink-templates/faucet-hq/sqlite.yaml",
+      "has_tests": false,
       "id": "faucet-hq/sqlite",
       "live_versions": [
         1
@@ -2542,10 +2552,12 @@
       ],
       "sink_type": "sqlite",
       "stable": 1,
+      "stable_has_tests": false,
       "tags": [
         "database",
         "local"
       ],
+      "test_cases": 0,
       "trust": {
         "open_issues": 0,
         "publisher": {
@@ -2578,6 +2590,7 @@
       "description": "Example — two CSV exports as two streams (runs offline, no credentials)",
       "docs": null,
       "file": "source-templates/faucet-hq/example-csv.yaml",
+      "has_tests": false,
       "id": "faucet-hq/example-csv",
       "live_versions": [
         1
@@ -2598,6 +2611,7 @@
       ],
       "source_type": "csv",
       "stable": 1,
+      "stable_has_tests": false,
       "streams": [
         {
           "description": null,
@@ -2626,6 +2640,7 @@
         "example",
         "file"
       ],
+      "test_cases": 0,
       "trust": {
         "compatible_sinks": 4,
         "open_issues": 0,
@@ -2651,6 +2666,7 @@
       "description": "Example — a bearer-authenticated REST API with cursor pagination and one stream per endpoint",
       "docs": null,
       "file": "source-templates/faucet-hq/example-rest-api.yaml",
+      "has_tests": false,
       "id": "faucet-hq/example-rest-api",
       "live_versions": [
         1
@@ -2679,6 +2695,7 @@
       ],
       "source_type": "rest",
       "stable": 1,
+      "stable_has_tests": false,
       "streams": [
         {
           "description": null,
@@ -2707,6 +2724,7 @@
         "example",
         "rest"
       ],
+      "test_cases": 0,
       "trust": {
         "compatible_sinks": 4,
         "open_issues": 0,
@@ -2732,6 +2750,7 @@
       "description": "GitHub REST API (2026-03-10) — one repository's issues, pull requests, comments, commits, releases and workflow runs",
       "docs": "https://docs.github.com/en/rest?apiVersion=2026-03-10",
       "file": "source-templates/faucet-hq/github.yaml",
+      "has_tests": false,
       "id": "faucet-hq/github",
       "live_versions": [
         1
@@ -2784,6 +2803,7 @@
       ],
       "source_type": "rest",
       "stable": 1,
+      "stable_has_tests": false,
       "streams": [
         {
           "description": null,
@@ -2879,6 +2899,7 @@
         "github",
         "devtools"
       ],
+      "test_cases": 0,
       "trust": {
         "compatible_sinks": 4,
         "open_issues": 0,
@@ -2904,6 +2925,7 @@
       "description": "Google Ads API v25 (GAQL search) — account, campaigns, ad groups, ads, keywords and daily performance reports",
       "docs": "https://developers.google.com/google-ads/api/docs/start",
       "file": "source-templates/faucet-hq/google-ads.yaml",
+      "has_tests": false,
       "id": "faucet-hq/google-ads",
       "live_versions": [
         1
@@ -2988,6 +3010,7 @@
       ],
       "source_type": "rest",
       "stable": 1,
+      "stable_has_tests": false,
       "streams": [
         {
           "description": null,
@@ -3126,6 +3149,7 @@
         "advertising",
         "google"
       ],
+      "test_cases": 0,
       "trust": {
         "compatible_sinks": 4,
         "open_issues": 0,
@@ -3151,6 +3175,7 @@
       "description": "Google Analytics 4 Data API v1beta (runReport) — daily traffic, sources, landing pages, pages, events, devices and geography",
       "docs": "https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/properties/runReport",
       "file": "source-templates/faucet-hq/google-analytics-4.yaml",
+      "has_tests": false,
       "id": "faucet-hq/google-analytics-4",
       "live_versions": [
         1
@@ -3227,6 +3252,7 @@
       ],
       "source_type": "rest",
       "stable": 1,
+      "stable_has_tests": false,
       "streams": [
         {
           "description": null,
@@ -3332,6 +3358,7 @@
         "marketing",
         "google"
       ],
+      "test_cases": 0,
       "trust": {
         "compatible_sinks": 4,
         "open_issues": 0,
@@ -3357,6 +3384,7 @@
       "description": "HubSpot CRM — contacts, companies, deals, tickets (incremental on last-modified, archived records as delete markers), owners, deal and ticket pipelines",
       "docs": "https://developers.hubspot.com/docs/api-reference/latest/crm",
       "file": "source-templates/faucet-hq/hubspot.yaml",
+      "has_tests": false,
       "id": "faucet-hq/hubspot",
       "live_versions": [
         1
@@ -3401,6 +3429,7 @@
       ],
       "source_type": "rest",
       "stable": 1,
+      "stable_has_tests": false,
       "streams": [
         {
           "description": null,
@@ -3529,6 +3558,7 @@
         "marketing",
         "sales"
       ],
+      "test_cases": 0,
       "trust": {
         "compatible_sinks": 4,
         "open_issues": 0,
@@ -3554,6 +3584,7 @@
       "description": "Jira Cloud — issues (all fields), projects, users, fields, statuses, issue types, priorities, resolutions",
       "docs": "https://developer.atlassian.com/cloud/jira/platform/rest/v3/",
       "file": "source-templates/faucet-hq/jira.yaml",
+      "has_tests": false,
       "id": "faucet-hq/jira",
       "live_versions": [
         1
@@ -3590,6 +3621,7 @@
       ],
       "source_type": "rest",
       "stable": 1,
+      "stable_has_tests": false,
       "streams": [
         {
           "description": null,
@@ -3685,6 +3717,7 @@
         "issue-tracking",
         "atlassian"
       ],
+      "test_cases": 0,
       "trust": {
         "compatible_sinks": 4,
         "open_issues": 0,
@@ -3710,6 +3743,7 @@
       "description": "Meta Marketing API v25.0 — ad account, campaigns, ad sets, ads, creatives and daily Insights (async report runs)",
       "docs": "https://developers.facebook.com/docs/marketing-api",
       "file": "source-templates/faucet-hq/meta-ads.yaml",
+      "has_tests": false,
       "id": "faucet-hq/meta-ads",
       "live_versions": [
         1
@@ -3754,6 +3788,7 @@
       ],
       "source_type": "rest",
       "stable": 1,
+      "stable_has_tests": false,
       "streams": [
         {
           "description": null,
@@ -3882,6 +3917,7 @@
         "meta",
         "facebook"
       ],
+      "test_cases": 0,
       "trust": {
         "compatible_sinks": 4,
         "open_issues": 0,
@@ -3907,6 +3943,7 @@
       "description": "Salesforce — accounts, contacts, leads, opportunities, line items, users, campaigns, campaign members, cases, tasks and events via Bulk API 2.0, incremental on SystemModstamp with soft deletes",
       "docs": "https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/queries.htm",
       "file": "source-templates/faucet-hq/salesforce.yaml",
+      "has_tests": false,
       "id": "faucet-hq/salesforce",
       "live_versions": [
         1
@@ -3951,6 +3988,7 @@
       ],
       "source_type": "rest",
       "stable": 1,
+      "stable_has_tests": false,
       "streams": [
         {
           "description": null,
@@ -4079,6 +4117,7 @@
         "sales",
         "service"
       ],
+      "test_cases": 0,
       "trust": {
         "compatible_sinks": 4,
         "open_issues": 0,
@@ -4104,6 +4143,7 @@
       "description": "Shopify GraphQL Admin API (2026-07) — orders, customers, products, variants, collections, locations and product deletions",
       "docs": "https://shopify.dev/docs/api/admin-graphql",
       "file": "source-templates/faucet-hq/shopify.yaml",
+      "has_tests": false,
       "id": "faucet-hq/shopify",
       "live_versions": [
         1
@@ -4148,6 +4188,7 @@
       ],
       "source_type": "graphql",
       "stable": 1,
+      "stable_has_tests": false,
       "streams": [
         {
           "description": null,
@@ -4231,6 +4272,7 @@
         "ecommerce",
         "shopify"
       ],
+      "test_cases": 0,
       "trust": {
         "compatible_sinks": 4,
         "open_issues": 0,
@@ -4256,6 +4298,7 @@
       "description": "Stripe — customers, subscriptions, invoices, charges, refunds, payment intents, products, prices, payouts, disputes, balance transactions and events",
       "docs": "https://docs.stripe.com/api",
       "file": "source-templates/faucet-hq/stripe.yaml",
+      "has_tests": false,
       "id": "faucet-hq/stripe",
       "live_versions": [
         1
@@ -4300,6 +4343,7 @@
       ],
       "source_type": "rest",
       "stable": 1,
+      "stable_has_tests": false,
       "streams": [
         {
           "description": null,
@@ -4439,6 +4483,7 @@
         "billing",
         "finance"
       ],
+      "test_cases": 0,
       "trust": {
         "compatible_sinks": 4,
         "open_issues": 0,
@@ -4464,6 +4509,7 @@
       "description": "Zendesk Support — tickets and users (incremental exports, deletes included), organizations, groups, ticket fields, ticket metrics, satisfaction ratings",
       "docs": "https://developer.zendesk.com/api-reference/",
       "file": "source-templates/faucet-hq/zendesk.yaml",
+      "has_tests": false,
       "id": "faucet-hq/zendesk",
       "live_versions": [
         1
@@ -4508,6 +4554,7 @@
       ],
       "source_type": "rest",
       "stable": 1,
+      "stable_has_tests": false,
       "streams": [
         {
           "description": null,
@@ -4592,6 +4639,7 @@
         "helpdesk",
         "crm"
       ],
+      "test_cases": 0,
       "trust": {
         "compatible_sinks": 4,
         "open_issues": 0,
