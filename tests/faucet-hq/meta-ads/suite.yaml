@@ -14,6 +14,7 @@ suite:
       expect: { error: meta_insights_date_preset }
   behavioral:
     - name: ad-account-shape
+      row: ad_account
       params: { meta_ad_account_id: "1234567890", meta_access_token: token, bq_project: analytics, bq_sa_key: "{}" }
       input:
         - { id: act_1234567890, account_id: "1234567890", name: Demo, currency: USD, business: { id: "555", name: Demo LLC } }

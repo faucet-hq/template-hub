@@ -14,6 +14,7 @@ suite:
       params: { shopify_shop_url: https://demo-store.myshopify.com, shopify_client_id: id, shopify_client_secret: secret, pg_url: postgres://suite@localhost:5432/suite, shopify_start_date: "2026-01-01T00:00:00Z" }
   behavioral:
     - name: order-node-shape
+      row: orders
       params: { shopify_shop_url: https://demo-store.myshopify.com, shopify_client_id: id, shopify_client_secret: secret, pg_url: postgres://suite@localhost:5432/suite }
       input:
         - id: gid://shopify/Order/1
