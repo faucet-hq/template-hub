@@ -19,6 +19,7 @@ suite:
         github_start_date: "2025-01-01T00:00:00Z"
   behavioral:
     - name: repository-record-shape
+      row: repository
       params: { github_token: ghp_suite, github_owner: octo-org, github_repo: demo }
       input:
         - { id: 1, full_name: octo-org/demo, owner: { login: octo-org, id: 2 }, topics: [etl] }

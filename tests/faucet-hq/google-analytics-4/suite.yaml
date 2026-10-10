@@ -22,6 +22,7 @@ suite:
         ga4_page_size: 250000
   behavioral:
     - name: traffic-daily-row
+      row: traffic_daily
       params: { ga4_property_id: "123456789", google_sa_key: "{}", bq_project: analytics, bq_sa_key: "{}" }
       input:
         - dimensionValues: [{ value: "20260901" }]

@@ -178,6 +178,15 @@ exchanges:
       accountType: app
       displayName: Replay Bot
       active: true
+# users/search reports no total, so paging ends on the empty page after the last.
+- match:
+    path: /rest/api/3/users/search
+    query:
+      startAt: '2'
+      maxResults: '100'
+    headers: *id001
+  response:
+    body: []
 - match:
     path: /rest/api/3/field
     query: {}

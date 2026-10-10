@@ -29,6 +29,7 @@ suite:
         google_ads_date_filter: "BETWEEN '2025-01-01' AND '2025-12-31'"
   behavioral:
     - name: customer-row-shape
+      row: customer
       params:
         google_ads_customer_id: "1234567890"
         google_ads_login_customer_id: "9876543210"

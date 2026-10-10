@@ -5,6 +5,7 @@ version history (#682).
     faucet hub matrix --hub . --format json     → sources, sinks, matrix (owner, official, id)
     git log (main)                              → versions: v1, v2, v3 … per template
     <stem>.faucet.yaml sidecar                  → which version is `stable`, which are deprecated
+    the template's `tests:` block               → has_tests / test_cases / stable_has_tests
 
 A version is one accepted change to a template's *meaning*: commits that only
 touch comments or whitespace are folded into the previous version (the same
@@ -145,6 +146,30 @@ def sidecar_errors(tid, versions, stable, deprecated, bad_keys):
     return errs
 
 
+def test_signals(doc):
+    """What a template document's `tests:` block declares: whether it has
+    tests, and how many explicit cases (suite `cases` + `behavioral` +
+    `fixtures`; generated `combine` / `auto` cases are not counted)."""
+    t = doc.get("tests") if isinstance(doc, dict) else None
+    if not isinstance(t, dict):
+        return False, 0
+    suite = t.get("suite") if isinstance(t.get("suite"), dict) else {}
+
+    def n(v):
+        return len(v) if isinstance(v, list) else 0
+
+    cases = n(suite.get("cases")) + n(suite.get("behavioral")) + n(t.get("fixtures"))
+    has = cases > 0 or bool(suite.get("combine")) or bool(suite.get("auto")) or n(t.get("requires_suites")) > 0
+    return has, cases
+
+
+def load_doc(text):
+    try:
+        return yaml.safe_load(text) or {}
+    except yaml.YAMLError:
+        return {}
+
+
 def enrich(entries):
     errors = []
     for e in entries:
@@ -158,6 +183,14 @@ def enrich(entries):
         e["newest"] = len(vs) or None
         e["stable"] = stable_for(vs, sidecar)
         e["live_versions"] = mark_deprecated(vs, deprecated)
+        with open(path) as f:
+            e["has_tests"], e["test_cases"] = test_signals(load_doc(f.read()))
+        st = e["stable"]
+        if isinstance(st, int) and 1 <= st <= len(vs):
+            body = run("git", "show", f"{vs[st - 1]['commit']}:{path}", check=False)
+            e["stable_has_tests"] = test_signals(load_doc(body))[0]
+        else:
+            e.pop("stable_has_tests", None)
         tid = e.get("id") or e.get("name")
         errors += [(sidecar_path(path) or path, m) for m in sidecar_errors(tid, vs, e["stable"], deprecated, bad)]
     return errors
