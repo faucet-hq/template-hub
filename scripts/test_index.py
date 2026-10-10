@@ -99,3 +99,25 @@ class Gate(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestSignals(unittest.TestCase):
+    def test_no_block_is_no_tests(self):
+        self.assertEqual(index.test_signals({}), (False, 0))
+        self.assertEqual(index.test_signals({"tests": None}), (False, 0))
+        self.assertEqual(index.test_signals("not a mapping"), (False, 0))
+
+    def test_explicit_cases_are_counted(self):
+        doc = yaml.safe_load(
+            "tests:\n  suite:\n    cases: [{name: a}, {name: b}]\n    behavioral: [{name: c}]\n"
+            "  fixtures: [{name: d}]\n"
+        )
+        self.assertEqual(index.test_signals(doc), (True, 4))
+
+    def test_generated_or_shared_only_has_tests_without_a_count(self):
+        self.assertEqual(index.test_signals({"tests": {"suite": {"auto": {"defaults_baseline": True}}}}), (True, 0))
+        self.assertEqual(index.test_signals({"tests": {"requires_suites": [{"name": "s", "version": ">=1"}]}}), (True, 0))
+        self.assertEqual(index.test_signals({"tests": {"suite": {}}}), (False, 0))
+
+    def test_unparseable_yaml_reads_as_empty(self):
+        self.assertEqual(index.load_doc("a: [unclosed"), {})

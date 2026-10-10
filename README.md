@@ -146,6 +146,16 @@ and the publisher's track record appear in `index.json` under `trust`, on the
 `faucet hub list --sort stars|updated`. See
 [CONTRIBUTING → Stars and trust signals](CONTRIBUTING.md#stars-and-trust-signals).
 
+## Tests
+
+A template may carry a `tests:` block (parameter-space cases, fixtures and
+shared suites; see the faucet docs on
+[template tests](https://faucet-hq.github.io/faucet-stream/cookbook/templates.html)).
+`index.json` records, per template, `has_tests`, `test_cases` (its explicit
+cases and fixtures; generated `combine` / `auto` cases are not counted) and
+`stable_has_tests` (whether the `stable` version carries tests). The hub page
+shows a **tested** badge from these.
+
 ## Layout
 
 ```
@@ -157,7 +167,7 @@ source-templates/faucet-hq/<name>.md  an official template's README: scopes, run
 tests/<owner>/<name>/suite.yaml       `faucet template test` suite for a template
 tests/<owner>/<name>/replay.yaml      recorded API exchanges + expected/<stream>.jsonl (scripts/replay.py)
 examples/data/                        fixtures the example-csv template reads (runs offline)
-index.json                            generated: sources, sinks, matrix, commands, versions, stable, live_versions, trust
+index.json                            generated: sources, sinks, matrix, commands, versions, stable, live_versions, trust, has_tests
 stars.json                            generated: stars, open issues, publisher ages (scripts/stars.py, hourly)
 scripts/index.py                      regenerates index.json (CI runs it on merge)
 scripts/stars.py                      opens each template's star discussion and collects trust signals
